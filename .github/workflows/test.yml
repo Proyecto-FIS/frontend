@@ -1,0 +1,22 @@
+name: Run tests
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.19.0]
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Using Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Frontend testing
+        run: npm install && npm install -D && npm run test:ci
