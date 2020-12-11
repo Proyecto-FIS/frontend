@@ -11,4 +11,4 @@ COPY public public
 # start app
 RUN npm run build
 
-CMD ["sh", "-c", "serve -s -l $PORT build"]
+CMD ["sh", "-c","npx serve -l $PORT -s build"]
