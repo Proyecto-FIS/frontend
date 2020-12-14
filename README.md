@@ -14,6 +14,7 @@ A summary of possible environment variables is here:
 To use a development proxy, you must create a setupProxy.js file under src folder,
 Then, enter this content:
 
+```javascript
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function (app) {
@@ -22,6 +23,10 @@ module.exports = function (app) {
         createProxyMiddleware({
             target: process.env.API_ENDPOINT_URL,
             changeOrigin: true,
+            pathRewrite: {
+                "^/api":""
+            }
         })
     );
 };
+```

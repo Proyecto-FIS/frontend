@@ -117,7 +117,7 @@ dist
 *.code-workspace
 
 # Development proxy files
-src/setupProxy.js
+setupProxy.js
 
 # misc
 .directory
