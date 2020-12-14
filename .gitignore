@@ -116,9 +116,6 @@ dist
 # VSCode stuff
 *.code-workspace
 
-# Development proxy files
-setupProxy.js
-
 # misc
 .directory
 .DS_Store
