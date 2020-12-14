@@ -16,5 +16,4 @@ jobs:
           heroku_app_name: "coffaine-frontend"
           heroku_email: "${{secrets.HEROKU_EMAIL}}"
           usedocker: true
-        env:
-          HD_REACT_APP_API_ENDPOINT: ${{secrets.REACT_APP_API_ENDPOINT}}
+          buildpack: https://github.com/mars/create-react-app-buildpack.git
