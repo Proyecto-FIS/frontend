@@ -21,4 +21,5 @@ jobs:
       - name: Frontend testing
         run: npm install && npm install -D && npm run test:ci
         env:
-          REACT_APP_API_ENDPOINT: ${{secrets.REACT_APP_API_ENDPOINT}}
+          API_ENDPOINT_URL: ${{secrets.API_ENDPOINT_URL}}
+          

@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          API Gateway: {process.env.REACT_APP_API_ENDPOINT}
+          Hello World!
         </a>
       </header>
     </div>
