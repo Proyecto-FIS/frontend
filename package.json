@@ -1,5 +1,5 @@
 {
-    "name": "CoffaineFrontend",
+    "name": "coffaine-frontend",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -37,6 +37,7 @@
         "@testing-library/jest-dom": "^5.11.6",
         "@testing-library/react": "^11.2.2",
         "@testing-library/user-event": "^12.5.0",
+        "http-proxy-middleware": "^1.0.6",
         "react-test-renderer": "^17.0.1"
     }
 }
