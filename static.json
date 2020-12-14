@@ -7,5 +7,10 @@
         "/api/": {
             "origin": "${API_ENDPOINT_URL}"
         }
+    },
+    "redirects": {
+        "/api/": {
+            "url": "/"
+        }
     }
 }
