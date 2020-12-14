@@ -16,7 +16,5 @@ jobs:
           heroku_app_name: "coffaine-frontend"
           heroku_email: "${{secrets.HEROKU_EMAIL}}"
           usedocker: true
-          docker_build_args: |
-            REACT_APP_API_ENDPOINT
         env:
-          REACT_APP_API_ENDPOINT: ${{secrets.REACT_APP_API_ENDPOINT}}
+          HD_REACT_APP_API_ENDPOINT: ${{secrets.REACT_APP_API_ENDPOINT}}
