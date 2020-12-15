@@ -4,7 +4,8 @@ import store from "../redux/store";
 
 export class ProductsService {
   getAllProducts() {
-    axios.get("/api/products", {}).then((response) => {
+    axios.get("/products", {}).then((response) => {
+      console.log(response)
       store.dispatch(getAllProducts(response));
     });
   }
