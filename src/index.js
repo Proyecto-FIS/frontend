@@ -4,11 +4,16 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+//Redux
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 //Routes
 import products from "./routes/products";
 import homepage from "./routes/homepage";
 
 ReactDOM.render(
+  <Provider store={store}>
   <React.StrictMode>
     <Router>
       <Switch>
@@ -16,7 +21,8 @@ ReactDOM.render(
         <Route path="/" component={homepage} />
       </Switch>
     </Router>
-  </React.StrictMode>,
+  </React.StrictMode>
+  </Provider>,
   document.getElementById("root")
 );
 
