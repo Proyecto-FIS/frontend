@@ -3,23 +3,24 @@ import getAllProducts from "../redux/actions/getAllProducts";
 import getAProduct from "../redux/actions/getAProduct";
 import loadingProducts from "../redux/actions/loadingProducts";
 import loadingError from "../redux/actions/loadingError";
+import store from "../redux/store";
 
 export class ProductsService {
 
-    getAllProducts = () => dispatch => {
-      dispatch(loadingProducts());
+    getAllProducts = () => {
+      store.dispatch(loadingProducts());
       axios.get("/api/products", {})
       .then((response) => {
-        dispatch(getAllProducts(response));
+        store.dispatch(getAllProducts(response.data));
       })
       .catch(err => loadingError())
     }
 
-    getAProduct = (productId) => dispatch => {
-      dispatch(loadingProducts());
+    getAProduct = (productId) => {
+      store.dispatch(loadingProducts());
       axios.get("/api/products", {productId: productId})
       .then((response) => {
-        dispatch(getAProduct(response));
+        store.dispatch(getAProduct(response.data));
       })
       .catch(err => loadingError())
     }

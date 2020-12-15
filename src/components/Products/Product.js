@@ -8,12 +8,16 @@ import {
   CardMedia,
   Typography,
 } from "@material-ui/core";
+import styles from "../Common/Styles"
+
+//MUI
+import { withStyles } from "@material-ui/core/styles";
 
 class Product extends Component {
   render() {
 
     
-    const { classes, Product: {_id, name, description, imageUrl}} = this.props;
+    const { classes, product: {_id, name, description, imageUrl}} = this.props;
 
     return (
       <Card key={_id} className={classes.card}>
@@ -45,4 +49,4 @@ Product.propTypes = {
     product: PropTypes.object.isRequired,
 }
 
-export default Product;
+export default (withStyles(styles, { withTheme: true })(Product));;

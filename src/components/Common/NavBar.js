@@ -11,7 +11,7 @@ class NavBar extends Component {
 
     return (
       <AppBar position="relative">
-        <Toolbar>
+        <Toolbar className="nav-container">
           <CameraIcon/>
           <Typography variant="h6" color="inherit" noWrap>
              ¿Te apetece un café?
