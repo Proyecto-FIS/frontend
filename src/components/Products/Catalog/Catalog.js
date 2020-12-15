@@ -123,7 +123,7 @@ export class Album extends Component {
           <Container className={classes.cardGrid} maxWidth="md">
             {/* End hero unit */}
             <Grid container spacing={4}>
-              {this.props.products.map((card) => (
+              {this.props.products ? this.props.products.map((card) => (
                 <Grid item key={card} xs={12} sm={6} md={4}>
                   <Card className={classes.card}>
                     <CardMedia
@@ -147,7 +147,7 @@ export class Album extends Component {
                     </CardActions>
                   </Card>
                 </Grid>
-              ))}
+              )) : null}
             </Grid>
           </Container>
         </main>
