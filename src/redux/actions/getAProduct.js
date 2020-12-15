@@ -1,4 +1,4 @@
-export const type = "GET_ALL_PRODUCTS";
+export const type = "GET_A_PRODUCT";
 
 const action = (products) => {
   return {

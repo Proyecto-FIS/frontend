@@ -1,5 +1,5 @@
-# frontend
-Frontend - Coffaine
+# Frontend - Coffaine
+
 ![Deploy on Heroku](https://github.com/Proyecto-FIS/frontend/workflows/Deploy%20on%20Heroku/badge.svg)
 
 ## Environment variables

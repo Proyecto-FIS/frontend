@@ -3,25 +3,25 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
 //Redux
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
 //Routes
 import products from "./routes/products";
-import homepage from "./routes/homepage";
+
+//import homepage from "./routes/homepage";
 
 ReactDOM.render(
   <Provider store={store}>
-  <React.StrictMode>
-    <Router>
-      <Switch>
-        <Route path="/products" component={products} />
-        <Route path="/" component={homepage} />
-      </Switch>
-    </Router>
-  </React.StrictMode>
+    <React.StrictMode>
+      <Router>
+        <Switch>
+          <Route path="/products" component={products} />
+          <Route path="/" component={products} />
+        </Switch>
+      </Router>
+    </React.StrictMode>
   </Provider>,
   document.getElementById("root")
 );
