@@ -1,4 +1,4 @@
-export const type = "GET_ALL_PRODUCTS";
+export const type = "LOADING_ERROR";
 
 const action = (products) => {
   return {
