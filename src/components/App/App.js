@@ -1,6 +1,7 @@
 import logo from "../../logo.svg";
 import "./App.css";
 import axios from "axios";
+import Sample from "../sales/sample";
 
 function App() {
   axios.get("/api/products", {}).then((response) => console.log(response));
@@ -20,6 +21,7 @@ function App() {
         >
           Hello World!
         </a>
+        <Sample/>
       </header>
     </div>
   );
