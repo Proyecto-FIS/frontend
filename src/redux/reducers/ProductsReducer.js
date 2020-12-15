@@ -1,6 +1,6 @@
 import { type as getAllProducts } from "../actions/getAllProducts";
 
-const defaultState = "salsa";
+const defaultState = [];
 
 const reducer = (state = defaultState, { type, payload }) => {
   switch (type) {
