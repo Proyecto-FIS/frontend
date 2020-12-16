@@ -16,7 +16,7 @@ export class ProductsService {
 
     requestProduct = (productId) => {
         store.dispatch(loadingProducts());
-        axios.get("/api/products", { productId })
+        axios.get("/api/products", {params: { productId: productId }})
             .then(response => store.dispatch(getAProduct(response.data)))
             .catch(err => loadingError())
     }

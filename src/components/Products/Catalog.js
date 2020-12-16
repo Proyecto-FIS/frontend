@@ -26,7 +26,7 @@ export class Catalog extends Component {
         let productsList = loading ? (
             <ProductSkeleton />
         ) : (
-            products.map(product => <Product product={product} />)
+            products.map(product => <Product key={product._id} product={product} />)
         );
 
         return (

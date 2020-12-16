@@ -5,7 +5,7 @@ import {
     Typography,
     withStyles
 } from "@material-ui/core";
-import CameraIcon from "@material-ui/icons/PhotoCamera";
+import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 
 const styles = (theme) => ({
     root: {
@@ -22,7 +22,7 @@ class NavBar extends Component {
         return (
             <AppBar position="static" className={classes.root}>
                 <Toolbar>
-                    <CameraIcon className={classes.navButton}/>
+                    <LocalCafeIcon color="inherit" className={classes.navButton}/>
                     <Typography variant="h6">
                         ¿Te apetece un café?
                     </Typography>

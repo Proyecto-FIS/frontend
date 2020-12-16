@@ -9,6 +9,8 @@ import {
     CardMedia,
     Typography,
 } from "@material-ui/core";
+import {Link} from 'react-router-dom';
+
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
@@ -40,11 +42,11 @@ class Product extends Component {
                         title={name}
                     />
                     <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2">{name}</Typography>
+                        <Typography gutterBottom variant="h5" component={Link} to={`/products/${_id}`}>{name}</Typography>
                         <Typography>{description}</Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" color="primary">Ver</Button>
+                        <Button size="small" color="primary" component={Link} to={`/products/${_id}`}>Ver</Button>
                         <Button size="small" color="primary">Editar</Button>
                     </CardActions>
                 </Card>
