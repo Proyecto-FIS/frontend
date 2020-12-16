@@ -1,27 +1,24 @@
-import { createStore, combineReducers, applyMiddleware, compose  } from "redux";
+import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import ProductsReducer from "./reducers/ProductsReducer";
 import thunk from 'redux-thunk';
 
 const middleware = [thunk];
-
 const initialState = {};
+
 const reducers = combineReducers({
-  ProductsReducer: ProductsReducer
-})
-/*
-const store = createStore(
-  combineReducers({
-    ProductsReducer,
-  })
-);
-*/
+    ProductsReducer
+});
 
-// TO DEVELOP WITH REDUX DEVTOOLS USE THIS
-const store = createStore(reducers, initialState, compose(
-  applyMiddleware(...middleware), 
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
-);
+let store;
+if (process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION__) {
 
+    // Enable Redux Devtools
+    store = createStore(reducers, initialState, compose(
+        applyMiddleware(...middleware),
+        window.__REDUX_DEVTOOLS_EXTENSION__())
+    );
+} else {
+    store = createStore(reducers, initialState);
+}
 
 export default store;

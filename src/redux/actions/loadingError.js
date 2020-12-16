@@ -1,9 +1,9 @@
 export const type = "LOADING_ERROR";
 
-const action = (products) => {
+const action = () => {
   return {
     type,
-    payload: products,
+    payload: [],
   };
 };
 

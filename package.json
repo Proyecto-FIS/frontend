@@ -7,7 +7,6 @@
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.57",
         "axios": "^0.21.0",
-        "fontsource-roboto": "^3.1.5",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
         "react-redux": "^7.2.2",
@@ -20,8 +19,8 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
-        "test:ci": "react-scripts test --watchAll=false",
+        "test": "react-scripts test --passWithNoTests",
+        "test:ci": "react-scripts test --watchAll=false --passWithNoTests",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -46,7 +45,9 @@
         "@testing-library/jest-dom": "^5.11.6",
         "@testing-library/react": "^11.2.2",
         "@testing-library/user-event": "^12.5.0",
+        "@types/react-dom": "^17.0.0",
         "@types/react-redux": "^7.1.12",
+        "@types/react-router-dom": "^5.1.6",
         "http-proxy-middleware": "^1.0.6",
         "react-test-renderer": "^17.0.1"
     }
