@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import Products from "./routes/Products";
+import Roasters from "./routes/Roasters";
 import NavBar from "./components/NavBar";
 
 ReactDOM.render(
@@ -14,6 +15,7 @@ ReactDOM.render(
             <NavBar />
             <Router>
                 <Switch>
+                    <Route path="/roasters" component={Roasters} />
                     <Route path="/products" component={Products} />
                     <Route path="/" component={Products} />
                 </Switch>
