@@ -3,27 +3,24 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-//Redux
 import { Provider } from "react-redux";
 import store from "./redux/store";
-
-//Routes
-import products from "./routes/products";
-
-//import homepage from "./routes/homepage";
+import Products from "./routes/Products";
+import NavBar from "./components/NavBar";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <Router>
-        <Switch>
-          <Route path="/products" component={products} />
-          <Route path="/" component={products} />
-        </Switch>
-      </Router>
-    </React.StrictMode>
-  </Provider>,
-  document.getElementById("root")
+    <Provider store={store}>
+        <React.StrictMode>
+            <NavBar />
+            <Router>
+                <Switch>
+                    <Route path="/products" component={Products} />
+                    <Route path="/" component={Products} />
+                </Switch>
+            </Router>
+        </React.StrictMode>
+    </Provider>,
+    document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
