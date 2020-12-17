@@ -5,7 +5,8 @@ import {
     Typography,
     withStyles
 } from "@material-ui/core";
-import CameraIcon from "@material-ui/icons/PhotoCamera";
+import LocalCafeIcon from '@material-ui/icons/LocalCafe';
+import {Link} from 'react-router-dom';
 
 const styles = (theme) => ({
     root: {
@@ -13,7 +14,8 @@ const styles = (theme) => ({
     },
     navButton: {
         marginRight: theme.spacing(2),
-    }
+    },
+
 })
 
 class NavBar extends Component {
@@ -22,10 +24,12 @@ class NavBar extends Component {
         return (
             <AppBar position="static" className={classes.root}>
                 <Toolbar>
-                    <CameraIcon className={classes.navButton}/>
-                    <Typography variant="h6">
-                        ¿Te apetece un café?
-                    </Typography>
+                    <LocalCafeIcon color="inherit" className={classes.navButton}/>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
+                        <Typography variant="h6" color="textSecondary" className={classes.navButton}>
+                            Coffaine
+                        </Typography>
+                    </Link>
                 </Toolbar>
             </AppBar>
         );
