@@ -5,6 +5,8 @@ import ProductsService from "../services/ProductsService";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
+import ProductDetailSkeleton from "../components/Products/ProductDetailSkeleton";
+
 
 const styles = (theme) => ({
   card: {
@@ -27,26 +29,30 @@ class Product extends Component {
     const productId = this.props.match.params.productId;
     this.ProductsService = new ProductsService();
     this.ProductsService.requestProduct(productId);
-}
+  }
+
   render() {
-    const {products, loading} = this.props;
-    console.log(this.props)
+    const {product, loading} = this.props;
     return (
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          {loading ? null : (<ProductDetails products={products}/>)}
+      <Grid container>
+        <Grid container item sm={2} xs={1}></Grid>
+        <Grid item sm={8} xs={10}>
+          {loading === true ? (<ProductDetailSkeleton />) : (<ProductDetails product={product}/>)}
         </Grid>
+        <Grid container item sm={2} xs={1}></Grid>
       </Grid>
     );
   }
 }
 
 Product.propTypes = {
-  products: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
+  product: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state =>({
-  products: state.products
+  loading: state.ProductsReducer.loading,
+  product: state.ProductsReducer.productDetails
 });
 
 export default connect(mapStateToProps)(

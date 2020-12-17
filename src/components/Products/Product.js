@@ -1,10 +1,8 @@
 import { Component } from "react";
 import PropTypes from 'prop-types';
 import {
-    Button,
     Grid,
     Card,
-    CardActions,
     CardContent,
     CardMedia,
     Typography,
@@ -17,14 +15,13 @@ const styles = (theme) => ({
     card: {
         display: "flex",
         flexDirection: "column",
-        height: "70vh"
+        height: "100%",
     },
     cardMedia: {
-        paddingTop: "100%", // Image aspect ratio
+        height: 140,
     },
     cardContent: {
-        flexDirection: 'column',
-        padding: 25
+        padding: 25,
     },
 });
 
@@ -34,21 +31,18 @@ class Product extends Component {
         const { classes, product: { _id, name, description, imageUrl } } = this.props;
 
         return (
-            <Grid key={_id} item xs={4}>
+            <Grid key={_id} item sm={4} xs={12}>
                 <Card className={classes.card}>
                     <CardMedia
+                        component="img"
                         className={classes.cardMedia}
                         image={imageUrl}
                         title={name}
                     />
                     <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component={Link} to={`/products/${_id}`}>{name}</Typography>
-                        <Typography>{description}</Typography>
+                        <Typography variant="h5" component={Link} to={`/products/${_id}`}>{name}</Typography>
+                        <Typography variant="body2">{description}</Typography>
                     </CardContent>
-                    <CardActions>
-                        <Button size="small" color="primary" component={Link} to={`/products/${_id}`}>Ver</Button>
-                        <Button size="small" color="primary">Editar</Button>
-                    </CardActions>
                 </Card>
             </Grid>
         );

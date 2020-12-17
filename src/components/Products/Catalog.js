@@ -8,7 +8,6 @@ import { Grid } from "@material-ui/core";
 
 const styles = (theme) => ({
     centerColumn: {
-        backgroundColor: "lightgray",
         marginTop: theme.spacing(0),
     }
 });
@@ -30,12 +29,12 @@ export class Catalog extends Component {
         );
 
         return (
-            <Grid container spacing={2}>
-                <Grid item xs={2}/>
-                <Grid container item xs={8} spacing={2} className={classes.centerColumn}>
+            <Grid container>
+                <Grid container item sm={2} xs={1}></Grid>
+                <Grid container item sm={8} xs={10} spacing={2} justify="center" alignItems="stretch" direction="row" className={classes.centerColumn}>
                     {productsList}
                 </Grid>
-                <Grid item xs={2}/>
+                <Grid container item sm={2} xs={1}></Grid>
             </Grid>
         );
     }
@@ -43,7 +42,7 @@ export class Catalog extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        products: state.ProductsReducer.products,
+        products: state.ProductsReducer.productList,
         loading: state.ProductsReducer.loading
     };
 };
