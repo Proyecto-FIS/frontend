@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from "react-redux";
 
 import { setAlert } from "../../redux/actions/alert";
+import { registerCustomer } from "../../redux/actions/authCustomer";
 
 import PropTypes from 'prop-types';
 
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomerRegister = ({setAlert}) => {
+const CustomerRegister = ({setAlert, registerCustomer}) => {
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
@@ -61,7 +62,7 @@ const CustomerRegister = ({setAlert}) => {
       if(password !== password2) {
         setAlert("Contraseña incorrecta", "error");
       } else {
-        console.log("Ok");
+        registerCustomer({ username, email, address, pictureUrl, password });
       }
     };
 
@@ -181,7 +182,8 @@ const CustomerRegister = ({setAlert}) => {
 };
 
 CustomerRegister.propTypes = {
-  setAlert: PropTypes.func.isRequired
+  setAlert: PropTypes.func.isRequired,
+  registerCustomer: PropTypes.func.isRequired
 }
 
-export default connect(null, { setAlert })(CustomerRegister);
+export default connect(null, { setAlert, registerCustomer })(CustomerRegister);

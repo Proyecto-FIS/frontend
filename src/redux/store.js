@@ -1,6 +1,9 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+
 import ProductsReducer from "./reducers/ProductsReducer";
 import AlertReducer from "./reducers/AlertReducer";
+import AuthReducer from "./reducers/AuthReducer";
+
 import thunk from 'redux-thunk';
 
 const middleware = [thunk];
@@ -8,7 +11,8 @@ const initialState = {};
 
 const reducers = combineReducers({
     ProductsReducer,
-    AlertReducer
+    AlertReducer,
+    AuthReducer
 });
 
 let store;
