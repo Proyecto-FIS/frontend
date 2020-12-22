@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -31,7 +32,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+const Login = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
+
+  const {username, password} = formData;
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    console.log("OK");
+  };
+
   const classes = useStyles();
 
   return (
@@ -44,16 +60,19 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Iniciar sesión
         </Typography>
-        <form className={classes.form} noValidate>
+
+        <form className={classes.form} onSubmit={onSubmit} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Correo electrónico"
-            name="email"
-            autoComplete="email"
+            id="username"
+            value={username}
+            onChange={onChange}
+            label="Nombre de usuario"
+            name="username"
+            autoComplete="username"
             autoFocus
           />
           <TextField
@@ -65,6 +84,8 @@ export default function Login() {
             label="Contraseña"
             type="password"
             id="password"
+            value={password}
+            onChange={onChange}
             autoComplete="current-password"
           />
           <Button
@@ -94,3 +115,5 @@ export default function Login() {
     </Container>
   );
 }
+
+export default Login;

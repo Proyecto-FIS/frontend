@@ -3,20 +3,26 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
 import { Provider } from "react-redux";
 import store from "./redux/store";
+
 import Products from "./routes/Products";
 import Roasters from "./routes/Roasters";
 import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
+
 import NavBar from "./components/NavBar";
+import AlertComp from "./components/AlertComp";
 
 ReactDOM.render(
     <Provider store={store}>
         <React.StrictMode>
             <NavBar />
+            
             <Router>
+                <AlertComp />
                 <Switch>
                     <Route path="/roasters" component={Roasters} />
                     <Route path="/products" component={Products} />

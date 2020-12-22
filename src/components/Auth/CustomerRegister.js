@@ -1,4 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from "react-redux";
+
+import { setAlert } from "../../redux/actions/alert";
+
+import PropTypes from 'prop-types';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -32,8 +38,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustomerRegister() {
+const CustomerRegister = ({setAlert}) => {
   const classes = useStyles();
+
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    address: '',
+    pictureUrl: '',
+    password: '',
+    password2: ''
+  });
+
+  const { username, email, address, pictureUrl, password, password2 } = formData;
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const onSubmit = async (e) => {
+      e.preventDefault();
+  
+      if(password !== password2) {
+        setAlert("Contraseña incorrecta", "error");
+      } else {
+        console.log("Ok");
+      }
+    };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -45,7 +75,8 @@ export default function CustomerRegister() {
         <Typography component="h1" variant="h5">
           Registrarse como customer
         </Typography>
-        <form className={classes.form} noValidate>
+
+        <form className={classes.form} onSubmit={onSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -54,6 +85,8 @@ export default function CustomerRegister() {
                 variant="outlined"
                 required
                 fullWidth
+                value={username}
+                onChange={onChange}
                 id="username"
                 label="Nombre de usuario"
                 autoFocus
@@ -65,6 +98,8 @@ export default function CustomerRegister() {
                 name="address"
                 variant="outlined"
                 fullWidth
+                value={address}
+                onChange={onChange}
                 id="address"
                 label="Dirección postal"
               />
@@ -75,6 +110,8 @@ export default function CustomerRegister() {
                 name="pictureUrl"
                 variant="outlined"
                 fullWidth
+                value={pictureUrl}
+                onChange={onChange}
                 id="pictureUrl"
                 label="URL de una imagen"
               />
@@ -85,7 +122,10 @@ export default function CustomerRegister() {
                 required
                 fullWidth
                 id="email"
+                value={email}
+                onChange={onChange}
                 label="Correo electrónico"
+                type="email"
                 name="email"
                 autoComplete="email"
               />
@@ -99,7 +139,22 @@ export default function CustomerRegister() {
                 label="Contraseña"
                 type="password"
                 id="password"
+                value={password}
+                onChange={onChange}
                 autoComplete="current-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password2"
+                label="Repita la contraseña"
+                type="password"
+                id="password2"
+                value={password2}
+                onChange={onChange}
               />
             </Grid>
           </Grid>
@@ -123,4 +178,10 @@ export default function CustomerRegister() {
       </div>
     </Container>
   );
+};
+
+CustomerRegister.propTypes = {
+  setAlert: PropTypes.func.isRequired
 }
+
+export default connect(null, { setAlert })(CustomerRegister);
