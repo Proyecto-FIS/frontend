@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import Products from "./routes/Products";
 import Product from "./routes/Product";
-import Products from "./routes/Deliveries";
+import Deliveries from "./routes/Deliveries";
 import NavBar from "./components/NavBar";
 
 ReactDOM.render(
