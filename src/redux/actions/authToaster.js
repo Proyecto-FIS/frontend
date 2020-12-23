@@ -44,6 +44,8 @@ export const registerToaster = ({ username, email, name, description, phoneNumbe
       payload: res.data
     });
 
+    dispatch(loadAccount());
+    
   } catch (err) {
     const errors = err.response.data.errors;
 

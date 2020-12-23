@@ -1,4 +1,4 @@
-import { REGISTER_SUCCESS, REGISTER_ERROR, USER_LOADED, AUTH_ERROR } from "../actions/types";
+import { REGISTER_SUCCESS, REGISTER_ERROR, USER_LOADED, AUTH_ERROR, LOGIN_ERROR, LOGIN_SUCCESS } from "../actions/types";
 
 
 const defaultState = {
@@ -18,8 +18,9 @@ const reducer = (state = defaultState, { type, payload }) => {
                 account: payload
             };
         case REGISTER_SUCCESS:
+        case LOGIN_SUCCESS:
                 localStorage.setItem('token', payload.token);
-                return {
+            return {
                 ...state,
                 ...payload,
                 isAuthenticated: true,
@@ -27,6 +28,7 @@ const reducer = (state = defaultState, { type, payload }) => {
             };
         case REGISTER_ERROR:
         case AUTH_ERROR:
+        case LOGIN_ERROR:
             localStorage.removeItem('token');
             return {
                 ...state,

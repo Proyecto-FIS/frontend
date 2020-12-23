@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import PropTypes from 'prop-types';
+
+//import { setAlert } from "../../redux/actions/alert";
+import { login } from "../../redux/actions/login";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -32,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -45,10 +51,14 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("OK");
+    login(username, password);
   };
 
   const classes = useStyles();
+
+  if(isAuthenticated) {
+    return <Redirect to="/"/>
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -116,4 +126,13 @@ const Login = () => {
   );
 }
 
-export default Login;
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
+}
+
+const mapStateToProps = state => ({
+  isAuthenticated: state.AuthReducer.isAuthenticated
+});
+
+export default connect(mapStateToProps, {login})(Login);

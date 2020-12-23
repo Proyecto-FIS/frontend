@@ -44,6 +44,7 @@ export const registerCustomer = ({  username, email, address, pictureUrl, passwo
       payload: res.data
     });
 
+    dispatch(loadAccount());
   } catch (err) {
     const errors = err.response.data.errors;
 

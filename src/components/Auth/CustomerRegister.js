@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import { setAlert } from "../../redux/actions/alert";
 import { registerCustomer } from "../../redux/actions/authCustomer";
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomerRegister = ({setAlert, registerCustomer}) => {
+const CustomerRegister = ({ setAlert, registerCustomer, isAuthenticated }) => {
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
@@ -65,6 +66,10 @@ const CustomerRegister = ({setAlert, registerCustomer}) => {
       registerCustomer({ username, email, address, pictureUrl, password });
     }
   };
+
+  if(isAuthenticated) {
+    return <Redirect to="/"/>
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -183,7 +188,12 @@ const CustomerRegister = ({setAlert, registerCustomer}) => {
 
 CustomerRegister.propTypes = {
   setAlert: PropTypes.func.isRequired,
-  registerCustomer: PropTypes.func.isRequired
+  registerCustomer: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
 }
 
-export default connect(null, { setAlert, registerCustomer })(CustomerRegister);
+const mapStateToProps = state => ({
+  isAuthenticated: state.AuthReducer.isAuthenticated
+});
+
+export default connect(mapStateToProps, { setAlert, registerCustomer })(CustomerRegister);

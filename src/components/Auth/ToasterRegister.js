@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from "react-router-dom";
 
 import { setAlert } from '../../redux/actions/alert';
 import { registerToaster } from "../../redux/actions/authToaster";
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ToasterRegister = ({ setAlert, registerToaster }) => {
+const ToasterRegister = ({ setAlert, registerToaster, isAuthenticated }) => {
   
   const classes = useStyles();
 
@@ -71,6 +72,9 @@ const ToasterRegister = ({ setAlert, registerToaster }) => {
     }
   };
 
+  if(isAuthenticated) {
+    return <Redirect to="/"/>
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -239,7 +243,12 @@ const ToasterRegister = ({ setAlert, registerToaster }) => {
 
 ToasterRegister.propTypes = {
   setAlert: PropTypes.func.isRequired,
-  registerToaster: PropTypes.func.isRequired
+  registerToaster: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
 };
 
-export default connect(null, { setAlert, registerToaster })(ToasterRegister);
+const mapStateToProps = state => ({
+  isAuthenticated: state.AuthReducer.isAuthenticated
+});
+
+export default connect(mapStateToProps, { setAlert, registerToaster })(ToasterRegister);
