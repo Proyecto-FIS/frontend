@@ -56,15 +56,15 @@ const CustomerRegister = ({setAlert, registerCustomer}) => {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const onSubmit = async (e) => {
-      e.preventDefault();
-  
-      if(password !== password2) {
-        setAlert("Contraseña incorrecta", "error");
-      } else {
-        registerCustomer({ username, email, address, pictureUrl, password });
-      }
-    };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    if(password !== password2) {
+      setAlert("Contraseña incorrecta", "error");
+    } else {
+      registerCustomer({ username, email, address, pictureUrl, password });
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">

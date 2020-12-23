@@ -1,4 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
+import { setAlert } from '../../redux/actions/alert';
+import { registerToaster } from "../../redux/actions/authToaster";
+
+import PropTypes from 'prop-types';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -32,8 +39,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ToasterRegister() {
+const ToasterRegister = ({ setAlert, registerToaster }) => {
+  
   const classes = useStyles();
+
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    name: '',
+    description: '',
+    phoneNumber: '',
+    address: '',
+    socialNetworks: '',
+    pictureUrl: '',
+    password: '',
+    password2: ''
+  });
+
+  const {username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password, password2} = formData;
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    if(password !== password2) {
+      setAlert("Contraseña incorrecta", "error");
+    } else {
+      registerToaster({ username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password });
+    }
+  };
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -45,7 +82,8 @@ export default function ToasterRegister() {
         <Typography component="h1" variant="h5">
           Registrarse como toaster
         </Typography>
-        <form className={classes.form} noValidate>
+
+        <form className={classes.form} onSubmit={onSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -54,6 +92,8 @@ export default function ToasterRegister() {
                 variant="outlined"
                 required
                 fullWidth
+                value={username}
+                onChange={onChange}
                 id="username"
                 label="Nombre de usuario"
                 autoFocus
@@ -66,6 +106,8 @@ export default function ToasterRegister() {
                 variant="outlined"
                 required
                 fullWidth
+                value={name}
+                onChange={onChange}
                 id="name"
                 label="Nombre profesional"
               />
@@ -79,6 +121,8 @@ export default function ToasterRegister() {
                 multiline
                 rows={5}
                 fullWidth
+                value={description}
+                onChange={onChange}
                 id="description"
                 label="Descripción"
               />
@@ -89,6 +133,8 @@ export default function ToasterRegister() {
                 name="phoneNumber"
                 variant="outlined"
                 fullWidth
+                value={phoneNumber}
+                onChange={onChange}
                 id="phoneNumber"
                 label="Número de teléfono"
               />
@@ -99,6 +145,8 @@ export default function ToasterRegister() {
                 name="address"
                 variant="outlined"
                 fullWidth
+                value={address}
+                onChange={onChange}
                 id="address"
                 label="Dirección postal"
               />
@@ -108,6 +156,8 @@ export default function ToasterRegister() {
                 name="socialNetworks"
                 variant="outlined"
                 fullWidth
+                value={socialNetworks}
+                onChange={onChange}
                 id="socialNetworks"
                 label="Redes sociales"
               />
@@ -118,6 +168,8 @@ export default function ToasterRegister() {
                 name="pictureUrl"
                 variant="outlined"
                 fullWidth
+                value={pictureUrl}
+                onChange={onChange}
                 id="pictureUrl"
                 label="URL de una imagen"
               />
@@ -127,6 +179,8 @@ export default function ToasterRegister() {
                 variant="outlined"
                 required
                 fullWidth
+                value={email}
+                onChange={onChange}
                 id="email"
                 label="Correo electrónico"
                 name="email"
@@ -141,8 +195,23 @@ export default function ToasterRegister() {
                 name="password"
                 label="Contraseña"
                 type="password"
+                value={password}
+                onChange={onChange}
                 id="password"
                 autoComplete="current-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password2"
+                label="Repita la contraseña"
+                type="password"
+                id="password2"
+                value={password2}
+                onChange={onChange}
               />
             </Grid>
           </Grid>
@@ -167,3 +236,10 @@ export default function ToasterRegister() {
     </Container>
   );
 }
+
+ToasterRegister.propTypes = {
+  setAlert: PropTypes.func.isRequired,
+  registerToaster: PropTypes.func.isRequired
+};
+
+export default connect(null, { setAlert, registerToaster })(ToasterRegister);
