@@ -3,18 +3,27 @@ import {
     AppBar,
     Toolbar,
     Typography,
-    withStyles
+    withStyles, 
+    Button
 } from "@material-ui/core";
-import CameraIcon from "@material-ui/icons/PhotoCamera";
+
+import LocalCafeIcon from '@material-ui/icons/LocalCafe';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+
+import LoginMenu from './Auth/LoginMenu';
 
 const styles = (theme) => ({
     root: {
-        marginBottom: theme.spacing(1),
+        marginBottom: theme.spacing(1)
     },
     navButton: {
-        marginRight: theme.spacing(2),
+        marginRight: theme.spacing(1)
+    },
+    auth: {
+        flexGrow: 1
     }
 })
+
 
 class NavBar extends Component {
     render() {
@@ -22,10 +31,12 @@ class NavBar extends Component {
         return (
             <AppBar position="static" className={classes.root}>
                 <Toolbar>
-                    <CameraIcon className={classes.navButton}/>
-                    <Typography variant="h6">
+                    <LocalCafeIcon className={classes.navButton}/>
+                    <Typography variant="h6" className={classes.auth}>
                         ¿Te apetece un café?
                     </Typography>
+                    <LoginMenu/>
+                    <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} href="/login">Entrar</Button>
                 </Toolbar>
             </AppBar>
         );

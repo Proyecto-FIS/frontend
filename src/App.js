@@ -35,9 +35,10 @@ const App = () => {
     return (
         <Provider store={store}>
         <React.StrictMode>
-            <NavBar />
+            
             
             <Router>
+                <NavBar />
                 <AlertComp />
                 <Switch>
                     <Route path="/roasters" component={Roasters} />
