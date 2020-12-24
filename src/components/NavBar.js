@@ -8,6 +8,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {Fragment} from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { Link } from 'react-router-dom';
 
 import {logout} from "../redux/actions/logout";
 import LoginMenu from './Auth/LoginMenu';
@@ -37,7 +38,7 @@ const NavBar = ({auth: {isAuthenticated, loading}, logout}) => {
     const guestLinks = (
         <Fragment>
             <LoginMenu/>
-            <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} href="/login">Entrar</Button>
+            <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} component={ Link } to="/login">Entrar</Button>
         </Fragment>
     );
 
@@ -52,7 +53,7 @@ const NavBar = ({auth: {isAuthenticated, loading}, logout}) => {
                 </Typography>
                 
                 { !loading && (isAuthenticated ? authLinks: guestLinks) }
-                
+
             </Toolbar>
         </AppBar>
     );
