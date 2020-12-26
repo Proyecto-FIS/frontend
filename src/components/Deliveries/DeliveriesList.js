@@ -1,52 +1,47 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import Delivery from "./Delivery";
 import DeliveriesService from "../../services/DeliveriesService";
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 
-class DeliveriesList extends React.Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            deliveries: [] }
+const styles = (theme) => ({
+    centerColumn: {
+        backgroundColor: "lightgray",
+        marginTop: theme.spacing(0),
+    }
+});
+
+export class DeliveriesList extends Component {
+
+    componentDidMount() {
+        this.DeliveriesService = new DeliveriesService();
+        this.DeliveriesService.requestAllDeliveries();
     }
 
-    componentDidMount(){ 
-        DeliveriesService.getAllDeliveries().then(
-            (result) => {
-                this.setState({
-                    deliveries: result.data
-                })
-            }
-        )
-    }
+    render() {
+        const { classes, deliveries } = this.props;
 
-    render(){
+        let deliveriesList = deliveries.map(delivery => <Delivery key={delivery._id} delivery={delivery} />)
+            
         return (
-            <React.Fragment>
-            <CssBaseline />
-            <main>
-              <div>
-                <Container maxWidth="sm">
-                  <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                    Deliveries
-                  </Typography>
-                </Container>
-              </div>
-              <Container maxWidth="md">
-                <Grid container spacing={4}>
-                  {this.state.deliveries.map((delivery) => (
-                      <Delivery delivery={delivery}></Delivery>
-                  ))}
+            <Grid container spacing={2}>
+                <Grid item xs={2} />
+                <Grid container item xs={8} spacing={2} className={classes.centerColumn}>
+                    {deliveriesList}
                 </Grid>
-              </Container>
-            </main>
-          </React.Fragment>
-
-        )
+                <Grid item xs={2} />
+            </Grid>
+        );
     }
-    
 }
-export default DeliveriesList;
+
+const mapStateToProps = (state) => {
+    return {
+        deliveries: state.DeliveriesReducer.deliveryList,
+    };
+};
+
+export default connect(mapStateToProps)(
+    withStyles(styles, { withTheme: true })(DeliveriesList)
+);

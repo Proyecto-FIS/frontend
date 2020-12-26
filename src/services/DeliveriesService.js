@@ -4,8 +4,8 @@ import store from "../redux/store";
 
 export class DeliveriesService {
 
-    requestAllDeliveries = (userId) => {
-        axios.get("/api/deliveries", {params: { userId: userId }})
+    requestAllDeliveries = () => {
+        axios.get("/api/deliveries")
             .then(response => store.dispatch(getAllDeliveries(response.data)))
     }
 
