@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import Products from "./routes/Products";
 import Product from "./routes/Product";
+import Deliveries from "./routes/Deliveries";
 import NavBar from "./components/NavBar";
 
 ReactDOM.render(
@@ -15,6 +16,7 @@ ReactDOM.render(
             <Router>
                 <NavBar />
                 <Switch>
+                    <Route path="/deliveries" component={Deliveries} />
                     <Route path="/products/:productId" component={Product} />
                     <Route path="/products" component={Products} />
                     <Route path="/" component={Products} />
