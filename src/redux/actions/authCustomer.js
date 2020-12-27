@@ -46,14 +46,12 @@ export const registerCustomer = ({  username, email, address, pictureUrl, passwo
 
     dispatch(loadAccount());
   } catch (err) {
-    const errors = err.response.data.errors;
+    
+      dispatch(setAlert(err.message, 'error'));
+      window.scrollTo(0, 0);
 
-    if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
-    }
-
-    dispatch({
-      type: REGISTER_ERROR
-    });
+      dispatch({
+        type: REGISTER_ERROR
+      });
   }
 };
