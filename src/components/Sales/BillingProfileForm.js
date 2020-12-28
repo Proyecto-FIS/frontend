@@ -73,7 +73,10 @@ class BillingProfileForm extends Component {
 
     constructor(props) {
         super(props);
-        this.state = this.getDefaultState();
+        this.state = {
+            ...this.getDefaultState(),
+            isSubmitting: false
+        };
     }
 
     clearForm() {
@@ -94,8 +97,12 @@ class BillingProfileForm extends Component {
     }
 
     submitForm() {
-        BillingProfileService.postNewProfile(this.state.values);
-        this.props.history.push("/billingprofiles");
+        this.setState({ isSubmitting: true });
+        BillingProfileService.postNewProfile(this.state.values)
+            .then(() => {
+                this.setState({ isSubmitting: false });
+                this.props.history.push("/billingprofiles");
+            });
     }
 
     setField(field, e) {
@@ -134,7 +141,7 @@ class BillingProfileForm extends Component {
                                         <Button variant="contained" color="secondary" onClick={e => this.clearForm()}>Limpiar</Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button variant="contained" color="secondary" disabled={!this.state.formCorrect} onClick={e => this.submitForm()}>Añadir</Button>
+                                        <Button variant="contained" color="secondary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>Añadir</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>

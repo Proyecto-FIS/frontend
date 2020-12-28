@@ -5,18 +5,24 @@ import store from "../redux/store";
 export class BillingProfileService {
 
     static postNewProfile(profile) {
-        
-        const userToken = localStorage.getItem("token");
-        if(!userToken) {
-            store.dispatch(redirectSnackBar("error", "No se encuentra autenticado ahora mismo"));
-            return;
-        }
+        return new Promise((resolve, reject) => {
+            const userToken = localStorage.getItem("token");
+            if (!userToken) {
+                store.dispatch(redirectSnackBar("error", "No se encuentra autenticado ahora mismo"));
+                resolve();
+                return;
+            }
 
-        axios.post("/api/billing-profile", { profile }, {
-            params: { userToken }
-        })
-        .then(response => store.dispatch(redirectSnackBar("success", "Perfil guardado satisfactoriamente")))
-        .catch(err => store.dispatch(redirectSnackBar("error", "No ha sido posible guardar el perfil")));
+            return axios.post("/api/billing-profile", { profile }, { params: { userToken } })
+                .then(response => {
+                    store.dispatch(redirectSnackBar("success", "Perfil guardado satisfactoriamente"));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(redirectSnackBar("error", "No ha sido posible guardar el perfil"));
+                    resolve();
+                });
+        });
     }
 }
 
