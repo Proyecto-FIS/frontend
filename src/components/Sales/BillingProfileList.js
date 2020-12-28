@@ -5,6 +5,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { green } from '@material-ui/core/colors';
 import { Link } from "react-router-dom";
 import MainGrid from "../Common/MainGrid";
+import BillingProfile from "./BillingProfile";
+import { Grid } from "@material-ui/core";
 
 const AddButton = withStyles((theme) => ({
     root: {
@@ -18,11 +20,30 @@ const AddButton = withStyles((theme) => ({
 
 class BillingProfileList extends Component {
     render() {
+        const profile = {
+            name: "Andrés",
+            surname: "Martínez",
+            address: "Calle de la amargura Nº20",
+            city: "Woohoo",
+            province: "Salsa",
+            country: "España",
+            zipCode: "12345",
+            phoneNumber: "123456",
+            email: "a@a.com"
+        };
         return (
             <MainGrid>
                 <AddButton variant="contained" color="primary"
                     startIcon={<AddIcon />}
                     component={Link} to="/billingprofiles/add">Añadir perfil</AddButton>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <BillingProfile profile={profile} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <BillingProfile profile={profile} />
+                    </Grid>
+                </Grid>
             </MainGrid>
         );
     }
