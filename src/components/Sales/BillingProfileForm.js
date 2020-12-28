@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Validators from "../../utils/Validators";
 import BillingProfileService from "../../services/BillingProfileService";
 import { withRouter } from "react-router-dom";
+import MainGrid from "../Common/MainGrid";
 
 const fields = [
     {
@@ -127,30 +128,26 @@ class BillingProfileForm extends Component {
         ));
 
         return (
-            <Grid container>
-                <Grid item sm={2} xs={1}></Grid>
-                <Grid item sm={8} xs={10}>
-                    <Box border={1} borderRadius={10} boxShadow={3} padding={3}>
-                        <h2 className={classes.titleText}>Añadir nuevo perfil de entrega</h2>
-                        <Grid container>
-                            <Grid item sm={2} xs={2}></Grid>
-                            <Grid container item xs={8} sm={8} spacing={3} className={classes.form}>
-                                {formFields}
-                                <Grid container item spacing={4} direction="row-reverse">
-                                    <Grid item>
-                                        <Button variant="contained" color="secondary" onClick={e => this.clearForm()}>Limpiar</Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Button variant="contained" color="secondary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>Añadir</Button>
-                                    </Grid>
+            <MainGrid>
+                <Box border={1} borderRadius={10} boxShadow={3} padding={3}>
+                    <h2 className={classes.titleText}>Añadir nuevo perfil de entrega</h2>
+                    <Grid container>
+                        <Grid item sm={2} xs={2}></Grid>
+                        <Grid container item xs={8} sm={8} spacing={3} className={classes.form}>
+                            {formFields}
+                            <Grid container item spacing={4} direction="row-reverse">
+                                <Grid item>
+                                    <Button variant="contained" color="secondary" onClick={e => this.clearForm()}>Limpiar</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="contained" color="secondary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>Añadir</Button>
                                 </Grid>
                             </Grid>
-                            <Grid item sm={2} xs={2}></Grid>
                         </Grid>
-                    </Box>
-                </Grid>
-                <Grid item sm={2} xs={1}></Grid>
-            </Grid>
+                        <Grid item sm={2} xs={2}></Grid>
+                    </Grid>
+                </Box>
+            </MainGrid>
         );
     }
 }

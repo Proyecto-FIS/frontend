@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/core/styles";
 import { green } from '@material-ui/core/colors';
 import { Link } from "react-router-dom";
+import MainGrid from "../Common/MainGrid";
 
 const AddButton = withStyles((theme) => ({
     root: {
@@ -18,14 +19,11 @@ const AddButton = withStyles((theme) => ({
 class BillingProfileList extends Component {
     render() {
         return (
-            <Fragment>
-                <AddButton
-                    variant="contained"
-                    color="primary"
+            <MainGrid>
+                <AddButton variant="contained" color="primary"
                     startIcon={<AddIcon />}
-                    component={Link} to="/billingprofiles/add"
-                >Añadir perfil</AddButton>
-            </Fragment>
+                    component={Link} to="/billingprofiles/add">Añadir perfil</AddButton>
+            </MainGrid>
         );
     }
 }
