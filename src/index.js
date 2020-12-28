@@ -7,22 +7,22 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import Products from "./routes/Products";
 import Product from "./routes/Product";
+import CreateProduct from "./routes/CreateProduct";
 import Deliveries from "./routes/Deliveries";
 import NavBar from "./components/NavBar";
 
 ReactDOM.render(
     <Provider store={store}>
-        <React.StrictMode>
-            <Router>
-                <NavBar />
-                <Switch>
-                    <Route path="/deliveries" component={Deliveries} />
-                    <Route path="/products/:productId" component={Product} />
-                    <Route path="/products" component={Products} />
-                    <Route path="/" component={Products} />
-                </Switch>
-            </Router>
-        </React.StrictMode>
+        <Router>
+            <NavBar />
+            <Switch>
+                <Route path="/deliveries" component={Deliveries} />
+                <Route path="/products/new" component={CreateProduct} />
+                <Route path="/products/:productId" component={Product} />
+                <Route path="/products" component={Products} />
+                <Route path="/" component={Products} />
+            </Switch>
+        </Router>
     </Provider>,
     document.getElementById("root")
 );

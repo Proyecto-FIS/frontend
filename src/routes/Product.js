@@ -37,7 +37,7 @@ class Product extends Component {
       <Grid container>
         <Grid container item sm={2} xs={1}></Grid>
         <Grid item sm={8} xs={10}>
-          {loading === true ? (<ProductDetailSkeleton />) : (<ProductDetails product={product}/>)}
+          {loading === true || loading === undefined ? (<ProductDetailSkeleton />) : (<ProductDetails product={product}/>)}
         </Grid>
         <Grid container item sm={2} xs={1}></Grid>
       </Grid>
@@ -51,8 +51,8 @@ Product.propTypes = {
 }
 
 const mapStateToProps = state =>({
-  loading: state.ProductsReducer.loading,
-  product: state.ProductsReducer.productDetails
+  product: state.ProductsReducer.productDetails.product,
+  loading: state.ProductsReducer.productDetails.loading
 });
 
 export default connect(mapStateToProps)(

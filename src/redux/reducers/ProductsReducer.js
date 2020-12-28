@@ -1,12 +1,23 @@
 import { type as GET_ALL_PRODUCTS } from "../actions/getAllProducts";
 import { type as LOADING_PRODUCTS } from "../actions/loadingProducts";
+import { type as LOADING_PRODUCT } from "../actions/loadingProduct";
 import { type as LOADING_ERROR } from "../actions/loadingError";
 import { type as GET_A_PRODUCT } from "../actions/getProduct";
+import { type as WAITING_RESPONSE } from "../actions/creatingProduct";
+import { type as IMAGE_UPLOADED } from "../actions/imageUploaded";
 
 
 const defaultState = {
     productList: [],
-    productDetails: {},
+    productDetails: {
+        product: {},
+        loading: true,
+    },
+    newProduct:{
+        loading: false,
+        productImage: null,
+        errors: null,
+    },
     loading: true
 };
 
@@ -32,12 +43,37 @@ const reducer = (state = defaultState, { type, payload }) => {
                 loading: false,
                 productList: payload
             };
+        case LOADING_PRODUCT:
+            return {
+                ...state,
+                productList:[],
+                productDetails: {
+                    product: {},
+                    loading: true
+                },
+            };
         case GET_A_PRODUCT:
             return {
                 ...state,
-                loading: false,
-                productDetails: payload
+                productDetails: {
+                    product: payload,
+                    loading: false
+                }
             };
+        case WAITING_RESPONSE:
+            return {
+                ...state,
+                newProduct: {
+                    loading: true,
+                }
+            }
+        case IMAGE_UPLOADED:
+            return {
+                ...state,
+                newProduct: {
+                    loading: false,
+                }
+            }
         default:
             return state;
     }

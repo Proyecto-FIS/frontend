@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 
 const styles = (theme) => ({
@@ -45,20 +44,30 @@ const styles = (theme) => ({
 });
 
 class ProductDetails extends Component {
-    constructor(props){
-        super(props);
-        this.state = {productPrice: 0.0};
-    }
-    render() {
-        const {classes, product:{ name, description, format, grind, imageUrl }} = this.props;
-        const handleChangePrice = (event) => {
+    state = {
+        grindType: "",
+        formatType: {},
+        productPrice: 0.0
+    };
+    handleChange(event){
+        const name = event.target.name;
+        const value = event.target.value;
+        if(name === "formatType" && value){
             const formats = this.props.product.format;
             const id = event.target.value
             const format = formats.find(f => { return f._id===id})
             this.setState({
                 productPrice: format.price
             })
-        };
+        }
+        this.setState({
+          [name]: event.target.value,
+        });
+    };
+
+    render() {
+        const {classes, product:{ name, description, format, grind, imageUrl }} = this.props;  
+
         return (
             <Card className={classes.card}>
                 <div className={classes.div}>
@@ -69,25 +78,43 @@ class ProductDetails extends Component {
                         <br />
                         <br />
                         <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-mutiple-name-label">Tipo de molido</InputLabel>
-                        <Select>
-                            {grind.map((grindType, index) => (
-                                <MenuItem key={index} value={grindType}>
+                            <InputLabel>Tipo de molido</InputLabel>
+                            <Select
+                                native
+                                value={this.state.grindType}
+                                onChange={e => this.handleChange(e)}
+                                inputProps={{
+                                    name: "grindType",
+                                    id: "grindType",
+                                }}
+                            >
+                                <option aria-label="None" value="" />
+                                {grind.map((grindType,index) => (
+                                <option key={index} value={grindType}>
                                     {grindType}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                                </option>
+                                ))}  
+                            </Select>
                         </FormControl>
                         <br />
                         <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-mutiple-name-label">Formato</InputLabel>
-                        <Select onChange={handleChangePrice}>
-                            {format.map((formatType,index) => (
-                                <MenuItem key={index} value={formatType._id}>
+                            <InputLabel>Formato</InputLabel>
+                            <Select
+                                native
+                                value={this.state.formatType}
+                                onChange={e => this.handleChange(e)}
+                                inputProps={{
+                                    name: "formatType",
+                                    id: "formatType",
+                                }}
+                            >
+                                <option aria-label="None" value="" />
+                                {format.map((formatType,index) => (
+                                <option key={index} value={formatType._id}>
                                     {formatType.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                                </option>
+                                ))}  
+                            </Select>
                         </FormControl>
                         <br />
                         <br />
