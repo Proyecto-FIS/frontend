@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { TextField, Button, Grid, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Validators from "../../utils/Validators";
+import BillingProfileService from "../../services/BillingProfileService";
+import { withRouter } from "react-router-dom";
 
 const fields = [
     {
@@ -79,25 +81,31 @@ class BillingProfileForm extends Component {
     }
 
     getDefaultState() {
-        let state = { formCorrect: false };
-        fields.forEach(field => state[field.name] = { value: "", error: "" });
+        let state = {
+            values: {},
+            errors: {},
+            formCorrect: false
+        };
+        fields.forEach(field => {
+            state.values[field.name] = "";
+            state.errors[field.name] = "";
+        });
         return state;
     }
 
     submitForm() {
-        console.log("Submit");
+        BillingProfileService.postNewProfile(this.state.values);
+        this.props.history.push("/billingprofiles");
     }
 
     setField(field, e) {
-        let newState = {};
-        newState[field.name] = {
-            value: e.target.value,
-            error: Validators.validate(field.validators, e.target.value)
-        };
-        this.setState(newState);
-        this.setState((prevState) => ({
-            formCorrect: fields.reduce((ac, v) => (prevState[v.name].error !== "" || prevState[v.name].value === "") ? false : ac, true)
-        }));
+        this.setState(prevState => {
+            let newState = prevState;
+            newState.values[field.name] = e.target.value;
+            newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
+            newState.formCorrect = fields.reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
+            return newState;
+        });
     }
 
     render() {
@@ -105,8 +113,8 @@ class BillingProfileForm extends Component {
 
         const formFields = fields.map((field, index) => (
             <Grid key={index} item xs={12}>
-                <FormTextField label={field.label} error={this.state[field.name].error}
-                    value={this.state[field.name].value}
+                <FormTextField label={field.label} error={this.state.errors[field.name]}
+                    value={this.state.values[field.name]}
                     onChange={this.setField.bind(this, field)} />
             </Grid>
         ));
@@ -140,4 +148,4 @@ class BillingProfileForm extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(BillingProfileForm);
+export default withRouter(withStyles(styles, { withTheme: true })(BillingProfileForm));

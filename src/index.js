@@ -11,22 +11,22 @@ import Deliveries from "./routes/Deliveries";
 import NavBar from "./components/NavBar";
 import BillingProfiles from "./routes/BillingProfiles";
 import BillingProfileForm from "./components/Sales/BillingProfileForm";
+import SnackbarListener from "./components/Common/SnackBarListener";
 
 ReactDOM.render(
     <Provider store={store}>
-        <React.StrictMode>
-            <Router>
-                <NavBar />
-                <Switch>
-                    <Route path="/billingprofiles/add" component={BillingProfileForm} />
-                    <Route path="/billingprofiles" component={BillingProfiles} />
-                    <Route path="/deliveries" component={Deliveries} />
-                    <Route path="/products/:productId" component={Product} />
-                    <Route path="/products" component={Products} />
-                    <Route path="/" component={Products} />
-                </Switch>
-            </Router>
-        </React.StrictMode>
+        <Router>
+            <NavBar />
+            <Switch>
+                <Route path="/billingprofiles/add" component={BillingProfileForm} />
+                <Route path="/billingprofiles" component={BillingProfiles} />
+                <Route path="/deliveries" component={Deliveries} />
+                <Route path="/products/:productId" component={Product} />
+                <Route path="/products" component={Products} />
+                <Route path="/" component={Products} />
+            </Switch>
+        </Router>
+        <SnackbarListener />
     </Provider>,
     document.getElementById("root")
 );
