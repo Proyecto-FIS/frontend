@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import { setAlert } from '../../redux/actions/alert';
 import { registerToaster } from "../../redux/actions/authToaster";
-
-import PropTypes from 'prop-types';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -17,6 +15,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ToasterRegister = ({ setAlert, registerToaster, isAuthenticated }) => {
+const ToasterRegister = () => {
   
   const classes = useStyles();
 
@@ -57,6 +57,12 @@ const ToasterRegister = ({ setAlert, registerToaster, isAuthenticated }) => {
     password2: ''
   });
 
+  const dispatch = useDispatch();
+
+  const accountLogin = useSelector(state => state.AuthReducer);
+
+  const { loading, error, account } = accountLogin;
+
   const {username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password, password2} = formData;
 
   const onChange = (e) =>
@@ -66,14 +72,19 @@ const ToasterRegister = ({ setAlert, registerToaster, isAuthenticated }) => {
     e.preventDefault();
 
     if(password !== password2) {
-      setAlert("Contraseña incorrecta", "error");
-    } else {
-      registerToaster({ username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password });
+      dispatch(setAlert("Las contraseña no coinciden", "error"));
+      window.scrollTo(0, 0);
+     } else {
+      dispatch(registerToaster({ username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password }));
     }
   };
 
-  if(isAuthenticated) {
+  if(account) {
     return <Redirect to="/"/>
+  }
+
+  if(error) {
+    dispatch(setAlert(error, 'error'));
   }
 
   return (
@@ -88,6 +99,7 @@ const ToasterRegister = ({ setAlert, registerToaster, isAuthenticated }) => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
+        {loading && <CircularProgress /> }
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -241,14 +253,4 @@ const ToasterRegister = ({ setAlert, registerToaster, isAuthenticated }) => {
   );
 }
 
-ToasterRegister.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-  registerToaster: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
-};
-
-const mapStateToProps = state => ({
-  isAuthenticated: state.AuthReducer.isAuthenticated
-});
-
-export default connect(mapStateToProps, { setAlert, registerToaster })(ToasterRegister);
+export default ToasterRegister;

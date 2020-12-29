@@ -1,29 +1,6 @@
 import axios from 'axios';
-import { REGISTER_ERROR, REGISTER_SUCCESS, AUTH_ERROR, USER_LOADED} from "./types";
+import { LOGIN_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, REGISTER_SUCCESS} from "./types";
 import { setAlert } from './alert';
-import authToken from '../../utils/authToken';
-
-// Load account
-export const loadAccount = () => async dispatch => {
-
-  if(localStorage.token) {
-    authToken(localStorage.token);
-    }
-
-  try {
-    const res = await axios.get('/api/auth/');
-
-    dispatch({
-      type: USER_LOADED,
-      payload: res.data
-    });
-
-  } catch (err) {
-    dispatch({
-      type: AUTH_ERROR
-    });
-  }
-};
 
 
 // Register Toaster
@@ -37,6 +14,10 @@ export const registerToaster = ({ username, email, name, description, phoneNumbe
   const body = JSON.stringify({  username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password });
 
   try {
+    dispatch({
+      type: REGISTER_REQUEST
+    });
+
     const res = await axios.post('/api/toasters', body, config);
 
     dispatch({
@@ -44,12 +25,16 @@ export const registerToaster = ({ username, email, name, description, phoneNumbe
       payload: res.data
     });
 
-    dispatch(loadAccount());
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data
+    });
+
+    localStorage.setItem('account', JSON.stringify(res.data));
     
   } catch (err) {
       dispatch(setAlert(err.message, 'error'));
         window.scrollTo(0, 0);
-      
 
       dispatch({
         type: REGISTER_ERROR

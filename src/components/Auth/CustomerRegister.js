@@ -68,7 +68,7 @@ const CustomerRegister = () => {
     e.preventDefault();
 
     if(password !== password2) {
-      dispatch(setAlert("La contraseña no coincide", "error"));
+      dispatch(setAlert("Las contraseña no coinciden", "error"));
       window.scrollTo(0, 0);
     } else {
       dispatch(registerCustomer({ username, email, address, pictureUrl, password }));
@@ -198,6 +198,5 @@ const CustomerRegister = () => {
     </Container>
   );
 };
-
 
 export default CustomerRegister;
