@@ -6,8 +6,7 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import {Fragment} from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 
 import {logout} from "../redux/actions/logout";
@@ -27,11 +26,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const NavBar = ({auth: {isAuthenticated, loading}, logout}) => {
+const NavBar = () => {
+
+    const dispatch = useDispatch();
+
+    const accountLogin = useSelector(state => state.AuthReducer);
+
+    const { account } = accountLogin;
+
+    const logoutHandler = () => {
+        dispatch(logout());
+    }
 
     const authLinks = (
         <Fragment>
-            <Button variant="contained" color="primary" onClick={logout} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
+            <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
         </Fragment>
     );
 
@@ -52,20 +61,13 @@ const NavBar = ({auth: {isAuthenticated, loading}, logout}) => {
                     ¿Te apetece un café?
                 </Typography>
                 
-                { !loading && (isAuthenticated ? authLinks: guestLinks) }
+                { account ? authLinks : guestLinks }
 
             </Toolbar>
         </AppBar>
     );
 }
 
-NavBar.propTypes = {
-    logout: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
-}
 
-const mapStateToProps = state => ({
-    auth: state.AuthReducer
-});
 
-export default connect(mapStateToProps, {logout})(NavBar);
+export default NavBar;
