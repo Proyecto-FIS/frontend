@@ -5,8 +5,9 @@ import { type as GET_A_PRODUCT } from "../actions/getProduct";
 
 
 const defaultState = {
-    products: [],
-    loading: false
+    productList: [],
+    productDetails: {},
+    loading: true
 };
 
 const reducer = (state = defaultState, { type, payload }) => {
@@ -14,25 +15,28 @@ const reducer = (state = defaultState, { type, payload }) => {
         case LOADING_PRODUCTS:
             return {
                 ...state,
+                productList:[],
+                productDetails: {},
                 loading: true
             };
         case LOADING_ERROR:
             return {
                 ...state,
                 loading: false,
-                products: []
+                productList:[],
+                productDetails: {},
             }
         case GET_ALL_PRODUCTS:
             return {
                 ...state,
                 loading: false,
-                products: payload
+                productList: payload
             };
         case GET_A_PRODUCT:
             return {
                 ...state,
                 loading: false,
-                products: payload
+                productDetails: payload
             };
         default:
             return state;

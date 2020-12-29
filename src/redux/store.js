@@ -1,13 +1,27 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+
 import ProductsReducer from "./reducers/ProductsReducer";
+import AlertReducer from "./reducers/AlertReducer";
+import AuthReducer from "./reducers/AuthReducer";
+import DeliveriesReducer from "./reducers/DeliveriesReducer";
+
 import thunk from 'redux-thunk';
 
 const middleware = [thunk];
-const initialState = {};
 
 const reducers = combineReducers({
-    ProductsReducer
+    ProductsReducer,
+    AlertReducer,
+    AuthReducer,
+    DeliveriesReducer
 });
+
+const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;
+
+const initialState = {
+    AuthReducer: {account: accountFromStorage}
+};
+
 
 let store;
 if (process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION__) {

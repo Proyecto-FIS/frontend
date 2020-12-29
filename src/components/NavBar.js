@@ -1,35 +1,72 @@
-import { Component } from "react";
-import {
-    AppBar,
-    Toolbar,
-    Typography,
-    withStyles
-} from "@material-ui/core";
-import CameraIcon from "@material-ui/icons/PhotoCamera";
+import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 
-const styles = (theme) => ({
+import LocalCafeIcon from '@material-ui/icons/LocalCafe';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+
+import {Fragment} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from 'react-router-dom';
+
+import {logout} from "../redux/actions/logout";
+import RegisterMenu from './Auth/RegisterMenu';
+
+
+const useStyles = makeStyles((theme) => ({
     root: {
-        marginBottom: theme.spacing(1),
+        marginBottom: theme.spacing(1)
     },
     navButton: {
-        marginRight: theme.spacing(2),
+        marginRight: theme.spacing(2)
+    },
+    auth: {
+        flexGrow: 1
     }
-})
+}));
 
-class NavBar extends Component {
-    render() {
-        const { classes } = this.props;
-        return (
-            <AppBar position="static" className={classes.root}>
-                <Toolbar>
-                    <CameraIcon className={classes.navButton}/>
-                    <Typography variant="h6">
-                        ¿Te apetece un café?
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-        );
+
+const NavBar = () => {
+
+    const dispatch = useDispatch();
+
+    const accountLogin = useSelector(state => state.AuthReducer);
+
+    const { account } = accountLogin;
+
+    const logoutHandler = () => {
+        dispatch(logout());
     }
+
+    const authLinks = (
+        <Fragment>
+            <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
+        </Fragment>
+    );
+
+    const guestLinks = (
+        <Fragment>
+            <RegisterMenu/>
+            <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} component={ Link } to="/login">Entrar</Button>
+        </Fragment>
+    );
+
+    const classes = useStyles();
+
+    return (
+        <AppBar position="static" className={classes.root}>
+            <Toolbar>
+                <LocalCafeIcon color="inherit" className={classes.navButton}/>
+                
+                  <Typography variant="h6" className={classes.auth}>
+                      <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
+                  </Typography>
+                
+                { account ? authLinks : guestLinks }
+
+            </Toolbar>
+        </AppBar>
+    );
 }
 
-export default withStyles(styles, { withTheme: true })(NavBar);
+export default NavBar;
