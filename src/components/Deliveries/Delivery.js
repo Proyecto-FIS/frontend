@@ -25,10 +25,11 @@ const styles = (theme) => ({
     },
 });
 
-class Product extends Component {
+
+class Delivery extends Component {
     render() {
 
-        const { classes, product: { _id, name, description, imageUrl } } = this.props;
+        const { classes, delivery: { _id, name, surnames, address, comments } } = this.props;
 
         return (
             <Grid key={_id} item sm={4} xs={12}>
@@ -36,12 +37,14 @@ class Product extends Component {
                     <CardMedia
                         component="img"
                         className={classes.cardMedia}
-                        image={imageUrl}
                         title={name}
                     />
                     <CardContent className={classes.cardContent}>
                         <Typography variant="h5" component={Link} to={`/products/${_id}`}>{name}</Typography>
-                        <Typography variant="body2">{description}</Typography>
+                        <Typography variant="body2">{comments}</Typography>
+                        <Typography variant="body2">{name}</Typography>
+                        <Typography variant="body2">{surnames}</Typography>
+                        <Typography variant="body2">{address}</Typography>
                     </CardContent>
                 </Card>
             </Grid>
@@ -49,8 +52,8 @@ class Product extends Component {
     }
 }
 
-Product.propTypes = {
-    product: PropTypes.object.isRequired,
+Delivery.propTypes = {
+    delivery: PropTypes.object.isRequired,
 }
 
-export default (withStyles(styles, { withTheme: true })(Product));
+export default (withStyles(styles, { withTheme: true })(Delivery));

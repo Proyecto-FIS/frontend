@@ -8,7 +8,7 @@ const ProductSkeleton = (props) => {
     const content = Array.from({ length: 20 }).map((item, index) => (
         <Grid key={index} item xs={4}>
             <Card>
-                <Skeleton variant="rect" height={"70vh"}/>
+                <Skeleton variant="rect" height={"40vh"}/>
             </Card>
         </Grid>
     ));

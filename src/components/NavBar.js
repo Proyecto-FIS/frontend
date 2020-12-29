@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1)
     },
     navButton: {
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(2)
     },
     auth: {
         flexGrow: 1
@@ -56,10 +56,11 @@ const NavBar = () => {
     return (
         <AppBar position="static" className={classes.root}>
             <Toolbar>
-                <LocalCafeIcon className={classes.navButton}/>
-                <Typography variant="h6" className={classes.auth}>
-                    ¿Te apetece un café?
-                </Typography>
+                <LocalCafeIcon color="inherit" className={classes.navButton}/>
+                
+                  <Typography variant="h6" className={classes.auth}>
+                      <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
+                  </Typography>
                 
                 { account ? authLinks : guestLinks }
 
@@ -67,7 +68,5 @@ const NavBar = () => {
         </AppBar>
     );
 }
-
-
 
 export default NavBar;

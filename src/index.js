@@ -11,6 +11,8 @@ import Roasters from "./routes/Roasters";
 import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
+import Product from "./routes/Product";
+import Deliveries from "./routes/Deliveries";
 
 import NavBar from "./components/NavBar";
 import AlertComp from "./components/AlertComp";
@@ -23,6 +25,8 @@ ReactDOM.render(
                 <AlertComp />
                 <Switch>
                     <Route path="/roasters" component={Roasters} />
+                    <Route path="/deliveries" component={Deliveries} />
+                    <Route path="/products/:productId" component={Product} />
                     <Route path="/products" component={Products} />
                     <Route path="/login" component={Login} />
                     <Route path="/customer-register" component={RegisterCustomer} />
