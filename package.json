@@ -19,9 +19,9 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test --passWithNoTests",
-        "test:ci": "react-scripts test --watchAll=false --passWithNoTests",
-        "coverage": "react-scripts test --passWithNoTests --coverage",
+        "test": "react-scripts test",
+        "test:ci": "react-scripts test --watchAll=false",
+        "coverage": "react-scripts test --coverage",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
