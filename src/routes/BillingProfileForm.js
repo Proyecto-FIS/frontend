@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { TextField, Button, Grid, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Validators from "../../utils/Validators";
-import BillingProfileService from "../../services/BillingProfileService";
+import Validators from "../utils/Validators";
+import BillingProfileService from "../services/BillingProfileService";
 import { withRouter } from "react-router-dom";
-import MainGrid from "../Common/MainGrid";
+import MainGrid from "../components/Common/MainGrid";
 import { connect } from "react-redux";
-import setBillingProfile from "../../redux/actions/BillingProfile/setBillingProfile";
+import setBillingProfile from "../redux/actions/BillingProfile/setBillingProfile";
 
 const fields = [
     {

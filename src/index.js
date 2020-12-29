@@ -9,8 +9,8 @@ import Products from "./routes/Products";
 import Product from "./routes/Product";
 import Deliveries from "./routes/Deliveries";
 import NavBar from "./components/NavBar";
-import BillingProfiles from "./routes/BillingProfiles";
-import BillingProfileForm from "./components/Sales/BillingProfileForm";
+import BillingProfileList from "./routes/BillingProfileList";
+import BillingProfileForm from "./routes/BillingProfileForm";
 import SnackbarListener from "./components/Common/SnackBarListener";
 
 ReactDOM.render(
@@ -19,7 +19,7 @@ ReactDOM.render(
             <NavBar />
             <Switch>
                 <Route path="/billingprofiles/add" component={BillingProfileForm} />
-                <Route path="/billingprofiles" component={BillingProfiles} />
+                <Route path="/billingprofiles" component={BillingProfileList} />
                 <Route path="/deliveries" component={Deliveries} />
                 <Route path="/products/:productId" component={Product} />
                 <Route path="/products" component={Products} />

@@ -4,13 +4,13 @@ import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/core/styles";
 import { green } from '@material-ui/core/colors';
 import { Link } from "react-router-dom";
-import MainGrid from "../Common/MainGrid";
-import BillingProfile from "./BillingProfile";
+import MainGrid from "../components/Common/MainGrid";
+import BillingProfile from "../components/Sales/BillingProfile";
 import { Grid, Card } from "@material-ui/core";
 import Skeleton from '@material-ui/lab/Skeleton';
-import BillingProfileService from "../../services/BillingProfileService";
+import BillingProfileService from "../services/BillingProfileService";
 import { connect } from "react-redux";
-import setBillingProfile from "../../redux/actions/BillingProfile/setBillingProfile";
+import setBillingProfile from "../redux/actions/BillingProfile/setBillingProfile";
 
 const AddButton = withStyles((theme) => ({
     root: {
