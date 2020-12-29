@@ -3,15 +3,20 @@ import { Card, CardContent, Grid, Typography, IconButton } from "@material-ui/co
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import BillingProfileService from "../../services/BillingProfileService";
+import setBillingProfile from "../../redux/actions/BillingProfile/setBillingProfile";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 class BillingProfile extends Component {
 
     edit() {
-
+        this.props.setBillingProfile(this.props.profile);
+        this.props.history.push("/billingprofiles/add");
     }
 
     delete() {
-        BillingProfileService.deleteProfile(this.props.profile);
+        BillingProfileService.deleteProfile(this.props.profile)
+            .then(() => BillingProfileService.requestProfiles());
     }
 
     render() {
@@ -67,4 +72,8 @@ class BillingProfile extends Component {
     }
 }
 
-export default BillingProfile;
+const mapDispatchToProps = {
+    setBillingProfile
+};
+
+export default withRouter(connect(null, mapDispatchToProps)(BillingProfile));

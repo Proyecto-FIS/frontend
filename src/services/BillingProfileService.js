@@ -35,7 +35,7 @@ export class BillingProfileService {
             const userToken = localStorage.getItem("token");
             if (!userToken) {
                 sendAuthError();
-                resolve();
+                reject();
                 return;
             }
 
@@ -46,27 +46,54 @@ export class BillingProfileService {
                 })
                 .catch(err => {
                     store.dispatch(startSnackBar("error", "No ha sido posible guardar el perfil"));
-                    resolve();
+                    reject();
                 });
         });
     }
 
     static deleteProfile(profile) {
 
-        const userToken = localStorage.getItem("token");
-        if (!userToken) {
-            sendAuthError();
-            return;
-        }
+        return new Promise((resolve, reject) => {
+            const userToken = localStorage.getItem("token");
+            if (!userToken) {
+                sendAuthError();
+                reject();
+                return;
+            }
 
-        axios.delete("/api/billing-profile", { params: { userToken, profileID: profile._id }})
-            .then(response => {
-                store.dispatch(startSnackBar("success", "Perfil eliminado sin problemas"));
-                BillingProfileService.requestProfiles();
-            })
-            .catch(err => {
-                store.dispatch(startSnackBar("error", "No se ha podido eliminar el perfil"));
-            });
+            axios.delete("/api/billing-profile", { params: { userToken, profileID: profile._id } })
+                .then(response => {
+                    store.dispatch(startSnackBar("success", "Perfil eliminado sin problemas"));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(startSnackBar("error", "No se ha podido eliminar el perfil"));
+                    reject();
+                });
+        });
+    }
+
+    static editProfile(profile) {
+        return new Promise((resolve, reject) => {
+
+            const userToken = localStorage.getItem("token");
+            if (!userToken) {
+                sendAuthError();
+                reject();
+                return;
+            }
+
+            console.log(profile);
+            return axios.put("/api/billing-profile", { profile }, { params: { userToken } })
+                .then(response => {
+                    store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(startSnackBar("error", "No ha sido posible actualizar el perfil"));
+                    reject();
+                });
+        });
     }
 }
 

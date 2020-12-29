@@ -5,6 +5,8 @@ import Validators from "../../utils/Validators";
 import BillingProfileService from "../../services/BillingProfileService";
 import { withRouter } from "react-router-dom";
 import MainGrid from "../Common/MainGrid";
+import { connect } from "react-redux";
+import setBillingProfile from "../../redux/actions/BillingProfile/setBillingProfile";
 
 const fields = [
     {
@@ -75,7 +77,7 @@ class BillingProfileForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            ...this.getDefaultState(),
+            ...this.getDefaultState(props.profile),
             isSubmitting: false
         };
     }
@@ -84,26 +86,41 @@ class BillingProfileForm extends Component {
         this.setState(this.getDefaultState());
     }
 
-    getDefaultState() {
+    getDefaultState(profile = null) {
         let state = {
             values: {},
             errors: {},
-            formCorrect: false
+            formCorrect: false,
         };
-        fields.forEach(field => {
-            state.values[field.name] = "";
-            state.errors[field.name] = "";
-        });
+
+        if(profile) {
+            fields.forEach(field => {
+                state.values[field.name] = profile[field.name];
+                state.errors[field.name] = "";
+            });
+            state.values._id = profile._id;
+        } else {
+            fields.forEach(field => {
+                state.values[field.name] = "";
+                state.errors[field.name] = "";
+            });
+        }
         return state;
+    }
+
+    submitDone() {
+        this.setState({ isSubmitting: false });
+        this.props.history.push("/billingprofiles");
     }
 
     submitForm() {
         this.setState({ isSubmitting: true });
-        BillingProfileService.postNewProfile(this.state.values)
-            .then(() => {
-                this.setState({ isSubmitting: false });
-                this.props.history.push("/billingprofiles");
-            });
+
+        const action = this.props.profile ? BillingProfileService.editProfile : BillingProfileService.postNewProfile;
+
+        action(this.state.values)
+            .then(() => this.submitDone())
+            .catch(() => this.submitDone());
     }
 
     setField(field, e) {
@@ -117,7 +134,7 @@ class BillingProfileForm extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, profile } = this.props;
 
         const formFields = fields.map((field, index) => (
             <Grid key={index} item xs={12}>
@@ -127,10 +144,12 @@ class BillingProfileForm extends Component {
             </Grid>
         ));
 
+        const actionText = profile ? "Editar" : "Añadir";
+
         return (
             <MainGrid>
                 <Box border={1} borderRadius={10} boxShadow={3} padding={3}>
-                    <h2 className={classes.titleText}>Añadir nuevo perfil de entrega</h2>
+                    <h2 className={classes.titleText}>{actionText} perfil de entrega</h2>
                     <Grid container>
                         <Grid item sm={2} xs={2}></Grid>
                         <Grid container item xs={8} sm={8} spacing={3} className={classes.form}>
@@ -140,7 +159,7 @@ class BillingProfileForm extends Component {
                                     <Button variant="contained" color="secondary" onClick={e => this.clearForm()}>Limpiar</Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="contained" color="secondary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>Añadir</Button>
+                                    <Button variant="contained" color="secondary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>{actionText}</Button>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -152,4 +171,14 @@ class BillingProfileForm extends Component {
     }
 }
 
-export default withRouter(withStyles(styles, { withTheme: true })(BillingProfileForm));
+const mapDispatchToProps = {
+    setBillingProfile
+};
+
+const mapStateToProps = (state) => {
+    return {
+        profile: state.BillingProfileReducer.billingProfile
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles, { withTheme: true })(BillingProfileForm)));

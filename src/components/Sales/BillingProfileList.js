@@ -10,6 +10,7 @@ import { Grid, Card } from "@material-ui/core";
 import Skeleton from '@material-ui/lab/Skeleton';
 import BillingProfileService from "../../services/BillingProfileService";
 import { connect } from "react-redux";
+import setBillingProfile from "../../redux/actions/BillingProfile/setBillingProfile";
 
 const AddButton = withStyles((theme) => ({
     root: {
@@ -21,18 +22,11 @@ const AddButton = withStyles((theme) => ({
     },
 }))(Button);
 
-const AddButtonGrid = () => (
-    <Grid item>
-        <AddButton variant="contained" color="primary"
-            startIcon={<AddIcon />}
-            component={Link} to="/billingprofiles/add">Añadir perfil</AddButton>
-    </Grid>
-);
-
 class BillingProfileList extends Component {
 
     constructor(props) {
         super(props);
+        this.props.setBillingProfile(null);
         BillingProfileService.requestProfiles();
     }
 
@@ -54,7 +48,11 @@ class BillingProfileList extends Component {
 
         return (
             <MainGrid container spacing={2} justify="flex-end">
-                <AddButtonGrid />
+                <Grid item>
+                    <AddButton variant="contained" color="primary"
+                        startIcon={<AddIcon />}
+                        component={Link} to="/billingprofiles/add">Añadir perfil</AddButton>
+                </Grid>
                 <Grid item container spacing={2}>
                     {profileList}
                 </Grid>
@@ -63,10 +61,14 @@ class BillingProfileList extends Component {
     }
 }
 
+const mapDispatchToProps = {
+    setBillingProfile
+};
+
 const mapStateToProps = (state) => {
     return {
         profiles: state.LoaderReducer.elements
     };
 };
 
-export default connect(mapStateToProps)(BillingProfileList);
+export default connect(mapStateToProps, mapDispatchToProps)(BillingProfileList);
