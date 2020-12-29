@@ -121,13 +121,13 @@ const Login = () => {
           </Button>
           <Grid container>
             <Grid item>
-            ¿No tienes cuenta? Regístrate 
+            ¿No tienes cuenta? Regístrate {' '}
               <Link href="/customer-register" variant="body2">
-                {" como customer "}
+                {"como customer"}
               </Link>
-              o
+              {' '} o {' '}
               <Link href="/toaster-register" variant="body2">
-                {" como toaster"}
+                {"como toaster"}
               </Link>
               .
             </Grid>

@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import { setAlert } from "../../redux/actions/alert";
 import { registerCustomer } from "../../redux/actions/authCustomer";
-
-import PropTypes from 'prop-types';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -17,6 +15,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomerRegister = ({ setAlert, registerCustomer, isAuthenticated }) => {
+const CustomerRegister = () => {
+
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
@@ -52,6 +53,12 @@ const CustomerRegister = ({ setAlert, registerCustomer, isAuthenticated }) => {
     password2: ''
   });
 
+  const dispatch = useDispatch();
+
+  const accountLogin = useSelector(state => state.AuthReducer);
+
+  const { loading, error, account } = accountLogin;
+
   const { username, email, address, pictureUrl, password, password2 } = formData;
 
   const onChange = (e) =>
@@ -61,14 +68,19 @@ const CustomerRegister = ({ setAlert, registerCustomer, isAuthenticated }) => {
     e.preventDefault();
 
     if(password !== password2) {
-      setAlert("Contraseña incorrecta", "error");
+      dispatch(setAlert("La contraseña no coincide", "error"));
+      window.scrollTo(0, 0);
     } else {
-      registerCustomer({ username, email, address, pictureUrl, password });
+      dispatch(registerCustomer({ username, email, address, pictureUrl, password }));
     }
   };
 
-  if(isAuthenticated) {
+  if(account) {
     return <Redirect to="/"/>
+  }
+
+  if(error) {
+    dispatch(setAlert(error, 'error'));
   }
 
   return (
@@ -83,6 +95,7 @@ const CustomerRegister = ({ setAlert, registerCustomer, isAuthenticated }) => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
+        {loading && <CircularProgress /> }
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -186,14 +199,5 @@ const CustomerRegister = ({ setAlert, registerCustomer, isAuthenticated }) => {
   );
 };
 
-CustomerRegister.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-  registerCustomer: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
-}
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.AuthReducer.isAuthenticated
-});
-
-export default connect(mapStateToProps, { setAlert, registerCustomer })(CustomerRegister);
+export default CustomerRegister;

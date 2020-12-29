@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 
 import {logout} from "../redux/actions/logout";
-import LoginMenu from './Auth/LoginMenu';
+import RegisterMenu from './Auth/RegisterMenu';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,7 @@ const NavBar = () => {
 
     const guestLinks = (
         <Fragment>
-            <LoginMenu/>
+            <RegisterMenu/>
             <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} component={ Link } to="/login">Entrar</Button>
         </Fragment>
     );

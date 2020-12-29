@@ -1,4 +1,4 @@
-import { REGISTER_SUCCESS, REGISTER_ERROR, LOGIN_REQUEST,
+import { REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_ERROR, LOGIN_REQUEST,
      LOGIN_ERROR, LOGIN_SUCCESS, LOGOUT } from "../actions/types";
 
 
@@ -6,6 +6,7 @@ const defaultState = {};
 
 const reducer = (state = defaultState, { type, payload }) => {
     switch (type) {
+        case REGISTER_REQUEST:
         case LOGIN_REQUEST:
             return {
                 loading: true

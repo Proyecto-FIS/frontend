@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Link } from 'react-router-dom';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 
-export default function LoginMenu() {
+export default function RegisterMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
