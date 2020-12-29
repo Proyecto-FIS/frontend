@@ -7,13 +7,19 @@ import AuthReducer from "./reducers/AuthReducer";
 import thunk from 'redux-thunk';
 
 const middleware = [thunk];
-const initialState = {};
 
 const reducers = combineReducers({
     ProductsReducer,
     AlertReducer,
     AuthReducer
 });
+
+const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;
+
+const initialState = {
+    AuthReducer: {account: accountFromStorage}
+};
+
 
 let store;
 if (process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION__) {

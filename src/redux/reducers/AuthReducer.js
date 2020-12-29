@@ -1,42 +1,29 @@
-import { REGISTER_SUCCESS, REGISTER_ERROR, USER_LOADED, AUTH_ERROR, LOGIN_ERROR, LOGIN_SUCCESS, LOGOUT } from "../actions/types";
+import { REGISTER_SUCCESS, REGISTER_ERROR, LOGIN_REQUEST,
+     LOGIN_ERROR, LOGIN_SUCCESS, LOGOUT } from "../actions/types";
 
 
-const defaultState = {
-    token: localStorage.getItem('token'),
-    isAuthenticated: false,
-    loading: true,
-    account: null
-};
+const defaultState = {};
 
 const reducer = (state = defaultState, { type, payload }) => {
     switch (type) {
-        case USER_LOADED:
+        case LOGIN_REQUEST:
             return {
-                ...state,
-                isAuthenticated: true,
-                loading: false,
-                account: payload
+                loading: true
             };
         case REGISTER_SUCCESS:
         case LOGIN_SUCCESS:
-                localStorage.setItem('token', payload.token);
             return {
-                ...state,
-                ...payload,
-                isAuthenticated: true,
-                loading: false
+                loading: false,
+                account: payload
             };
         case REGISTER_ERROR:
-        case AUTH_ERROR:
         case LOGIN_ERROR:
-        case LOGOUT:
-            localStorage.removeItem('token');
             return {
-                ...state,
-                token: false,
-                isAuthenticated: false,
-                loading: false
+                loading: false,
+                error: payload
             }
+        case LOGOUT:
+            return {};
         default:
             return state;
     }

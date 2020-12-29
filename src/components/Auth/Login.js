@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import PropTypes from 'prop-types';
 
-//import { setAlert } from "../../redux/actions/alert";
+import { setAlert } from "../../redux/actions/alert";
 import { login } from "../../redux/actions/login";
 
 import Avatar from '@material-ui/core/Avatar';
@@ -16,6 +15,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = () => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -46,22 +47,32 @@ const Login = ({ login, isAuthenticated }) => {
 
   const {username, password} = formData;
 
+  const dispatch = useDispatch();
+
+  const classes = useStyles();
+
+  const accountLogin = useSelector(state => state.AuthReducer);
+  const { loading, error, account } = accountLogin;
+
+  if(account) {
+    return <Redirect to="/"/>
+  }
+
+  if(error) {
+    dispatch(setAlert(error, 'error'));
+  }
+
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    login(username, password);
+    dispatch(login(username, password));
   };
-
-  const classes = useStyles();
-
-  if(isAuthenticated) {
-    return <Redirect to="/"/>
-  }
 
   return (
     <Container component="main" maxWidth="xs">
+
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -72,6 +83,7 @@ const Login = ({ login, isAuthenticated }) => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
+        {loading && <CircularProgress /> }
           <TextField
             variant="outlined"
             margin="normal"
@@ -126,13 +138,4 @@ const Login = ({ login, isAuthenticated }) => {
   );
 }
 
-Login.propTypes = {
-  login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
-}
-
-const mapStateToProps = state => ({
-  isAuthenticated: state.AuthReducer.isAuthenticated
-});
-
-export default connect(mapStateToProps, {login})(Login);
+export default Login;

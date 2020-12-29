@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -15,28 +15,13 @@ import RegisterToaster from "./routes/RegisterToaster";
 import NavBar from "./components/NavBar";
 import AlertComp from "./components/AlertComp";
 
-import { loadAccount } from './redux/actions/authCustomer';
-
-import authToken from './utils/authToken';
-
 
 
 const App = () => {
 
-    useEffect(() => {
-        if (localStorage.token) {
-            authToken(localStorage.token);
-        }
-        
-        store.dispatch(loadAccount());
-      }, []);
-
-
     return (
         <Provider store={store}>
-        <React.StrictMode>
-            
-            
+        <React.StrictMode>  
             <Router>
                 <NavBar />
                 <AlertComp />
