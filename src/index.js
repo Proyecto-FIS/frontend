@@ -18,13 +18,11 @@ import NavBar from "./components/NavBar";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
 import SnackbarListener from "./components/Common/SnackBarListener";
-import AlertComp from "./components/AlertComp";
 
 ReactDOM.render(
     <Provider store={store}>
         <Router>
             <NavBar />
-            <AlertComp />
             <Switch>
                 <Route path="/billingprofiles/add" component={BillingProfileForm} />
                 <Route path="/billingprofiles" component={BillingProfileList} />

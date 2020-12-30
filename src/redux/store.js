@@ -1,7 +1,6 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 
 import ProductsReducer from "./reducers/ProductsReducer";
-import AlertReducer from "./reducers/AlertReducer";
 import AuthReducer from "./reducers/AuthReducer";
 import DeliveriesReducer from "./reducers/DeliveriesReducer";
 import SnackbarReducer from "./reducers/SnackbarReducer";
@@ -18,7 +17,6 @@ const reducers = combineReducers({
     SnackbarReducer,
     LoaderReducer,
     BillingProfileReducer,
-    AlertReducer,
     AuthReducer,
 });
 

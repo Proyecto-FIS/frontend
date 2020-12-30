@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS} from "./types";
-import { setAlert } from './alert';
+import startSnackBar from "./SnackBar/startSnackBar";
 
 
 // Register Customer
@@ -34,7 +34,7 @@ export const registerCustomer = ({  username, email, address, pictureUrl, passwo
     
   } catch (err) {
     
-      dispatch(setAlert(err.message, 'error'));
+      dispatch(startSnackBar("error", err.message));
       window.scrollTo(0, 0);
 
       dispatch({
