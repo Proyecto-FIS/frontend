@@ -130,8 +130,8 @@ class NewProduct extends Component {
     createFormatTypes(){
         return this.state.formatTypes.map((el, i) => 
             <div key={i} className={this.props.classes.inputInline}>
-                <TextField className={this.props.classes.input} id="name" name="name" placeholder="Format" error={this.state.errors.stock ? true : false } helperText={this.state.errors.stock} onChange={this.handleChange} />
-                <CurrencyTextField className={this.props.classes.input} placeholder="Price" variant="standard" currencySymbol="€" outputFormat="number" minimumValue="0" />
+                <TextField className={this.props.classes.input} id="name" name="name" placeholder="Format" error={this.state.errors.stock ? true : false } helperText={this.state.errors.stock} onChange={this.handleFormatChange.bind(this,i)} />
+                <CurrencyTextField className={this.props.classes.input} name="price" placeholder="Price" variant="standard" currencySymbol="€" outputFormat="number" minimumValue="0" onChange={this.handleFormatChange.bind(this.value, i)} />
                 <IconButton aria-label="delete" onClick={this.removeClick.bind(this, i)}>
                     <DeleteIcon />
                 </IconButton>
@@ -156,6 +156,21 @@ class NewProduct extends Component {
     }
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
+    }
+    handleGrindChange = (event,values) => {
+        this.setState({grinds: values});
+    }
+    handleFormatChange = (i,event) => {
+        console.log(i)
+        console.log(event.target.value)
+        console.log(event.target.name)
+        let formats = this.state.formatTypes
+        if(event.target.name === "name")
+            formats[i].name = event.target.value
+        else{
+            formats[i].price = event.target.value
+        }
+        this.setState({ formatTypes: formats });
     }
     handleSubmit = (event) => {
         event.preventDefault();
@@ -202,9 +217,9 @@ class NewProduct extends Component {
                                     <Typography className={classes.input} variant="body1" color="textSecondary">Selecciona los tipos de molido que va a tener el producto: </Typography>
                                     <Autocomplete
                                         multiple
-                                        id="tags-standard"
                                         options={grindTypes}
                                         className={classes.input}
+                                        onChange={this.handleGrindChange}
                                         renderInput={(params) => (
                                         <TextField
                                             {...params}
