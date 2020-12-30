@@ -15,26 +15,30 @@ import Product from "./routes/Product";
 import Deliveries from "./routes/Deliveries";
 
 import NavBar from "./components/NavBar";
+import BillingProfileList from "./routes/BillingProfileList";
+import BillingProfileForm from "./routes/BillingProfileForm";
+import SnackbarListener from "./components/Common/SnackBarListener";
 import AlertComp from "./components/AlertComp";
 
 ReactDOM.render(
     <Provider store={store}>
-        <React.StrictMode>
-            <Router>
-                <NavBar />
-                <AlertComp />
-                <Switch>
-                    <Route path="/roasters" component={Roasters} />
-                    <Route path="/deliveries" component={Deliveries} />
-                    <Route path="/products/:productId" component={Product} />
-                    <Route path="/products" component={Products} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/customer-register" component={RegisterCustomer} />
-                    <Route path="/toaster-register" component={RegisterToaster} />
-                    <Route path="/" component={Products} />
-                </Switch>
-            </Router>
-        </React.StrictMode>
+        <Router>
+            <NavBar />
+            <AlertComp />
+            <Switch>
+                <Route path="/billingprofiles/add" component={BillingProfileForm} />
+                <Route path="/billingprofiles" component={BillingProfileList} />
+                <Route path="/roasters" component={Roasters} />
+                <Route path="/deliveries" component={Deliveries} />
+                <Route path="/products/:productId" component={Product} />
+                <Route path="/products" component={Products} />
+                <Route path="/login" component={Login} />
+                <Route path="/customer-register" component={RegisterCustomer} />
+                <Route path="/toaster-register" component={RegisterToaster} />
+                <Route path="/" component={Products} />
+            </Switch>
+        </Router>
+        <SnackbarListener />
     </Provider>,
     document.getElementById("root")
 );
