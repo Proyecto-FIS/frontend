@@ -6,6 +6,10 @@ import loadingProduct from "../redux/actions/loadingProduct";
 import creatingProduct from "../redux/actions/creatingProduct";
 import imageUploaded from "../redux/actions/imageUploaded";
 import loadingError from "../redux/actions/loadingError";
+import setProductErrors from "../redux/actions/setProductErrors";
+import clearProductErrors from "../redux/actions/clearProductErrors";
+import createdProduct from "../redux/actions/createdProduct";
+
 import store from "../redux/store";
 
 export class ProductsService {
@@ -28,12 +32,25 @@ export class ProductsService {
         store.dispatch(creatingProduct());
         axios.post('/api/uploadImage', formData)
         .then((res) => {
-            store.dispatch(imageUploaded())
-            return res.data.coverURL;
+            store.dispatch(imageUploaded(res.data.data.Location))
         })
         .catch((err)=>{
             console.log(err);
         });
+    }
+
+    postProduct = (newProduct) => {
+        console.log(newProduct)
+        store.dispatch(creatingProduct());
+        axios.post('/api/products', newProduct)
+        .then((res) => {
+            store.dispatch(createdProduct(res))
+            store.dispatch(clearProductErrors())
+        })
+        .catch((err) => {
+            console.log(err);
+            store.dispatch(setProductErrors(err))
+        })
     }
 
 }

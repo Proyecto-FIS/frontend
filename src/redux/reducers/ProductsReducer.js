@@ -5,6 +5,9 @@ import { type as LOADING_ERROR } from "../actions/loadingError";
 import { type as GET_A_PRODUCT } from "../actions/getProduct";
 import { type as WAITING_RESPONSE } from "../actions/creatingProduct";
 import { type as IMAGE_UPLOADED } from "../actions/imageUploaded";
+import { type as CLEAR_ERRORS } from "../actions/clearProductErrors";
+import { type as SET_ERRORS } from "../actions/setProductErrors";
+import { type as POST_PRODUCT } from "../actions/createdProduct";
 
 
 const defaultState = {
@@ -72,6 +75,29 @@ const reducer = (state = defaultState, { type, payload }) => {
                 ...state,
                 newProduct: {
                     loading: false,
+                    productImage: payload,
+                }
+            }
+        case POST_PRODUCT:
+            return {
+                ...state,
+                newProduct:{
+                    loading: false,
+                }
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                newProduct:{
+                    errors: null,
+                }
+            }
+        case SET_ERRORS:
+            return {
+                ...state,
+                newProduct: {
+                    loading: false,
+                    errors: payload
                 }
             }
         default:

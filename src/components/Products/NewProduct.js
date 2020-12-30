@@ -10,13 +10,16 @@ import {
     TextField,
     Grid,
 } from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withStyles } from "@material-ui/core/styles";
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
 import CreateIcon from '@material-ui/icons/Create';
+import AddIcon from '@material-ui/icons/Add';
 import ProductsService from "../../services/ProductsService";
 import imageCompression from 'browser-image-compression';
 import { connect } from "react-redux";
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 const styles = (theme) => ({
     div: {
@@ -34,6 +37,8 @@ const styles = (theme) => ({
     },
     image:{
         minWidth: 200,
+        maxWidth: 400,
+        maxHeight: 500,
         [theme.breakpoints.down("xs")]: {
             minWidth: 150,
         },
@@ -48,7 +53,16 @@ const styles = (theme) => ({
         maxWidth: 450,
     },
     input:{
-        margin: "10px"
+        margin: '10px',
+        width: '100%'
+    },
+    inputHalf:{
+        margin: '10px',
+        width: '45%'
+    },
+    inputInline: {
+        display: "inline-flex",
+        width: '100%'
     },
     button: {
         float: 'right'
@@ -62,11 +76,31 @@ class NewProduct extends Component {
         description: '',
         grinds: [],
         stock: 0,
-        formatTypes: {},
+        productImg: '',
+        formatTypes: [{
+            name: '',
+            price: ''
+        }],
         errors: {},
     }
-    componentDidUpdate(props){
-
+    componentDidUpdate(prevProps, prevState){
+        if(this.props.newProduct?.errors){
+            this.setState({
+                title: '',
+                description: '',
+                grinds: [],
+                stock: 0,
+                productImg: '',
+                formatTypes: {},
+                errors: this.props.newProduct.errors
+            });
+        }
+        if(prevProps.newProduct?.loading === true && this.props.newProduct?.productImage){
+            document.getElementById('productImg').src = this.props.newProduct.productImage;
+            this.setState({
+                productImg: this.props.newProduct.productImage
+            });
+        }
     };
     handleImageChange = async (event) => {
         const image = event.target.files[0];
@@ -93,6 +127,48 @@ class NewProduct extends Component {
         const fileInput = document.getElementById('coverInput');
         fileInput.click();
     };
+    createFormatTypes(){
+        return this.state.formatTypes.map((el, i) => 
+            <div key={i} className={this.props.classes.inputInline}>
+                <TextField className={this.props.classes.input} id="name" name="name" placeholder="Format" error={this.state.errors.stock ? true : false } helperText={this.state.errors.stock} onChange={this.handleChange} />
+                <CurrencyTextField className={this.props.classes.input} placeholder="Price" variant="standard" currencySymbol="€" outputFormat="number" minimumValue="0" />
+                <IconButton aria-label="delete" onClick={this.removeClick.bind(this, i)}>
+                    <DeleteIcon />
+                </IconButton>
+            </div>
+        )
+    }
+    addClick(){
+        let values = this.state.formatTypes;
+        this.setState({ formatTypes: [...values, {
+            name: '',
+            price: ''
+        }]})
+    }
+    removeClick(i){
+        console.log(i)
+        let values = [...this.state.formatTypes];
+        console.log(values);
+        values.splice(i,1);
+        console.log("Despues")
+        console.log(values);
+        this.setState({ formatTypes: values });
+    }
+    handleChange = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
+    }
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.productsService.postProduct({ 
+            title: this.state.title,
+            description: this.state.description,
+            grinds: this.state.grinds,
+            stock: this.state.stock,
+            productImg: this.state.productImg,
+            formatTypes: this.state.formatTypes
+        });
+    };
+
     render() {
         const {errors} = this.state;
         const {classes, newProduct: {loading}} = this.props;
@@ -111,7 +187,7 @@ class NewProduct extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6}>
-                                    <img id="productImg" alt="Product Image" className={classes.image} width="400px" src="https://coffaine.s3.eu-west-3.amazonaws.com/no-image.png"/>
+                                    <img id="productImg" alt="Product" className={classes.image} src="https://coffaine.s3.eu-west-3.amazonaws.com/no-image.png"/>
                                     <input type="file" id="coverInput" name="cover" onChange={this.handleImageChange} hidden="hidden" />
                                     <Tooltip title={"Upload Image"} placement="bottom">
                                         <IconButton className="button" onClick={this.handleUploadImage}>
@@ -121,7 +197,7 @@ class NewProduct extends Component {
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField className={classes.input} id="title" name="title" placeholder="Title" error={errors.title ? true : false } helperText={errors.title} onChange={this.handleChange} fullWidth/>                                    
-                                    <TextField className={classes.input} id="description" name="description" placeholder="Descriptrion" error={errors.description ? true : false } helperText={errors.description} onChange={this.handleChange} fullWidth/>
+                                    <TextField className={classes.input} id="description" name="description" placeholder="Description" error={errors.description ? true : false } helperText={errors.description} onChange={this.handleChange} fullWidth/>
                                     <TextField className={classes.input} id="stock" name="stock" placeholder="Stock" type="number" error={errors.stock ? true : false } helperText={errors.stock} onChange={this.handleChange} fullWidth/>
                                     <Typography className={classes.input} variant="body1" color="textSecondary">Selecciona los tipos de molido que va a tener el producto: </Typography>
                                     <Autocomplete
@@ -140,9 +216,16 @@ class NewProduct extends Component {
                                     />
                                     <br />
                                     <Typography className={classes.input} variant="body1" color="textSecondary">Selecciona los distintos envasados que va a tener el producto: </Typography>
+                                    {this.createFormatTypes()}
+                                    <IconButton aria-label="addFormat" className={classes.button} onClick={this.addClick.bind(this)}>
+                                        <AddIcon />
+                                    </IconButton>
+                                    <br />
+                                    <br />
                                     <br />
                                     <br />
                                     <Button
+                                        type="submit"
                                         variant="contained"
                                         color="primary"
                                         size="large"
@@ -164,6 +247,7 @@ class NewProduct extends Component {
 
 NewProduct.propTypes = {
     classes: PropTypes.object.isRequired,
+    newProduct: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state =>({
