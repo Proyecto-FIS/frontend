@@ -36,7 +36,7 @@ class BillingProfileList extends Component {
 
         const skeleton = Array.from({ length: 8 }).map((v, i) => (
             <Grid key={i} item xs={12}>
-                <Card><Skeleton variant="rect" height={"30vh"} /></Card>
+                <Card><Skeleton aria-label="skeleton" variant="rect" height={"30vh"} /></Card>
             </Grid>
         ));
 

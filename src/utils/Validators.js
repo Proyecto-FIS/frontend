@@ -3,7 +3,7 @@ class Validators {
     static StringLength(minLength, maxLength) {
         return v => {
             if(v.length < minLength) return `Debe tener al menos ${minLength} caracteres`;
-            else if(v.length > maxLength) return `Debe tener al menos ${maxLength} caracteres`;
+            else if(v.length > maxLength) return `Debe tener menos de ${maxLength} caracteres`;
             return "";
         }
     }

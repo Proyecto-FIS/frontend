@@ -83,7 +83,6 @@ export class BillingProfileService {
                 return;
             }
 
-            console.log(profile);
             return axios.put("/api/billing-profile", { profile }, { params: { userToken } })
                 .then(response => {
                     store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"));
