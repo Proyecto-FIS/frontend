@@ -16,7 +16,7 @@ const profile = {
     phoneNumber: "phoneNumber",
     zipCode: "zipCode",
     email: "email"
-}
+};
 const setBillingProfile = jest.fn();
 const renderComponent = () => render(<BillingProfile.WrappedComponent history={history} profile={profile} setBillingProfile={setBillingProfile} />);
 
