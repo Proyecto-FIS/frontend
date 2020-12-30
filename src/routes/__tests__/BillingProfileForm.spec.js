@@ -40,10 +40,6 @@ const profile = {
     email: "a@a.com"
 }
 
-beforeAll(() => {
-    history.push = jest.fn();
-});
-
 beforeEach(() => {
     store = createReduxStore({ BillingProfileReducer });
     BillingProfileService.mockClear();
@@ -138,4 +134,20 @@ it("edit profile", () => {
 
     expect(BillingProfileService.editProfile).toHaveBeenCalledTimes(1);
     expect(BillingProfileService.editProfile).toHaveBeenCalledWith({ ...profile, name: newName});
+});
+
+it("should show validation errors", () => {
+    renderComponent();
+
+    const errorText = "El valor no cumple el formato solicitado";
+    expect(screen.queryByText(errorText)).toBeNull();
+
+    const wrongEmail = "wrongEmail";
+    const fields = screen.getAllByRole("textbox");
+    const emailField = fields[8];
+    emailField.value = wrongEmail;
+    ReactTestUtils.Simulate.change(emailField);
+    expect(emailField).toHaveValue(wrongEmail);
+
+    expect(screen.queryByText(errorText)).not.toBeNull();
 });
