@@ -16,7 +16,8 @@ class BillingProfile extends Component {
 
     delete() {
         BillingProfileService.deleteProfile(this.props.profile)
-            .then(() => BillingProfileService.requestProfiles());
+            .then(() => BillingProfileService.requestProfiles())
+            .catch(() => { });
     }
 
     render() {

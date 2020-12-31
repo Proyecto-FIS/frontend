@@ -24,9 +24,9 @@ const addProductsData = (purchases) => {
     // Map every product to its purchase
     return Promise.all(promises)
         .then(products => {
-            for(let i = 0; i < purchases.length; i++) {
+            for (let i = 0; i < purchases.length; i++) {
                 purchases[i].timestamp = new Date(purchases[i].timestamp);
-                for(let j = 0; j < purchases[i].products.length; j++) {
+                for (let j = 0; j < purchases[i].products.length; j++) {
                     const matchingProduct = products.find(prod => prod._id === purchases[i].products[j]._id);
                     purchases[i].products[j] = { ...purchases[i].products[j], ...matchingProduct };
                 }
@@ -38,23 +38,30 @@ const addProductsData = (purchases) => {
 export class PurchaseHistoryService {
 
     static getHistory(pageSize, beforeTimestamp) {
+        return new Promise((resolve, reject) => {
 
-        store.dispatch(startLoader());
+            store.dispatch(startLoader());
 
-        const userToken = localStorage.getItem("token");
-        if (!userToken) {
-            store.dispatch(startSnackBar("error", "No se encuentra autenticado ahora mismo"));
-            store.dispatch(finishLoader());
-            return;
-        }
-
-        return axios.get("/api/history", { params: { userToken, beforeTimestamp, pageSize } })
-            .then(response => addProductsData(response.data))
-            .then(data => store.dispatch(finishLoader(data)))
-            .catch(err => {
-                store.dispatch(startSnackBar("error", "Ha ocurrido un error cargando el historial de compras"));
+            const userToken = localStorage.getItem("token");
+            if (!userToken) {
+                store.dispatch(startSnackBar("error", "No se encuentra autenticado ahora mismo"));
                 store.dispatch(finishLoader());
-            });
+                reject();
+                return;
+            }
+
+            return axios.get("/api/history", { params: { userToken, beforeTimestamp, pageSize } })
+                .then(response => addProductsData(response.data))
+                .then(data => {
+                    store.dispatch(finishLoader(data));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(startSnackBar("error", "Ha ocurrido un error cargando el historial de compras"));
+                    store.dispatch(finishLoader());
+                    reject();
+                });
+        });
     }
 }
 

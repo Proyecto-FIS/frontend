@@ -30,7 +30,8 @@ class PurchaseHistoryNav extends Component {
                 } else {
                     this.setState(prevState => ({ page: prevState.page + increment }));
                 }
-            });
+            })
+            .catch(() => { });
     }
 
     prevPage = () => this.loadPage(-1)

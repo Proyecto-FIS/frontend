@@ -143,7 +143,7 @@ it("DELETE working", () => {
         });
 });
 
-it("Error in PUT", () => {
+it("Error in DELETE", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onDelete('/api/billing-profile').reply(401);
     localStorage.setItem("token", "sample_token");
