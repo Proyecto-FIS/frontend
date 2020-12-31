@@ -20,6 +20,7 @@ import ProductsService from "../../services/ProductsService";
 import imageCompression from 'browser-image-compression';
 import { connect } from "react-redux";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import { Redirect } from "react-router-dom";
 
 const styles = (theme) => ({
     div: {
@@ -66,6 +67,17 @@ const styles = (theme) => ({
     },
     button: {
         float: 'right'
+    },
+    errorText: {
+        color: "#f44336",
+        margin: 0,
+        "font-size": "0.75rem",
+        "margin-top": "3px",
+        "text-align": "left",
+        "font-family": "Roboto",
+        "font-weight": 400,
+        "line-height": 1.66,
+        "letter-spacing":" 0.03333em",
     }
 });
 
@@ -79,21 +91,14 @@ class NewProduct extends Component {
         productImg: '',
         formatTypes: [{
             name: '',
-            price: ''
+            price: 0
         }],
         errors: {},
+        redirect: null,
     }
     componentDidUpdate(prevProps, prevState){
-        if(this.props.newProduct?.errors){
-            this.setState({
-                title: '',
-                description: '',
-                grinds: [],
-                stock: 0,
-                productImg: '',
-                formatTypes: {},
-                errors: this.props.newProduct.errors
-            });
+        if(this.props.newProduct?.created){
+            this.setState({ redirect: "/" });
         }
         if(prevProps.newProduct?.loading === true && this.props.newProduct?.productImage){
             document.getElementById('productImg').src = this.props.newProduct.productImage;
@@ -128,21 +133,23 @@ class NewProduct extends Component {
         fileInput.click();
     };
     createFormatTypes(){
-        return this.state.formatTypes.map((el, i) => 
+        return Array.isArray(this.state.formatTypes) ? this.state.formatTypes?.map((el, i) => 
             <div key={i} className={this.props.classes.inputInline}>
-                <TextField className={this.props.classes.input} id="name" name="name" placeholder="Format" error={this.state.errors.stock ? true : false } helperText={this.state.errors.stock} onChange={this.handleFormatChange.bind(this,i)} />
+                <TextField className={this.props.classes.input} id="name" name="name" placeholder="Format" error={this.state.errors[`format.${i}.name`] ? true : false } helperText={this.state.errors[`format.${i}.name`]} onChange={this.handleFormatChange.bind(this,i)} />
                 <CurrencyTextField className={this.props.classes.input} name="price" placeholder="Price" variant="standard" currencySymbol="€" outputFormat="number" minimumValue="0" onChange={this.handleFormatChange.bind(this.value, i)} />
-                <IconButton aria-label="delete" onClick={this.removeClick.bind(this, i)}>
-                    <DeleteIcon />
-                </IconButton>
+                { i > 0 ? 
+                    <IconButton aria-label="delete" onClick={this.removeClick.bind(this, i)}>
+                        <DeleteIcon />
+                    </IconButton>
+                : null}
             </div>
-        )
+        ) : null
     }
     addClick(){
         let values = this.state.formatTypes;
         this.setState({ formatTypes: [...values, {
             name: '',
-            price: ''
+            price: 0
         }]})
     }
     removeClick(i){
@@ -161,9 +168,6 @@ class NewProduct extends Component {
         this.setState({grinds: values});
     }
     handleFormatChange = (i,event) => {
-        console.log(i)
-        console.log(event.target.value)
-        console.log(event.target.name)
         let formats = this.state.formatTypes
         if(event.target.name === "name")
             formats[i].name = event.target.value
@@ -174,13 +178,17 @@ class NewProduct extends Component {
     }
     handleSubmit = (event) => {
         event.preventDefault();
-        this.productsService.postProduct({ 
-            title: this.state.title,
-            description: this.state.description,
-            grinds: this.state.grinds,
-            stock: this.state.stock,
-            productImg: this.state.productImg,
-            formatTypes: this.state.formatTypes
+        this.productsService.postProduct({
+            product:{
+                providerId: this.props.account._id,
+                name: this.state.title,
+                description: this.state.description,
+                grind: this.state.grinds,
+                stock: this.state.stock,
+                imageUrl: this.state.productImg,
+                format: this.state.formatTypes
+            },
+            userToken: this.props.account.token
         });
     };
 
@@ -195,6 +203,9 @@ class NewProduct extends Component {
             "Fino",
             "Extra fino espresso"
         ]
+        if(this.state.redirect){
+            return <Redirect to={this.state.redirect} />
+        }
         return (
             <Card className={classes.card}>
                 <div className={classes.div}>
@@ -209,9 +220,10 @@ class NewProduct extends Component {
                                             <ImageSearchIcon color="primary" /> 
                                         </IconButton>
                                     </Tooltip>
+                                    {errors.imageUrl ? (<p className={classes.errorText} id="name-helper-text">Upload an Image</p>) : null}
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField className={classes.input} id="title" name="title" placeholder="Title" error={errors.title ? true : false } helperText={errors.title} onChange={this.handleChange} fullWidth/>                                    
+                                    <TextField className={classes.input} id="title" name="title" placeholder="Title" error={errors.name ? true : false } helperText={errors.name} onChange={this.handleChange} fullWidth/>                                    
                                     <TextField className={classes.input} id="description" name="description" placeholder="Description" error={errors.description ? true : false } helperText={errors.description} onChange={this.handleChange} fullWidth/>
                                     <TextField className={classes.input} id="stock" name="stock" placeholder="Stock" type="number" error={errors.stock ? true : false } helperText={errors.stock} onChange={this.handleChange} fullWidth/>
                                     <Typography className={classes.input} variant="body1" color="textSecondary">Selecciona los tipos de molido que va a tener el producto: </Typography>
@@ -224,6 +236,8 @@ class NewProduct extends Component {
                                         <TextField
                                             {...params}
                                             variant="standard"
+                                            error={errors.grind ? true : false } 
+                                            helperText={errors.grind}                                            
                                             label="Grind Types"
                                             placeholder="Grind Types"
                                         />
@@ -263,10 +277,12 @@ class NewProduct extends Component {
 NewProduct.propTypes = {
     classes: PropTypes.object.isRequired,
     newProduct: PropTypes.object.isRequired,
+    account: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state =>({
-    newProduct: state.ProductsReducer.newProduct
+    newProduct: state.ProductsReducer.newProduct,
+    account: state.AuthReducer.account
 });
 
 export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(NewProduct));

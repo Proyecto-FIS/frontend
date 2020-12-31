@@ -40,7 +40,6 @@ export class ProductsService {
     }
 
     postProduct = (newProduct) => {
-        console.log(newProduct)
         store.dispatch(creatingProduct());
         axios.post('/api/products', newProduct)
         .then((res) => {
@@ -48,8 +47,9 @@ export class ProductsService {
             store.dispatch(clearProductErrors())
         })
         .catch((err) => {
-            console.log(err);
-            store.dispatch(setProductErrors(err))
+            let errors = {}
+            Object.keys(err.response.data.errors).map((key) => errors[key] = err.response.data.errors[key].message)
+            store.dispatch(setProductErrors(errors)) 
         })
     }
 

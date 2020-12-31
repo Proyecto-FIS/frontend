@@ -20,23 +20,21 @@ import AlertComp from "./components/AlertComp";
 
 ReactDOM.render(
     <Provider store={store}>
-        <React.StrictMode>
-            <Router>
-                <NavBar />
-                <AlertComp />
-                <Switch>
-                    <Route path="/roasters" component={Roasters} />
-                    <Route path="/deliveries" component={Deliveries} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/customer-register" component={RegisterCustomer} />
-                    <Route path="/toaster-register" component={RegisterToaster} />
-                    <Route path="/" component={Products} />
-                    <Route path="/products" component={Products} />
-                    <Route path="/products/new" component={CreateProduct} />
-                    <Route path="/products/:productId" component={Product} />
-                </Switch>
-            </Router>
-        </React.StrictMode>
+        <Router>
+            <NavBar />
+            <AlertComp />
+            <Switch>
+            <Route exact path="/roasters" component={Roasters} />
+            <Route exact path="/deliveries" component={Deliveries} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/customer-register" component={RegisterCustomer} />
+            <Route exact path="/toaster-register" component={RegisterToaster} />
+            <Route exact path="/" component={Products} />
+            <Route exact path="/products" component={Products} />
+            <Route exact path="/products/new" component={CreateProduct} />
+            <Route exact path="/products/:productId" component={Product} />
+            </Switch>
+        </Router>
     </Provider>,
     document.getElementById("root")
 );

@@ -19,7 +19,8 @@ const defaultState = {
     newProduct:{
         loading: false,
         productImage: null,
-        errors: null,
+        created: false,
+        errors: {},
     },
     loading: true
 };
@@ -83,6 +84,7 @@ const reducer = (state = defaultState, { type, payload }) => {
                 ...state,
                 newProduct:{
                     loading: false,
+                    created: true,
                 }
             }
         case CLEAR_ERRORS:
