@@ -13,10 +13,11 @@ import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
 import Product from "./routes/Product";
 import Deliveries from "./routes/Deliveries";
-
-import NavBar from "./components/NavBar";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
+import PurchaseHistory from "./routes/PurchaseHistory";
+
+import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
 
 ReactDOM.render(
@@ -24,6 +25,7 @@ ReactDOM.render(
         <Router>
             <NavBar />
             <Switch>
+                <Route path="/purchase-history" component={PurchaseHistory} />
                 <Route path="/billingprofiles/add" component={BillingProfileForm} />
                 <Route path="/billingprofiles" component={BillingProfileList} />
                 <Route path="/roasters" component={Roasters} />
