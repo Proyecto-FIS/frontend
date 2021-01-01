@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST } from "./types";
-import { setAlert } from './alert';
+import startSnackBar from "./SnackBar/startSnackBar";
 
 export const login = ( username, password) => async dispatch => {
     const config = {
@@ -29,7 +29,7 @@ export const login = ( username, password) => async dispatch => {
         const errors = err.response.data.errors;
     
         if (errors) {
-          errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
+          errors.forEach(error => dispatch(startSnackBar("error", error.msg)));
         }
     
         dispatch({

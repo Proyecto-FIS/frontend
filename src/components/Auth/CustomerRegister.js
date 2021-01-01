@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import { setAlert } from "../../redux/actions/alert";
 import { registerCustomer } from "../../redux/actions/authCustomer";
+import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -68,7 +68,7 @@ const CustomerRegister = () => {
     e.preventDefault();
 
     if(password !== password2) {
-      dispatch(setAlert("Las contraseña no coinciden", "error"));
+      dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
       window.scrollTo(0, 0);
     } else {
       dispatch(registerCustomer({ username, email, address, pictureUrl, password }));
@@ -80,7 +80,7 @@ const CustomerRegister = () => {
   }
 
   if(error) {
-    dispatch(setAlert(error, 'error'));
+    dispatch(startSnackBar("error", error));
   }
 
   return (

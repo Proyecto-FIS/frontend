@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import { setAlert } from "../../redux/actions/alert";
+import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 import { login } from "../../redux/actions/login";
 
 import Avatar from '@material-ui/core/Avatar';
@@ -59,7 +59,7 @@ const Login = () => {
   }
 
   if(error) {
-    dispatch(setAlert(error, 'error'));
+    dispatch(startSnackBar("error", error));
   }
 
   const onChange = (e) =>

@@ -56,7 +56,7 @@ it("fire edit button", () => {
     expect(history.push).toHaveBeenCalledWith("/billingprofiles/add");
 });
 
-it("fire delete button", () => {
+it("fire delete button", async () => {
     renderComponent();
 
     BillingProfileService.deleteProfile = jest.fn().mockImplementation((profile) => {
@@ -71,5 +71,5 @@ it("fire delete button", () => {
     fireEvent.click(deleteButton);
     expect(BillingProfileService.deleteProfile).toHaveBeenCalledTimes(1);
     expect(BillingProfileService.deleteProfile).toHaveBeenCalledWith(profile);
-    waitFor(() => expect(BillingProfileService.requestProfiles).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(BillingProfileService.requestProfiles).toHaveBeenCalledTimes(1));
 });
