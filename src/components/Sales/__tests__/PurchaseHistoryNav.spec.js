@@ -32,11 +32,8 @@ it("can't hit buttons when not loaded", async () => {
     const prevPageButton = screen.getByLabelText("prevPage");
     const nextPageButton = screen.getByLabelText("nextPage");
 
-    fireEvent.click(nextPageButton);
-    await waitFor(() => expect(screen.queryByText("Página 1")).not.toBeNull());
-    
-    fireEvent.click(prevPageButton);
-    await waitFor(() => expect(screen.queryByText("Página 1")).not.toBeNull());
+    expect(prevPageButton).toHaveAttribute("disabled");
+    expect(nextPageButton).toHaveAttribute("disabled");
 });
 
 it("move forward & back", async () => {
@@ -57,15 +54,12 @@ it("move forward & back", async () => {
     fireEvent.click(prevPageButton);
     await waitFor(() => expect(screen.queryByText("Página 1")).not.toBeNull());
 
-    fireEvent.click(prevPageButton);
-    await waitFor(() => expect(screen.queryByText("Página 1")).not.toBeNull());
+    expect(prevPageButton).toHaveAttribute("disabled");
 });
 
 it("can't move forward if list is empty", async () => {
     render(<PurchaseHistoryNav loaded={true} isEmpty={true} pageSize={4} beforeTimestamp={new Date()} />);
 
     const nextPageButton = screen.getByLabelText("nextPage");
-
-    fireEvent.click(nextPageButton);
-    await waitFor(() => expect(screen.queryByText("Página 1")).not.toBeNull());
+    expect(nextPageButton).toHaveAttribute("disabled");
 });
