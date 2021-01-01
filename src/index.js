@@ -12,6 +12,7 @@ import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
 import Product from "./routes/Product";
+import CreateProduct from "./routes/CreateProduct";
 import Deliveries from "./routes/Deliveries";
 
 import NavBar from "./components/NavBar";
@@ -24,18 +25,19 @@ ReactDOM.render(
     <Provider store={store}>
         <Router>
             <NavBar />
-            <AlertComp />
             <Switch>
-                <Route path="/billingprofiles/add" component={BillingProfileForm} />
-                <Route path="/billingprofiles" component={BillingProfileList} />
-                <Route path="/roasters" component={Roasters} />
-                <Route path="/deliveries" component={Deliveries} />
-                <Route path="/products/:productId" component={Product} />
-                <Route path="/products" component={Products} />
-                <Route path="/login" component={Login} />
-                <Route path="/customer-register" component={RegisterCustomer} />
-                <Route path="/toaster-register" component={RegisterToaster} />
-                <Route path="/" component={Products} />
+            <Route exact path="/roasters" component={Roasters} />
+            <Route exact path="/deliveries" component={Deliveries} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/customer-register" component={RegisterCustomer} />
+            <Route exact path="/toaster-register" component={RegisterToaster} />
+            <Route exact path="/" component={Products} />
+            <Route exact path="/products" component={Products} />
+            <Route exact path="/products/new" component={CreateProduct} />
+            <Route exact path="/products/:productId" component={Product} />
+            <Route exact path="/billingprofiles/add" component={BillingProfileForm} />
+            <Route exact path="/billingprofiles" component={BillingProfileList} />
+            <Route exact path="/roasters" component={Roasters} />
             </Switch>
         </Router>
         <SnackbarListener />
