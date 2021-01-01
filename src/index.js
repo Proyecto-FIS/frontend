@@ -16,13 +16,15 @@ import CreateProduct from "./routes/CreateProduct";
 import Deliveries from "./routes/Deliveries";
 
 import NavBar from "./components/NavBar";
+import BillingProfileList from "./routes/BillingProfileList";
+import BillingProfileForm from "./routes/BillingProfileForm";
+import SnackbarListener from "./components/Common/SnackBarListener";
 import AlertComp from "./components/AlertComp";
 
 ReactDOM.render(
     <Provider store={store}>
         <Router>
             <NavBar />
-            <AlertComp />
             <Switch>
             <Route exact path="/roasters" component={Roasters} />
             <Route exact path="/deliveries" component={Deliveries} />
@@ -33,8 +35,12 @@ ReactDOM.render(
             <Route exact path="/products" component={Products} />
             <Route exact path="/products/new" component={CreateProduct} />
             <Route exact path="/products/:productId" component={Product} />
+            <Route exact path="/billingprofiles/add" component={BillingProfileForm} />
+            <Route exact path="/billingprofiles" component={BillingProfileList} />
+            <Route exact path="/roasters" component={Roasters} />
             </Switch>
         </Router>
+        <SnackbarListener />
     </Provider>,
     document.getElementById("root")
 );

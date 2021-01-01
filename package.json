@@ -22,8 +22,9 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test --passWithNoTests",
-        "test:ci": "react-scripts test --watchAll=false --passWithNoTests",
+        "test": "react-scripts test",
+        "test:ci": "react-scripts test --watchAll=false",
+        "coverage": "react-scripts test --coverage",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -51,6 +52,7 @@
         "@types/react-dom": "^17.0.0",
         "@types/react-redux": "^7.1.12",
         "@types/react-router-dom": "^5.1.6",
+        "axios-mock-adapter": "^1.19.0",
         "http-proxy-middleware": "^1.0.6",
         "react-test-renderer": "^17.0.1"
     }
