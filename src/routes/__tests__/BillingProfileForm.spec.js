@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import { cleanup, screen, fireEvent, waitFor } from "@testing-library/react";
+import { cleanup, screen, fireEvent } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../setupTests";
 import BillingProfileForm from "../BillingProfileForm";
 import BillingProfileService from "../../services/BillingProfileService";

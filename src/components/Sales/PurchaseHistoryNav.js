@@ -23,6 +23,7 @@ class PurchaseHistoryNav extends Component {
         if(this.state.pageTimestamps.length < currentPage) {
             this.state.pageTimestamps.push(this.props.beforeTimestamp);
         }
+
         PurchaseHistoryService.getHistory(this.props.pageSize, this.state.pageTimestamps[currentPage - 1])
             .then(() => {
                 if(this.props.loaded && this.props.isEmpty && currentPage > 1) {
@@ -48,7 +49,7 @@ class PurchaseHistoryNav extends Component {
         return (
             <Grid container spacing={1} alignItems="center">
                 <Grid item>
-                    <IconButton disabled={!canGoBack} onClick={() => this.prevPage()}>
+                    <IconButton aria-label="prevPage" disabled={!canGoBack} onClick={() => this.prevPage()}>
                         <ArrowBackIosIcon />
                     </IconButton>
                 </Grid>
@@ -56,7 +57,7 @@ class PurchaseHistoryNav extends Component {
                     <Typography>Página {this.state.page}</Typography>
                 </Grid>
                 <Grid item>
-                    <IconButton disabled={!canGoForward} onClick={() => this.nextPage()}>
+                    <IconButton aria-label="nextPage" disabled={!canGoForward} onClick={() => this.nextPage()}>
                         <ArrowForwardIosIcon />
                     </IconButton>
                 </Grid>

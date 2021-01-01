@@ -35,7 +35,7 @@ class PurchaseEntry extends Component {
 
         const productList = purchase.products.map((product, i) => (
             <Grid key={i} container margin={2} item xs={11} alignItems="center">
-                <Card className={classes.card}>
+                <Card aria-label="purchaseProduct" className={classes.card}>
                     <Grid item xs={10}>
                         <CardContent className={classes.cardContent}>
                             <Typography className={classes.text} variant="overline" color="textPrimary" gutterBottom>Nombre del producto: {product.name}</Typography>
@@ -48,14 +48,14 @@ class PurchaseEntry extends Component {
                         </CardContent>
                     </Grid>
                     <Grid item xs={2}>
-                        <CardMedia className={classes.cardMedia} component="img" image={product.imageUrl} />
+                        <CardMedia className={classes.cardMedia} component="img" image={product.imageUrl} alt={product.name} />
                     </Grid>
                 </Card>
             </Grid>
         ));
 
         return (
-            <Card>
+            <Card aria-label="purchase">
                 <CardContent>
                     <Typography variant="subtitle1" color="textPrimary">Fecha de compra: {timestamp}</Typography>
                     <Typography variant="subtitle2" color="textSecondary" gutterBottom>Tipo de operación: {operationType}</Typography>
