@@ -17,6 +17,8 @@ import Deliveries from "./routes/Deliveries";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
 import PurchaseHistory from "./routes/PurchaseHistory";
+import CreateDelivery from "./routes/CreateDelivery";
+import DeliveryForm from "./routes/DeliveryForm";
 
 import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
@@ -29,6 +31,8 @@ ReactDOM.render(
                 <Route exact path="/purchase-history" component={PurchaseHistory} />
                 <Route exact path="/roasters" component={Roasters} />
                 <Route exact path="/deliveries" component={Deliveries} />
+                <Route exact path="/deliveries/add" component={DeliveryForm} />
+                <Route exact path="/deliveries/deliveryId" component={CreateDelivery}/>
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/customer-register" component={RegisterCustomer} />
                 <Route exact path="/toaster-register" component={RegisterToaster} />

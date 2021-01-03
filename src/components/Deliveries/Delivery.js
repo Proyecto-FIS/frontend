@@ -34,8 +34,6 @@ const styles = (theme) => ({
 });
 
 
-
-
 class Delivery extends Component {
     render() {
 
