@@ -100,6 +100,11 @@ class NewProduct extends Component {
         if(this.props.newProduct?.created){
             this.setState({ redirect: "/" });
         }
+        if(prevProps.newProduct?.loading === true && this.props.newProduct?.errors){
+            this.setState({
+                errors: this.props.newProduct.errors
+            })
+        }
         if(prevProps.newProduct?.loading === true && this.props.newProduct?.productImage){
             document.getElementById('productImg').src = this.props.newProduct.productImage;
             this.setState({
