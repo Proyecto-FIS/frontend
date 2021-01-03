@@ -1,5 +1,5 @@
 import axios from "axios";
-import getAllDeliveries from "../redux/actions/getAllDeliveries";
+import getAllDeliveries from "../redux/actions/Delivery/getAllDeliveries";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 import store from "../redux/store";
 

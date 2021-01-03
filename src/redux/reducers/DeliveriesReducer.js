@@ -1,5 +1,5 @@
-import { type as GET_ALL_DELIVERIES } from "../actions/getAllDeliveries";
-import { type as GET_DELIVERY } from "../actions/getDelivery";
+import { type as GET_ALL_DELIVERIES } from "../actions/Delivery/getAllDeliveries";
+import { type as GET_DELIVERY } from "../actions/Delivery/getDelivery";
 import { type as POST_DELIVERY } from "../actions/Delivery/createdDelivery";
 import { type as PUT_DELIVERY } from "../actions/Delivery/updatedDelivery";
 import { type as SET_DELIVERY } from "../actions/Delivery/setDelivery";
