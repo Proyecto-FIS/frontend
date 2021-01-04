@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS} from "./types";
+import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR} from "./types";
 import { setAlert } from './alert';
+import { logout } from "./logout";
 
 
 // Register Customer
@@ -41,4 +42,101 @@ export const registerCustomer = ({  username, email, address, pictureUrl, passwo
         type: REGISTER_ERROR
       });
   }
+};
+
+// Get Customer profile
+export const getCustomerProfile = (id) => async (dispatch) => {
+
+  const config = {
+    headers: {
+      'Content-Type':'application/json'
+    }
+  }
+
+  try {
+    dispatch({
+      type: PROFILE_REQUEST
+    });
+
+    const res = await axios.get(`/api/customers/${id}`, config);
+
+    dispatch({
+      type: PROFILE_SUCCESS,
+      payload: res.data
+    });
+    
+  } catch (err) {
+    
+      dispatch(setAlert(err.message, 'error'));
+      window.scrollTo(0, 0);
+
+      dispatch({
+        type: PROFILE_ERROR
+      });
+  }
+};
+
+//Update Customer profile
+export const updateCustomerProfile = ({  id, email, address, pictureUrl, password }) => async (dispatch, getState) => {
+
+  const body = JSON.stringify({ email, address, pictureUrl, password });
+
+  const config = {
+    headers: {
+      'Content-Type':'application/json'
+    }
+  }
+
+
+  try {
+    const {AuthReducer: {account}} = getState();
+
+    const token = account.token;
+
+    const resp = await axios.get(`/api/auth/${token+1}`, config);
+
+    const { account_id } = resp.data;
+
+  if (account_id !== account.id) {
+    dispatch(logout());
+
+  } else {
+      try {
+        dispatch({
+          type: UPDATE_PROFILE_REQUEST
+        });
+    
+        const res = await axios.put(`/api/customers/${id}`, body, config);
+    
+        dispatch({
+          type: UPDATE_PROFILE_SUCCESS,
+          payload: res.data
+        });
+        
+      } catch (err) {
+        
+          dispatch(setAlert(err.message, 'error'));
+          window.scrollTo(0, 0);
+    
+          dispatch({
+            type: UPDATE_PROFILE_ERROR
+          });
+      }
+    }
+
+  } catch(err) {
+    dispatch(setAlert("Token inválido, vuelve a iniciar sesión", 'error'));
+
+    dispatch({
+      type: UPDATE_PROFILE_ERROR
+    });
+
+    window.scrollTo(0, 0);
+
+    dispatch(logout());
+  }
+
+
+
+  
 };

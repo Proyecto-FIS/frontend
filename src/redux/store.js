@@ -4,6 +4,8 @@ import ProductsReducer from "./reducers/ProductsReducer";
 import AlertReducer from "./reducers/AlertReducer";
 import AuthReducer from "./reducers/AuthReducer";
 import DeliveriesReducer from "./reducers/DeliveriesReducer";
+import ProfileReducer from "./reducers/ProfileReducer";
+import UpdateProfileReducer from "./reducers/UpdateProfileReducer";
 
 import thunk from 'redux-thunk';
 
@@ -13,7 +15,9 @@ const reducers = combineReducers({
     ProductsReducer,
     AlertReducer,
     AuthReducer,
-    DeliveriesReducer
+    DeliveriesReducer,
+    ProfileReducer,
+    UpdateProfileReducer
 });
 
 const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;
