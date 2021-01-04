@@ -16,14 +16,13 @@ import Deliveries from "./routes/Deliveries";
 import Customer from "./routes/Customer";
 
 import NavBar from "./components/NavBar";
-import AlertComp from "./components/AlertComp";
+import SnackbarListener from "./components/Common/SnackBarListener";
 
 ReactDOM.render(
     <Provider store={store}>
         <React.StrictMode>
             <Router>
                 <NavBar />
-                <AlertComp />
                 <Switch>
                     <Route path="/roasters" component={Roasters} />
                     <Route path="/deliveries" component={Deliveries} />
@@ -36,6 +35,7 @@ ReactDOM.render(
                     <Route path="/" component={Products} />
                 </Switch>
             </Router>
+            <SnackbarListener />
         </React.StrictMode>
     </Provider>,
     document.getElementById("root")

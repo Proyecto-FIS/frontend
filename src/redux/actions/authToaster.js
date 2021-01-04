@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { LOGIN_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, REGISTER_SUCCESS} from "./types";
-import { setAlert } from './alert';
+import startSnackBar from "./SnackBar/startSnackBar";
 
 
 // Register Toaster
@@ -33,8 +33,7 @@ export const registerToaster = ({ username, email, name, description, phoneNumbe
     localStorage.setItem('account', JSON.stringify(res.data));
     
   } catch (err) {
-      dispatch(setAlert(err.message, 'error'));
-        window.scrollTo(0, 0);
+        dispatch(startSnackBar("error", err.message));
 
       dispatch({
         type: REGISTER_ERROR

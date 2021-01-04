@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR} from "./types";
-import { setAlert } from './alert';
+import startSnackBar from "./SnackBar/startSnackBar";
 import { logout } from "./logout";
 
 
@@ -35,8 +35,7 @@ export const registerCustomer = ({  username, email, address, pictureUrl, passwo
     
   } catch (err) {
     
-      dispatch(setAlert(err.message, 'error'));
-      window.scrollTo(0, 0);
+      dispatch(startSnackBar("error", err.message));
 
       dispatch({
         type: REGISTER_ERROR
@@ -67,8 +66,7 @@ export const getCustomerProfile = (id) => async (dispatch) => {
     
   } catch (err) {
     
-      dispatch(setAlert(err.message, 'error'));
-      window.scrollTo(0, 0);
+      dispatch(startSnackBar("error", err.message));
 
       dispatch({
         type: PROFILE_ERROR
@@ -112,11 +110,12 @@ export const updateCustomerProfile = ({  id, email, address, pictureUrl, passwor
           type: UPDATE_PROFILE_SUCCESS,
           payload: res.data
         });
+
+        dispatch(startSnackBar("success", "Perfil actualizado correctamente"));
         
       } catch (err) {
         
-          dispatch(setAlert(err.message, 'error'));
-          window.scrollTo(0, 0);
+          dispatch(startSnackBar("error", err.message));
     
           dispatch({
             type: UPDATE_PROFILE_ERROR
@@ -125,18 +124,14 @@ export const updateCustomerProfile = ({  id, email, address, pictureUrl, passwor
     }
 
   } catch(err) {
-    dispatch(setAlert("Token inválido, vuelve a iniciar sesión", 'error'));
+    dispatch(startSnackBar("Token inválido, vuelve a iniciar sesión", err.message));
 
     dispatch({
       type: UPDATE_PROFILE_ERROR
     });
 
-    window.scrollTo(0, 0);
-
     dispatch(logout());
   }
-
-
 
   
 };

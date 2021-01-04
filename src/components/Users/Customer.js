@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { setAlert } from "../../redux/actions/alert";
+import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
 import {getCustomerProfile, updateCustomerProfile} from "../../redux/actions/authCustomer";
 
@@ -51,9 +51,7 @@ const Customer = () => {
   const customerProfile = useSelector(state => state.ProfileReducer);
   const { loading, error, user } = customerProfile;
 
-  const updateProfile = useSelector(state => state.UpdateProfileReducer);
-  const { success } = updateProfile;
-
+  
   const {account: accFromUser} = user;
 
   const { account } = accountLogin || {};
@@ -71,7 +69,7 @@ const Customer = () => {
   }, [dispatch, params, user.address]);
   
   if(error) {
-    dispatch(setAlert(error, 'error'));
+    dispatch(startSnackBar("error", error));
   }
 
 
@@ -86,8 +84,7 @@ const Customer = () => {
     e.preventDefault();
 
     if(password !== password2) {
-      dispatch(setAlert("Las contraseña no coinciden", "error"));
-      window.scrollTo(0, 0);
+      dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
     } else {
       dispatch(updateCustomerProfile({id: params.accountId, email, address, pictureUrl, password}));
     }
@@ -150,7 +147,6 @@ const Customer = () => {
           <Grid container spacing={2}>
 
             <Grid item xs={3}>
-            { success && <div>Perfil actualizado correctamente</div> }
             {accFromUser._id === account._id &&
 
               <form className={classes.form} onSubmit={onSubmit} noValidate>
