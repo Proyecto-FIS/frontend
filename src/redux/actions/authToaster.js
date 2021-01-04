@@ -4,14 +4,14 @@ import { setAlert } from './alert';
 
 
 // Register Toaster
-export const registerToaster = ({ username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password }) => async dispatch => {
+export const registerToaster = ({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password }) => async dispatch => {
   const config = {
     headers: {
       'Content-Type':'application/json'
     }
   }
 
-  const body = JSON.stringify({  username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password });
+  const body = JSON.stringify({  username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password });
 
   try {
     dispatch({

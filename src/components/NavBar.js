@@ -44,7 +44,7 @@ const NavBar = () => {
             
             [ account.isCustomer ? 
             <Button variant="contained" color="default" component={ Link } to={`/customers/${account._id}`}>{account.username}</Button>:
-            <Button variant="outlined" component={ Link } to={`/toasters/${account._id}`}>Perfil</Button>
+            <Button variant="contained" color="default" component={ Link } to={`/toasters/${account._id}`}>{account.username}</Button>
             ]
         }
 
