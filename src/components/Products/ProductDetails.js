@@ -12,6 +12,8 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import Select from '@material-ui/core/Select';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import { connect } from "react-redux";
+import CartService from "../../services/CartService"
 
 const styles = (theme) => ({
     div: {
@@ -44,11 +46,19 @@ const styles = (theme) => ({
 });
 
 class ProductDetails extends Component {
+    cartService = new CartService();
     state = {
+        productList: [],
         grindType: "",
         formatType: {},
         productPrice: 0.0
     };
+    componentDidMount(){
+        const productList = this.props.productList
+        this.setState({
+            productList: productList
+        })
+    }
     handleChange(event){
         const name = event.target.name;
         const value = event.target.value;
@@ -65,9 +75,23 @@ class ProductDetails extends Component {
         });
     };
 
+    handleAddCart = (id) =>{
+        let product = {
+            _id: id,
+            quantity: 1,
+            unitPriceEuros: this.state.productPrice
+        }
+        let productList = this.state.productList
+        let found = productList.find(p => p._id === product._id)
+        if(found){
+            found.quantity = found.quantity + 1   
+        }else{
+            productList.push(product)
+        }
+        this.cartService.updateCart(productList)
+    }
     render() {
-        const {classes, product:{ name, description, format, grind, imageUrl }} = this.props;  
-
+        const {classes, product:{ _id, name, description, format, grind, imageUrl }} = this.props;  
         return (
             <Card className={classes.card}>
                 <div className={classes.div}>
@@ -125,9 +149,11 @@ class ProductDetails extends Component {
                             color="primary"
                             size="large"
                             className={classes.button}
+                            onClick={() => this.handleAddCart(_id)}
+                            disabled={this.state.grindType === "" || Object.entries(this.state.formatType).length === 0}
                             endIcon={<ShoppingBasketIcon />}
                         >
-                            Comprar
+                            Añadir al carrito
                         </Button>
                     </CardContent>
                 </div>
@@ -140,4 +166,9 @@ ProductDetails.propTypes = {
     product: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
 }
-export default (withStyles(styles, { withTheme: true })(ProductDetails));
+
+const mapStateToProps = state =>({
+    productList: state.CartReducer.productList,
+});
+
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(ProductDetails));

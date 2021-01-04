@@ -25,14 +25,27 @@ const styles = (theme) => ({
 
 
 class Product extends Component {
+  state = {
+    loading: true,
+    product: {}
+  }
   componentDidMount(){
     const productId = this.props.match.params.productId;
     this.ProductsService = new ProductsService();
     this.ProductsService.requestProduct(productId);
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps?.loading && this.props.loading === false){
+      this.setState({
+        loading:false,
+        product: this.props.product
+      })
+    }
+  }
+
   render() {
-    const {product, loading} = this.props;
+    const {product, loading} = this.state;
     return (
       <Grid container>
         <Grid container item sm={2} xs={1}></Grid>
