@@ -8,7 +8,7 @@ import MainGrid from "../components/Common/MainGrid";
 import { connect } from "react-redux";
 import setDelivery from "../redux/actions/Delivery/setDelivery";
 
-const fields = [
+const fields1 = [
     {
         label: "Nombre",
         name: "name",
@@ -16,7 +16,7 @@ const fields = [
     },
     {
         label: "Apellidos",
-        name: "surname",
+        name: "surnames",
         validators: [Validators.StringLength(1, 100)]
     },
     {
@@ -53,8 +53,32 @@ const fields = [
         label: "Correo electrónico",
         name: "email",
         validators: [Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)]
+    }
+];
+
+const fields2 = [
+    {
+        label: "ESTADO",
+        name: "statusType",
+        validators: [Validators.StringLength(1, 50)]
+    },
+    {
+        label: "Fecha de inicio",
+        name: "createdDate",
+        validators: [Validators.StringLength(1, 500)]
+    },
+    {
+        label: "Fecha de entrega estimada",
+        name: "deliveryDate",
+        validators: [Validators.StringLength(1, 500)]
+    },
+    {
+        label: "Comentarios",
+        name: "comments",
+        validators: [Validators.StringLength(1, 500)]
     },
 ];
+
 
 const styles = (theme) => ({
     titleText: {
@@ -62,7 +86,7 @@ const styles = (theme) => ({
     },
     form: {
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "column"
     }
 });
 
@@ -93,14 +117,22 @@ class DeliveryForm extends Component {
             formCorrect: false,
         };
 
-        if(delivery) {
-            fields.forEach(field => {
+        if (delivery) {
+            fields1.forEach(field => {
+                state.values[field.name] = delivery[field.name];
+                state.errors[field.name] = "";
+            });
+            fields2.forEach(field => {
                 state.values[field.name] = delivery[field.name];
                 state.errors[field.name] = "";
             });
             state.values._id = delivery._id;
         } else {
-            fields.forEach(field => {
+            fields1.forEach(field => {
+                state.values[field.name] = "";
+                state.errors[field.name] = "";
+            });
+            fields2.forEach(field => {
                 state.values[field.name] = "";
                 state.errors[field.name] = "";
             });
@@ -110,7 +142,7 @@ class DeliveryForm extends Component {
 
     submitDone() {
         this.setState({ isSubmitting: false });
-        //this.props.history.push("/billingprofiles");
+        this.props.history.push("/delivery");
     }
 
     submitForm() {
@@ -128,7 +160,8 @@ class DeliveryForm extends Component {
             let newState = prevState;
             newState.values[field.name] = e.target.value;
             newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
-            newState.formCorrect = fields.reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
+            newState.formCorrect = fields1.reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
+            newState.formCorrect = fields2.reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
             return newState;
         });
     }
@@ -136,7 +169,7 @@ class DeliveryForm extends Component {
     render() {
         const { classes, delivery } = this.props;
 
-        const formFields = fields.map((field, index) => (
+        const formFields1 = fields1.map((field, index) => (
             <Grid key={index} item xs={12}>
                 <FormTextField label={field.label} error={this.state.errors[field.name]}
                     value={this.state.values[field.name]}
@@ -144,26 +177,37 @@ class DeliveryForm extends Component {
             </Grid>
         ));
 
-        const actionText = delivery ? "Editar" : "Añadir";
+        const formFields2 = fields2.map((field, index) => (
+            <Grid key={index} item xs={12}>
+                <FormTextField label={field.label} error={this.state.errors[field.name]}
+                    value={this.state.values[field.name]}
+                    onChange={this.setField.bind(this, field)} />
+            </Grid>
+        ));
+
+        const actionText = delivery ? "MODIFICAR" : "CONFIRMAR";
 
         return (
             <MainGrid>
                 <Box border={1} borderRadius={10} boxShadow={3} padding={3}>
-                    <h2 className={classes.titleText}>{actionText} Confirmación de entrega</h2>
-                    <Grid container>
-                        <Grid item sm={2} xs={2}></Grid>
-                        <Grid container item xs={8} sm={8} spacing={3} className={classes.form}>
-                            {formFields}
-                            <Grid container item spacing={4} direction="row-reverse">
-                                <Grid item>
-                                    <Button variant="contained" color="secondary" onClick={e => this.clearForm()}>Limpiar</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained" color="secondary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>{actionText}</Button>
-                                </Grid>
-                            </Grid>
+                    <h2 className={classes.titleText}>{actionText} ENTREGA</h2>
+                    <Grid container spacing={3}>
+                        <Grid item xs={6} className={classes.form}>
+                            <h3 className={classes.titleText}>DIRECCIÓN DE ENVÍO</h3>
+                            {formFields1}
                         </Grid>
-                        <Grid item sm={2} xs={2}></Grid>
+                        <Grid item xs={6} className={classes.form}>
+                            <h3 className={classes.titleText}>ESTADO DE ENTREGA</h3>
+                            {formFields2}
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={6} direction="row-reverse" justify="center">
+                        <Grid item>
+                            <Button variant="contained" color="primary" onClick={e => this.clearForm()}>Limpiar</Button>
+                        </Grid>
+                        <Grid item>
+                            <Button variant="contained" color="primary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>{actionText}</Button>
+                        </Grid>
                     </Grid>
                 </Box>
             </MainGrid>

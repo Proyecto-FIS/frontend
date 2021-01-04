@@ -46,11 +46,11 @@ export class DeliveriesService {
 
             return axios.put("/api/deliveries", { delivery }, { params: { userToken } })
                 .then(response => {
-                    store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"));
+                    store.dispatch(startSnackBar("success", "Entrega actualizado correctamente"));
                     resolve();
                 })
                 .catch(err => {
-                    store.dispatch(startSnackBar("error", "No ha sido posible actualizar el perfil"));
+                    store.dispatch(startSnackBar("error", "No ha sido posible actualizar la entrega"));
                     reject();
                 });
         });
