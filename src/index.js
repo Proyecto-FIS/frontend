@@ -17,7 +17,6 @@ import Deliveries from "./routes/Deliveries";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
 import PurchaseHistory from "./routes/PurchaseHistory";
-import CreateDelivery from "./routes/CreateDelivery";
 import DeliveryForm from "./routes/DeliveryForm";
 
 import NavBar from "./components/NavBar";

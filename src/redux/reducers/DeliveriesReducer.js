@@ -1,7 +1,5 @@
 import { type as GET_ALL_DELIVERIES } from "../actions/Delivery/getAllDeliveries";
 import { type as GET_DELIVERY } from "../actions/Delivery/getDelivery";
-import { type as POST_DELIVERY } from "../actions/Delivery/createdDelivery";
-import { type as PUT_DELIVERY } from "../actions/Delivery/updatedDelivery";
 import { type as SET_DELIVERY } from "../actions/Delivery/setDelivery";
 
 
@@ -22,20 +20,6 @@ const reducer = (state = defaultState, { type, payload }) => {
             return {
                 ...state,
                 deliveryDetails: payload
-            };
-        case POST_DELIVERY:
-            return {
-                ...state,
-                newDelivery: {
-                    created: true,
-                }
-            };
-        case PUT_DELIVERY:
-            return {
-                ...state,
-                newDelivery: {
-                    updated: true,
-                }
             };
         case SET_DELIVERY:
             return {

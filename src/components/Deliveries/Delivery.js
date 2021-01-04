@@ -17,7 +17,9 @@ import UpdateIcon from '@material-ui/icons/Autorenew';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from 'react-router-dom';
-
+import setDelivery from "../../redux/actions/Delivery/setDelivery";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
 const styles = (theme) => ({
     card: {
@@ -33,8 +35,13 @@ const styles = (theme) => ({
     },
 });
 
-
 class Delivery extends Component {
+
+    edit() {
+        this.props.setDelivery(this.props.delivery);
+        this.props.history.push("/deliveries/add");
+    }
+
     render() {
 
         const { classes, delivery: { _id, name, surnames, address, city, comments, statusType, deliveryDate } } = this.props;
@@ -81,7 +88,7 @@ class Delivery extends Component {
                         <IconButton aria-label="delete">
                             <DeleteIcon />
                         </IconButton>
-                        <IconButton aria-label="update">
+                        <IconButton aria-label="Editar" onClick={() => this.edit()}>
                             <UpdateIcon />
                         </IconButton>
                     </CardActions>
@@ -91,8 +98,12 @@ class Delivery extends Component {
     }
 }
 
+const mapDispatchToProps = {
+    setDelivery
+};
+
 Delivery.propTypes = {
     delivery: PropTypes.object.isRequired,
 }
 
-export default (withStyles(styles, { withTheme: true })(Delivery));
+export default withRouter(connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Delivery)));
