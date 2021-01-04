@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR} from "./types";
+import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_RESET} from "./types";
 import { setAlert } from './alert';
 import { logout } from "./logout";
 
@@ -92,12 +92,12 @@ export const updateCustomerProfile = ({  id, email, address, pictureUrl, passwor
     const {AuthReducer: {account}} = getState();
 
     const token = account.token;
-
-    const resp = await axios.get(`/api/auth/${token+1}`, config);
+    
+    const resp = await axios.get(`/api/auth/${token}`, config);
 
     const { account_id } = resp.data;
 
-  if (account_id !== account.id) {
+  if (account_id !== account._id) {
     dispatch(logout());
 
   } else {

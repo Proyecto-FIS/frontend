@@ -89,7 +89,6 @@ const Customer = () => {
       dispatch(setAlert("Las contraseña no coinciden", "error"));
       window.scrollTo(0, 0);
     } else {
-      console.log(params.accountId)
       dispatch(updateCustomerProfile({id: params.accountId, email, address, pictureUrl, password}));
     }
   };
