@@ -40,6 +40,14 @@ const NavBar = () => {
 
     const authLinks = (
         <Fragment>
+            {account && 
+            
+            [ account.isCustomer ? 
+            <Button variant="contained" color="default" component={ Link } to={`/customers/${account._id}`}>{account.username}</Button>:
+            <Button variant="contained" color="default" component={ Link } to={`/toasters/${account._id}`}>{account.username}</Button>
+            ]
+        }
+
             <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
         </Fragment>
     );
