@@ -79,7 +79,9 @@ class ProductDetails extends Component {
         let product = {
             _id: id,
             quantity: 1,
-            unitPriceEuros: this.state.productPrice
+            unitPriceEuros: this.state.productPrice,
+            name: this.props.product.name,
+            imageUrl: this.props.product.imageUrl
         }
         let productList = this.state.productList
         let found = productList.find(p => p._id === product._id)

@@ -1,5 +1,4 @@
 import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
-import PropTypes from 'prop-types';
 
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
@@ -16,6 +15,19 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
 import UsersService from "../services/UsersService"
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Divider from '@material-ui/core/Divider';
+import PaymentIcon from '@material-ui/icons/Payment';
+import HistoryIcon from '@material-ui/icons/History';
+import CartService from "../services/CartService"
 
 const styles = (theme) => ({
     root: {
@@ -29,6 +41,16 @@ const styles = (theme) => ({
     },
     cart: {
         marginRight: "20px"
+    },
+    dialogText: {
+        margin: "10px 0px 10px 25px"
+    },
+    submitButton: {
+        position: 'relative',
+        margin: "10px 0px 10px 25px"
+    },
+    listItem: {
+        width: "50%"
     }
 });
 
@@ -42,29 +64,40 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 class NavBar extends Component {
-    state = {
-        totalProducts: 0,
-        totalProductPrice: 0
-    }
-    usersService = new UsersService();
-    
-    componentDidUpdate(prevProps, prevState){
-        console.log("Hola")
-        console.log(prevProps)
-        if(prevProps.productList !== this.props.productList){
-            let totalProducts = 0
-            this.props.productList.forEach(p => totalProducts + p.quantity);
-            this.setState({
-                totalProducts: totalProducts
-            })
+    constructor(props){
+        super(props)
+        this.state = {
+            open: false,
         }
     }
+
+    usersService = new UsersService();
+    cartService = new CartService();
 
     render() {
         const {classes, account} = this.props;
         
         const logoutHandler = () => {
             this.usersService.logOut();
+        }
+
+        const handleClose= () => {
+            this.setState({
+                open: false
+            })
+        };
+
+        const handleOpen = () => {
+            this.setState({
+                open: true
+            })
+        }
+
+        const handleDeleteItem = (product) => {
+            let products = this.props.productList.filter((p) => {
+                return p._id !== product._id
+            })
+            this.cartService.updateCart(products)
         }
     
         const authLinks = (
@@ -82,11 +115,37 @@ class NavBar extends Component {
 
         const cart = (
             <Fragment>
-                <IconButton className={classes.cart} aria-label="cart" color="inherit">
-                    <StyledBadge badgeContent={this.state.totalProducts} color="secondary">
+                <IconButton onClick={handleOpen} className={classes.cart} aria-label="cart" color="inherit">
+                    <StyledBadge badgeContent={this.props.quantity} color="secondary">
                         <ShoppingCartIcon />
                     </StyledBadge>
                 </IconButton>
+                <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={this.state.open} fullWidth>
+                    <DialogTitle id="simple-dialog-title">Carro de la compra</DialogTitle>
+                    <List>
+                        {this.props.quantity > 0 ? this.props.productList.map((product) => (
+                            <ListItem button key={`item-${product._id}`}>
+                                <ListItemAvatar>
+                                <Avatar alt={product.name} src={product.imageUrl} />
+                                </ListItemAvatar>
+                                <ListItemText className={classes.listItem} primary={product.name}  secondary={`${product.quantity} uds.`}/>
+                                <ListItemText className={classes.listItem} primary={`${product.unitPriceEuros} €`} />
+                                <ListItemSecondaryAction>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteItem(product)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        )) : <Typography variant="h5" color="textSecondary" className={classes.dialogText}>El carro está vacío</Typography>}
+                        {this.props.quantity > 0 ? (
+                        <Fragment>
+                            <Divider />
+                            <Typography variant="h6" color="textPrimary" className={classes.dialogText}>Total: {this.props.totalPrice}€</Typography>
+                            <Button type="submit" variant="contained" color="primary" className={classes.submitButton} endIcon={<PaymentIcon />}>Comprar</Button>
+                            <Button variant="contained" className={classes.submitButton} color="secondary" onClick={this.handleISBNOpen} endIcon={<HistoryIcon />}>Suscripción</Button>
+                        </Fragment>) : null}
+                    </List>
+                </Dialog>
             </Fragment>
         );
     
@@ -98,7 +157,7 @@ class NavBar extends Component {
                     <Typography variant="h6" className={classes.auth}>
                         <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
                     </Typography>
-                    {cart}
+                    { account ? cart : cart }
                     { account ? authLinks : guestLinks }
 
                 </Toolbar>
@@ -107,13 +166,10 @@ class NavBar extends Component {
     }
 }
 
-NavBar.propTypes = {
-    productList: PropTypes.array.isRequired,
-
-}
-
 const mapStateToProps = state =>({
+    quantity: state.CartReducer.quantity,
     productList: state.CartReducer.productList,
+    totalPrice: state.CartReducer.totalPrice,
 });
 
 
