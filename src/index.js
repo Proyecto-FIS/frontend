@@ -14,6 +14,7 @@ import RegisterToaster from "./routes/RegisterToaster";
 import Product from "./routes/Product";
 import Deliveries from "./routes/Deliveries";
 import Customer from "./routes/Customer";
+import Toaster from "./routes/Toaster";
 
 import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
@@ -30,6 +31,7 @@ ReactDOM.render(
                     <Route path="/products" component={Products} />
                     <Route path="/login" component={Login} />
                     <Route path="/customers/:accountId" component={Customer} />
+                    <Route path="/toasters/:accountId" component={Toaster} />
                     <Route path="/customer-register" component={RegisterCustomer} />
                     <Route path="/toaster-register" component={RegisterToaster} />
                     <Route path="/" component={Products} />

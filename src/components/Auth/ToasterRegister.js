@@ -161,6 +161,7 @@ const ToasterRegister = () => {
                 onChange={onChange}
                 id="phoneNumber"
                 label="Número de teléfono"
+                helperText="Formato: XXXXXXXXX"
               />
             </Grid>
             <Grid item xs={12}>
