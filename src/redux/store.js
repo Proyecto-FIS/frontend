@@ -6,6 +6,9 @@ import DeliveriesReducer from "./reducers/DeliveriesReducer";
 import ProfileReducer from "./reducers/ProfileReducer";
 import UpdateProfileReducer from "./reducers/UpdateProfileReducer";
 import SnackbarReducer from "./reducers/SnackbarReducer";
+import LoaderReducer from "./reducers/LoaderReducer";
+import BillingProfileReducer from "./reducers/BillingProfileReducer";
+
 
 import thunk from 'redux-thunk';
 
@@ -13,11 +16,13 @@ const middleware = [thunk];
 
 const reducers = combineReducers({
     ProductsReducer,
-    AuthReducer,
-    DeliveriesReducer,
     ProfileReducer,
     UpdateProfileReducer,
-    SnackbarReducer
+    DeliveriesReducer,
+    SnackbarReducer,
+    LoaderReducer,
+    BillingProfileReducer,
+    AuthReducer
 });
 
 const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;

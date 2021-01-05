@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 import { registerCustomer } from "../../redux/actions/authCustomer";
+import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';

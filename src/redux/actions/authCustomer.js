@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { REGISTER_ERROR, REGISTER_SUCCESS, REGISTER_REQUEST, LOGIN_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR} from "./types";
 import startSnackBar from "./SnackBar/startSnackBar";
 import { logout } from "./logout";

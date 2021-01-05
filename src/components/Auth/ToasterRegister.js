@@ -81,6 +81,7 @@ const ToasterRegister = () => {
 
     if(password !== password2) {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
+
      } else {
       dispatch(registerToaster({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password }));
     }

@@ -12,33 +12,40 @@ import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
 import Product from "./routes/Product";
+import CreateProduct from "./routes/CreateProduct";
 import Deliveries from "./routes/Deliveries";
 import Customer from "./routes/Customer";
 import Toaster from "./routes/Toaster";
+import BillingProfileList from "./routes/BillingProfileList";
+import BillingProfileForm from "./routes/BillingProfileForm";
+import PurchaseHistory from "./routes/PurchaseHistory";
 
 import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
 
 ReactDOM.render(
     <Provider store={store}>
-        <React.StrictMode>
-            <Router>
-                <NavBar />
-                <Switch>
-                    <Route path="/roasters" component={Roasters} />
-                    <Route path="/deliveries" component={Deliveries} />
-                    <Route path="/products/:productId" component={Product} />
-                    <Route path="/products" component={Products} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/customers/:accountId" component={Customer} />
-                    <Route path="/toasters/:accountId" component={Toaster} />
-                    <Route path="/customer-register" component={RegisterCustomer} />
-                    <Route path="/toaster-register" component={RegisterToaster} />
-                    <Route path="/" component={Products} />
-                </Switch>
-            </Router>
-            <SnackbarListener />
-        </React.StrictMode>
+        <Router>
+            <NavBar />
+            <Switch>
+                <Route exact path="/purchase-history" component={PurchaseHistory} />
+                <Route exact path="/roasters" component={Roasters} />
+                <Route exact path="/deliveries" component={Deliveries} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/customer-register" component={RegisterCustomer} />
+                <Route exact path="/toaster-register" component={RegisterToaster} />
+                <Route exact path="/customers/:accountId" component={Customer} />
+                <Route exact path="/toasters/:accountId" component={Toaster} />
+                <Route exact path="/" component={Products} />
+                <Route exact path="/products" component={Products} />
+                <Route exact path="/products/new" component={CreateProduct} />
+                <Route exact path="/products/:productId" component={Product} />
+                <Route exact path="/billingprofiles/add" component={BillingProfileForm} />
+                <Route exact path="/billingprofiles" component={BillingProfileList} />
+                <Route exact path="/roasters" component={Roasters} />
+            </Switch>
+        </Router>
+        <SnackbarListener />
     </Provider>,
     document.getElementById("root")
 );

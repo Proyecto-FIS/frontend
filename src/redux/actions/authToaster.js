@@ -1,7 +1,9 @@
 import axios from 'axios';
+
 import { LOGIN_SUCCESS, PROFILE_ERROR, PROFILE_REQUEST, PROFILE_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, REGISTER_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS} from "./types";
 import startSnackBar from "./SnackBar/startSnackBar";
 import { logout } from "./logout";
+
 
 // Register Toaster
 export const registerToaster = ({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password }) => async dispatch => {
@@ -33,7 +35,7 @@ export const registerToaster = ({ username, email, name, description, phoneNumbe
     localStorage.setItem('account', JSON.stringify(res.data));
     
   } catch (err) {
-        dispatch(startSnackBar("error", err.message));
+      dispatch(startSnackBar("error", err.message));
 
       dispatch({
         type: REGISTER_ERROR
