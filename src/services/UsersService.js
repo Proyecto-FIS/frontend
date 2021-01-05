@@ -1,4 +1,6 @@
 import axios from "axios";
+import store from "../redux/store";
+import logout from "../redux/actions/logout";
 
 export class UsersService {
 
@@ -12,6 +14,10 @@ export class UsersService {
 
     getCustomer = (customerId) => {
         return axios.get("/api/customers", { customerId })
+    }
+
+    logOut = () => {
+        store.dispatch(logout());
     }
 }
 

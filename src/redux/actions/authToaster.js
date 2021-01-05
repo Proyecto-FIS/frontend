@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { LOGIN_SUCCESS, PROFILE_ERROR, PROFILE_REQUEST, PROFILE_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, REGISTER_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS} from "./types";
 import startSnackBar from "./SnackBar/startSnackBar";
-import { logout } from "./logout";
+import logout from "./logout";
 
 
 // Register Toaster

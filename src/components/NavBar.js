@@ -1,19 +1,35 @@
 import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
 
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
-import {Fragment} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {Component, Fragment} from "react";
 import { Link } from 'react-router-dom';
 
-import {logout} from "../redux/actions/logout";
 import RegisterMenu from './Auth/RegisterMenu';
 
+import Badge from '@material-ui/core/Badge';
+import IconButton from '@material-ui/core/IconButton';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
+import { withStyles } from '@material-ui/core/styles';
+import { connect } from "react-redux";
+import UsersService from "../services/UsersService"
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Divider from '@material-ui/core/Divider';
+import PaymentIcon from '@material-ui/icons/Payment';
+import HistoryIcon from '@material-ui/icons/History';
+import CartService from "../services/CartService"
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
     root: {
         marginBottom: theme.spacing(1)
     },
@@ -22,59 +38,139 @@ const useStyles = makeStyles((theme) => ({
     },
     auth: {
         flexGrow: 1
+    },
+    cart: {
+        marginRight: "20px"
+    },
+    dialogText: {
+        margin: "10px 0px 10px 25px"
+    },
+    submitButton: {
+        position: 'relative',
+        margin: "10px 0px 10px 25px"
+    },
+    listItem: {
+        width: "50%"
     }
-}));
+});
 
+const StyledBadge = withStyles((theme) => ({
+    badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: '0 4px',
+    },
+}))(Badge);
 
-const NavBar = () => {
-
-    const dispatch = useDispatch();
-
-    const accountLogin = useSelector(state => state.AuthReducer);
-
-    const { account } = accountLogin;
-
-    const logoutHandler = () => {
-        dispatch(logout());
+class NavBar extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            open: false,
+        }
     }
 
-    const authLinks = (
-        <Fragment>
-            {account && 
-            
-            [ account.isCustomer ? 
-            <Button variant="contained" color="default" component={ Link } to={`/customers/${account._id}`}>{account.username}</Button>:
-            <Button variant="contained" color="default" component={ Link } to={`/toasters/${account._id}`}>{account.username}</Button>
-            ]
+    usersService = new UsersService();
+    cartService = new CartService();
+
+    render() {
+        const {classes, account} = this.props;
+        
+        const logoutHandler = () => {
+            this.usersService.logOut();
         }
 
-            <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
-        </Fragment>
-    );
+        const handleClose= () => {
+            this.setState({
+                open: false
+            })
+        };
 
-    const guestLinks = (
-        <Fragment>
-            <RegisterMenu/>
-            <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} component={ Link } to="/login">Entrar</Button>
-        </Fragment>
-    );
+        const handleOpen = () => {
+            this.setState({
+                open: true
+            })
+        }
 
-    const classes = useStyles();
+        const handleDeleteItem = (product) => {
+            let products = this.props.productList.filter((p) => {
+                return p._id !== product._id
+            })
+            this.cartService.updateCart(products)
+        }
+    
+        const authLinks = (
+            <Fragment>
+                <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
+            </Fragment>
+        );
+    
+        const guestLinks = (
+            <Fragment>
+                <RegisterMenu/>
+                <Button variant="contained" color="primary" startIcon={<VpnKeyIcon />} component={ Link } to="/login">Entrar</Button>
+            </Fragment>
+        );
 
-    return (
-        <AppBar position="static" className={classes.root}>
-            <Toolbar>
-                <LocalCafeIcon color="inherit" className={classes.navButton}/>
-                
-                  <Typography variant="h6" className={classes.auth}>
-                      <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
-                  </Typography>
-                
-                { account ? authLinks : guestLinks }
+        const cart = (
+            <Fragment>
+                <IconButton onClick={handleOpen} className={classes.cart} aria-label="cart" color="inherit">
+                    <StyledBadge badgeContent={this.props.quantity} color="secondary">
+                        <ShoppingCartIcon />
+                    </StyledBadge>
+                </IconButton>
+                <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={this.state.open} fullWidth>
+                    <DialogTitle id="simple-dialog-title">Carro de la compra</DialogTitle>
+                    <List>
+                        {this.props.quantity > 0 ? this.props.productList.map((product) => (
+                            <ListItem button key={`item-${product._id}`}>
+                                <ListItemAvatar>
+                                <Avatar alt={product.name} src={product.imageUrl} />
+                                </ListItemAvatar>
+                                <ListItemText className={classes.listItem} primary={product.name}  secondary={`${product.quantity} uds.`}/>
+                                <ListItemText className={classes.listItem} primary={`${product.unitPriceEuros} €`} />
+                                <ListItemSecondaryAction>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteItem(product)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        )) : <Typography variant="h5" color="textSecondary" className={classes.dialogText}>El carro está vacío</Typography>}
+                        {this.props.quantity > 0 ? (
+                        <Fragment>
+                            <Divider />
+                            <Typography variant="h6" color="textPrimary" className={classes.dialogText}>Total: {this.props.totalPrice}€</Typography>
+                            <Button type="submit" variant="contained" color="primary" className={classes.submitButton} endIcon={<PaymentIcon />}>Comprar</Button>
+                            <Button variant="contained" className={classes.submitButton} color="secondary" onClick={this.handleISBNOpen} endIcon={<HistoryIcon />}>Suscripción</Button>
+                        </Fragment>) : null}
+                    </List>
+                </Dialog>
+            </Fragment>
+        );
+    
+        return (
+            <AppBar position="static" className={classes.root}>
+                <Toolbar>
+                    <LocalCafeIcon color="inherit" className={classes.navButton}/>
+                    
+                    <Typography variant="h6" className={classes.auth}>
+                        <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
+                    </Typography>
+                    { account ? cart : cart }
+                    { account ? authLinks : guestLinks }
 
-            </Toolbar>
-        </AppBar>
-    );
+                </Toolbar>
+            </AppBar>
+        );
+    }
 }
 
-export default NavBar;
+const mapStateToProps = state =>({
+    quantity: state.CartReducer.quantity,
+    productList: state.CartReducer.productList,
+    totalPrice: state.CartReducer.totalPrice,
+});
+
+
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(NavBar));
