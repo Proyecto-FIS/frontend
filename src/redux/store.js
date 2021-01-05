@@ -23,12 +23,8 @@ const reducers = combineReducers({
     SnackbarReducer,
     LoaderReducer,
     BillingProfileReducer,
-<<<<<<< HEAD
     SubscriptionReducer,
     AuthReducer,
-=======
-    AuthReducer
->>>>>>> main
 });
 
 const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;
