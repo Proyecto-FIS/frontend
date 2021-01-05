@@ -16,6 +16,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import InstagramIcon from '@material-ui/icons/Instagram';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -51,7 +56,9 @@ const ToasterRegister = () => {
     description: '',
     phoneNumber: '',
     address: '',
-    socialNetworks: '',
+    instagramUrl: '',
+    facebookUrl: '',
+    twitterUrl: '',
     pictureUrl: '',
     password: '',
     password2: ''
@@ -63,7 +70,8 @@ const ToasterRegister = () => {
 
   const { loading, error, account } = accountLogin;
 
-  const {username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password, password2} = formData;
+  const {username, email, name, description, phoneNumber, address,
+     instagramUrl, facebookUrl, twitterUrl, pictureUrl, password, password2} = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,9 +81,9 @@ const ToasterRegister = () => {
 
     if(password !== password2) {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
-      window.scrollTo(0, 0);
+
      } else {
-      dispatch(registerToaster({ username, email, name, description, phoneNumber, address, socialNetworks, pictureUrl, password }));
+      dispatch(registerToaster({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password }));
     }
   };
 
@@ -141,6 +149,7 @@ const ToasterRegister = () => {
                 onChange={onChange}
                 id="description"
                 label="Descripción"
+                helperText="20 palabras como mínimo"
               />
             </Grid>
             <Grid item xs={12}>
@@ -153,6 +162,7 @@ const ToasterRegister = () => {
                 onChange={onChange}
                 id="phoneNumber"
                 label="Número de teléfono"
+                helperText="Formato: XXXXXXXXX"
               />
             </Grid>
             <Grid item xs={12}>
@@ -169,13 +179,56 @@ const ToasterRegister = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="socialNetworks"
+                name="facebookUrl"
                 variant="outlined"
                 fullWidth
-                value={socialNetworks}
+                value={facebookUrl}
                 onChange={onChange}
-                id="socialNetworks"
-                label="Redes sociales"
+                id="facebookUrl"
+                label="Perfil de Facebook"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FacebookIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="instagramUrl"
+                variant="outlined"
+                fullWidth
+                value={instagramUrl}
+                onChange={onChange}
+                id="instagramUrl"
+                label="Perfil de Instagram"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <InstagramIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="twitterUrl"
+                variant="outlined"
+                fullWidth
+                value={twitterUrl}
+                onChange={onChange}
+                id="twitterUrl"
+                label="Perfil de Twitter"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <TwitterIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -215,6 +268,7 @@ const ToasterRegister = () => {
                 onChange={onChange}
                 id="password"
                 autoComplete="current-password"
+                helperText="6 caracteres como mínimo"
               />
             </Grid>
             <Grid item xs={12}>
