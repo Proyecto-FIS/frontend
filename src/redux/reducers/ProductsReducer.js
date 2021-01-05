@@ -8,12 +8,14 @@ import { type as IMAGE_UPLOADED } from "../actions/imageUploaded";
 import { type as CLEAR_ERRORS } from "../actions/clearProductErrors";
 import { type as SET_ERRORS } from "../actions/setProductErrors";
 import { type as POST_PRODUCT } from "../actions/createdProduct";
-
+import { type as DELETING_PRODUCT } from "../actions/Products/deletingProduct";
+import { type as DELETED_PRODUCT } from "../actions/Products/deletedProduct";
 
 const defaultState = {
     productList: [],
     productDetails: {
         product: {},
+        deleted: false,
         loading: true,
     },
     newProduct:{
@@ -100,6 +102,23 @@ const reducer = (state = defaultState, { type, payload }) => {
                 newProduct: {
                     loading: false,
                     errors: payload
+                }
+            }
+        case DELETED_PRODUCT:
+            return {
+                ...state,
+                productDetails: {
+                    ...state.productDetails,
+                    loading: false,
+                    deleted: true,
+                }
+            }
+        case DELETING_PRODUCT:
+            return {
+                ...state,
+                productDetails: {
+                    ...state.productDetails,
+                    loading: true,
                 }
             }
         default:
