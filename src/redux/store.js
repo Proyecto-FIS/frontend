@@ -6,6 +6,7 @@ import DeliveriesReducer from "./reducers/DeliveriesReducer";
 import SnackbarReducer from "./reducers/SnackbarReducer";
 import LoaderReducer from "./reducers/LoaderReducer";
 import BillingProfileReducer from "./reducers/BillingProfileReducer";
+import SubscriptionReducer from "./reducers/SubscriptionReducer";
 
 import thunk from 'redux-thunk';
 
@@ -17,6 +18,7 @@ const reducers = combineReducers({
     SnackbarReducer,
     LoaderReducer,
     BillingProfileReducer,
+    SubscriptionReducer,
     AuthReducer,
 });
 

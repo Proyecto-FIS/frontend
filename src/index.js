@@ -16,6 +16,8 @@ import CreateProduct from "./routes/CreateProduct";
 import Deliveries from "./routes/Deliveries";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
+import SubscriptionList from "./routes/SubscriptionList";
+import SubscriptionForm from "./routes/SubscriptionForm";
 import PurchaseHistory from "./routes/PurchaseHistory";
 
 import NavBar from "./components/NavBar";
@@ -38,6 +40,8 @@ ReactDOM.render(
                 <Route exact path="/products/:productId" component={Product} />
                 <Route exact path="/billingprofiles/add" component={BillingProfileForm} />
                 <Route exact path="/billingprofiles" component={BillingProfileList} />
+                <Route exact path="/subscription/add" component={SubscriptionForm} />
+                <Route exact path="/subscription" component={SubscriptionList} />
                 <Route exact path="/roasters" component={Roasters} />
             </Switch>
         </Router>
