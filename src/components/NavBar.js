@@ -157,7 +157,7 @@ class NavBar extends Component {
                     <Typography variant="h6" className={classes.auth}>
                         <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
                     </Typography>
-                    { account ? cart : cart }
+                    { account && account.isCustomer ? cart : null }
                     { account ? authLinks : guestLinks }
 
                 </Toolbar>
@@ -170,6 +170,7 @@ const mapStateToProps = state =>({
     quantity: state.CartReducer.quantity,
     productList: state.CartReducer.productList,
     totalPrice: state.CartReducer.totalPrice,
+    account: state.AuthReducer.account
 });
 
 

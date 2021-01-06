@@ -9,6 +9,9 @@ import loadingError from "../redux/actions/loadingError";
 import setProductErrors from "../redux/actions/setProductErrors";
 import clearProductErrors from "../redux/actions/clearProductErrors";
 import createdProduct from "../redux/actions/createdProduct";
+import deletingProduct from "../redux/actions/Products/deletingProduct";
+import deletedProduct from "../redux/actions/Products/deletedProduct";
+
 
 import store from "../redux/store";
 
@@ -53,6 +56,19 @@ export class ProductsService {
         })
     }
 
-}
+    deleteProduct = (token, productId) => {
+        console.log(token)
+        store.dispatch(deletingProduct());
 
+        axios.delete('/api/products', {data:{userToken: token}, params: { productId: productId }})
+        .then(() => {
+            store.dispatch(deletedProduct());
+        })
+        .catch((err) => {
+            store.dispatch(deletedProduct());
+            console.error(err)
+        })
+    }
+
+}
 export default ProductsService;
