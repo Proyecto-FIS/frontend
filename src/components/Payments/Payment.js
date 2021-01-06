@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
-import axios from 'axios';
-// MUI Components
+// import axios from 'axios';
+// Material UI Components
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import TextField from '@material-ui/core/TextField';
+import {makeStyles} from '@material-ui/core/styles';
 // stripe
 import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
-// Util imports
-import {makeStyles} from '@material-ui/core/styles';
-// Custom Components
+// Components
 import CardInput from './CardInput';
+// Service
+import PaymentService from "../../services/PaymentService";
 
 const useStyles = makeStyles({
   root: {
@@ -33,11 +34,11 @@ const useStyles = makeStyles({
   },
 });
 
-function HomePage() {
+function Payment() {
   const classes = useStyles();
   // State
   const [email, setEmail] = useState('');
-
+  
   const stripe = useStripe();
   const elements = useElements();
 
@@ -48,7 +49,8 @@ function HomePage() {
       return;
     }
 
-    const res = await axios.post('http://localhost:3000/pay', {email: email});
+    //const res = await axios.post('/api/pay', {email: email});
+    const res = await PaymentService.postPayment(email);
 
     const clientSecret = res.data['client_secret'];
 
@@ -95,8 +97,10 @@ function HomePage() {
     if (result.error) {
       console.log(result.error.message);
     } else {
-      const res = await axios.post('http://localhost:3000/sub', {'payment_method': result.paymentMethod.id, 'email': email});
-      // eslint-disable-next-line camelcase
+      console.log(result);
+      const res = await PaymentService.postSubscription(result.paymentMethod.id, email);
+      console.log(res);
+       // eslint-disable-next-line camelcase
       const {client_secret, status} = res.data;
 
       if (status === 'requires_action') {
@@ -148,4 +152,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default Payment;
