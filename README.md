@@ -8,5 +8,6 @@ Create the following files in the project root folder:
 - .env.test.local: local testing environment
 - .env.production.local: local production environment
 
-A summary of possible environment variables is here:
+A summary of needed environment variables is here:
 - API_ENDPOINT_URL: URL pointing to the Coffaine API service
+- PORT: only needed in production environment
