@@ -1,14 +1,14 @@
 import React, { Component, Fragment } from "react";
-import Catalog from "../components/Products/Catalog";
+import CustomerComp from "../components/Users/Customer";
 
-class Products extends Component {
+class Customer extends Component {
     render() {
         return (
             <Fragment>
-                <Catalog/>
+                <CustomerComp/>
             </Fragment>
         );
     }
 }
 
-export default Products;
+export default Customer;

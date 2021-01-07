@@ -69,7 +69,6 @@ const CustomerRegister = () => {
 
     if(password !== password2) {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
-      window.scrollTo(0, 0);
     } else {
       dispatch(registerCustomer({ username, email, address, pictureUrl, password }));
     }
@@ -161,6 +160,7 @@ const CustomerRegister = () => {
                 value={password}
                 onChange={onChange}
                 autoComplete="current-password"
+                helperText="6 caracteres como mínimo"
               />
             </Grid>
             <Grid item xs={12}>
