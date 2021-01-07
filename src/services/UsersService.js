@@ -1,10 +1,12 @@
 import axios from "axios";
 import store from "../redux/store";
-import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST } from "../redux/actions/types";
+import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST } from "../redux/actions/types";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 
 export class UsersService {
 
+
+    // --------- AUTH -----------
     static login = (body) => {
         const config = {
             headers: {
@@ -29,6 +31,13 @@ export class UsersService {
             })
     }
 
+    logOut = () => {
+        localStorage.removeItem('account');
+        store.dispatch({type: LOGOUT});
+    }
+
+
+    // --------- CUSTOMER -----------
     static registerCustomer = (body) => {
         const config = {
             headers: {
@@ -51,6 +60,73 @@ export class UsersService {
             })
     }
 
+    static getCustomerProfile = (accountId) => {
+
+        const config = {
+            headers: {
+              'Content-Type':'application/json'
+            }
+          }
+          
+        store.dispatch({type: PROFILE_REQUEST});
+        axios.get(`/api/customers/${accountId}`, config)
+        
+            .then(response => {
+                store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
+            })
+            .catch(err => { 
+                store.dispatch(startSnackBar("error", err.message))
+              
+                store.dispatch({type: PROFILE_ERROR})
+            })
+
+    }
+
+    static updateCustomerProfile = (accountId, body) => {
+        const config = {
+            headers: {
+              'Content-Type':'application/json'
+            }
+          };
+
+          const {AuthReducer: {account}} = store.getState();
+
+          const token = account.token;
+
+          axios.get(`/api/auth/${token}`, config)
+            .then(response => {
+                const { account_id: loggedAccountId } = response.data;
+
+                if (accountId !== loggedAccountId) {
+                    store.dispatch(startSnackBar("error", "Operación no autorizada"))
+                    store.dispatch({type: LOGOUT})
+
+                } else {
+                    store.dispatch({type: UPDATE_PROFILE_REQUEST})
+
+                    axios.put(`/api/customers/${accountId}`, body, config)
+                    .then(response => {
+                        store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
+                        store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
+                    })
+                    .catch(err => { 
+                        store.dispatch(startSnackBar("error", err.message))
+                        store.dispatch({type: UPDATE_PROFILE_ERROR})
+                    })
+                    
+                }
+            })
+            .catch(err => { 
+                store.dispatch(startSnackBar("error", "Token inválido, vuelve a iniciar sesión"))
+                store.dispatch({type: UPDATE_PROFILE_ERROR})
+                store.dispatch({type: LOGOUT})
+                
+            })
+          
+    }
+
+
+    // --------- TOASTER -----------
     static registerToaster = (body) => {
         const config = {
             headers: {
@@ -72,11 +148,7 @@ export class UsersService {
                 store.dispatch({type: REGISTER_ERROR})
             })
     }
-    
-    logOut = () => {
-        localStorage.removeItem('account');
-        store.dispatch({type: LOGOUT});
-    }
+
 
     static getAllRoasters() {
         return axios.get("/api/toasters")
@@ -86,9 +158,7 @@ export class UsersService {
         return axios.get("/api/toasters", { roasterId })
     }
 
-    getCustomer = (customerId) => {
-        return axios.get("/api/customers", { customerId })
-    }
+
 
 }
 
