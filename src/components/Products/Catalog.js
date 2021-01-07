@@ -5,6 +5,7 @@ import ProductSkeleton from "./ProductSkeleton";
 import Product from "./Product";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
+import AddProduct from "./AddProduct";
 
 const styles = (theme) => ({
     centerColumn: {
@@ -20,7 +21,7 @@ export class Catalog extends Component {
     }
 
     render() {
-        const { classes, products, loading } = this.props;
+        const { classes, products, loading, account } = this.props;
 
         let productsList = loading ? (
             <ProductSkeleton />
@@ -33,6 +34,7 @@ export class Catalog extends Component {
                 <Grid container item sm={2} xs={1}></Grid>
                 <Grid container item sm={8} xs={10} spacing={2} justify="center" alignItems="stretch" direction="row" className={classes.centerColumn}>
                     {productsList}
+                    {account && !account.isCustomer ? (<AddProduct />) : null}
                 </Grid>
                 <Grid container item sm={2} xs={1}></Grid>
             </Grid>
@@ -43,7 +45,8 @@ export class Catalog extends Component {
 const mapStateToProps = (state) => {
     return {
         products: state.ProductsReducer.productList,
-        loading: state.ProductsReducer.loading
+        loading: state.ProductsReducer.loading,
+        account: state.AuthReducer.account
     };
 };
 

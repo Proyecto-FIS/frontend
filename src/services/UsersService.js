@@ -3,6 +3,7 @@ import store from "../redux/store";
 import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST } from "../redux/actions/types";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 
+
 export class UsersService {
 
     static getAllRoasters() {
@@ -47,6 +48,10 @@ export class UsersService {
 
     getCustomer = (customerId) => {
         return axios.get("/api/customers", { customerId })
+    }
+
+    logOut = () => {
+        store.dispatch(logout());
     }
 }
 
