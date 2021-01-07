@@ -5,7 +5,7 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import {Component, Fragment} from "react";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import RegisterMenu from './Auth/RegisterMenu';
 
@@ -68,6 +68,7 @@ class NavBar extends Component {
         super(props)
         this.state = {
             open: false,
+            redirect: null
         }
     }
 
@@ -98,6 +99,13 @@ class NavBar extends Component {
                 return p._id !== product._id
             })
             this.cartService.updateCart(products)
+        }
+
+        const handlePurchase = () => {
+            this.setState({
+                open: false,
+                redirect: "/purchase"
+            })
         }
     
         const authLinks = (
@@ -141,14 +149,17 @@ class NavBar extends Component {
                         <Fragment>
                             <Divider />
                             <Typography variant="h6" color="textPrimary" className={classes.dialogText}>Total: {this.props.totalPrice}€</Typography>
-                            <Button type="submit" variant="contained" color="primary" className={classes.submitButton} endIcon={<PaymentIcon />}>Comprar</Button>
-                            <Button variant="contained" className={classes.submitButton} color="secondary" onClick={this.handleISBNOpen} endIcon={<HistoryIcon />}>Suscripción</Button>
+                            <Button type="submit" variant="contained" color="primary" className={classes.submitButton} endIcon={<PaymentIcon />} onClick={handlePurchase}>Comprar</Button>
                         </Fragment>) : null}
                     </List>
                 </Dialog>
             </Fragment>
         );
     
+        if(this.state.redirect) {
+            console.log(this.state.redirect)
+            return <Redirect to={this.state.redirect} />
+        }
         return (
             <AppBar position="static" className={classes.root}>
                 <Toolbar>
