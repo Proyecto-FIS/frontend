@@ -149,6 +149,71 @@ export class UsersService {
             })
     }
 
+    static getToasterProfile = (accountId) => {
+
+        const config = {
+            headers: {
+              'Content-Type':'application/json'
+            }
+          }
+          
+        store.dispatch({type: PROFILE_REQUEST});
+        axios.get(`/api/toasters/${accountId}`, config)
+        
+            .then(response => {
+                store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
+            })
+            .catch(err => { 
+                store.dispatch(startSnackBar("error", err.message))
+              
+                store.dispatch({type: PROFILE_ERROR})
+            })
+
+    }
+
+    static updateToasterProfile = (accountId, body) => {
+        const config = {
+            headers: {
+              'Content-Type':'application/json'
+            }
+          };
+
+          const {AuthReducer: {account}} = store.getState();
+
+          const token = account.token;
+
+          axios.get(`/api/auth/${token}`, config)
+            .then(response => {
+                const { account_id: loggedAccountId } = response.data;
+
+                if (accountId !== loggedAccountId) {
+                    store.dispatch(startSnackBar("error", "Operación no autorizada"))
+                    store.dispatch({type: LOGOUT})
+
+                } else {
+                    store.dispatch({type: UPDATE_PROFILE_REQUEST})
+
+                    axios.put(`/api/toasters/${accountId}`, body, config)
+                    .then(response => {
+                        store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
+                        store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
+                    })
+                    .catch(err => { 
+                        store.dispatch(startSnackBar("error", err.message))
+                        store.dispatch({type: UPDATE_PROFILE_ERROR})
+                    })
+                    
+                }
+            })
+            .catch(err => { 
+                store.dispatch(startSnackBar("error", "Token inválido, vuelve a iniciar sesión"))
+                store.dispatch({type: UPDATE_PROFILE_ERROR})
+                store.dispatch({type: LOGOUT})
+                
+            })
+          
+    }
+
 
     static getAllRoasters() {
         return axios.get("/api/toasters")
