@@ -19,6 +19,7 @@ import Toaster from "./routes/Toaster";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
 import PurchaseHistory from "./routes/PurchaseHistory";
+import PurchaseSummary from "./routes/PurchaseSummary";
 
 import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
@@ -28,6 +29,7 @@ ReactDOM.render(
         <Router>
             <NavBar />
             <Switch>
+                <Route exact path="/purchase" component={PurchaseSummary} />
                 <Route exact path="/purchase-history" component={PurchaseHistory} />
                 <Route exact path="/roasters" component={Roasters} />
                 <Route exact path="/deliveries" component={Deliveries} />
