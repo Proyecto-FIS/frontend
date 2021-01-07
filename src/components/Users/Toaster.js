@@ -15,15 +15,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import Chip from '@material-ui/core/Chip';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
-import PhoneIcon from '@material-ui/icons/Phone';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Divider } from '@material-ui/core';
 
 import ToasterTemplate from "./ToasterTemplate";
 import ToasterTemplateLogout from "./ToasterTemplateLogout";
