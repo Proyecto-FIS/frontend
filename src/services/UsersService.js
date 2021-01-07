@@ -1,8 +1,7 @@
 import axios from "axios";
 import store from "../redux/store";
-import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST } from "../redux/actions/types";
+import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT } from "../redux/actions/types";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
-import logout from "../redux/actions/logout";
 
 export class UsersService {
 
@@ -34,13 +33,6 @@ export class UsersService {
             })
     }
 
-    // static login = (username, password) => {
-    //     store.dispatch(loadingProducts());
-    //     axios.post('/api/auth/login', body, config)
-    //         .then(response => store.dispatch(getAllProducts(response.data)))
-    //         .catch(err => loadingError())
-    // }
-
 
     getRoaster = (roasterId) => {
         return axios.get("/api/toasters", { roasterId })
@@ -51,7 +43,8 @@ export class UsersService {
     }
 
     logOut = () => {
-        store.dispatch(logout());
+        localStorage.removeItem('account');
+        store.dispatch({type: LOGOUT});
     }
 }
 
