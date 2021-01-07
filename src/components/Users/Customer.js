@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
-import {getCustomerProfile, updateCustomerProfile} from "../../redux/actions/authCustomer";
+import UsersService from "../../services/UsersService";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -58,7 +58,7 @@ const Customer = () => {
 
   useEffect(() => {
 
-    dispatch(getCustomerProfile(params.accountId));
+    UsersService.getCustomerProfile(params.accountId);
 
     if(accFromUser) {
         setAddress(user.address)
@@ -66,7 +66,7 @@ const Customer = () => {
         setPictureUrl(user.pictureUrl)
     }
 
-  }, [dispatch, params, user.address]);
+  }, [params, user.address]);
   
   if(error) {
     dispatch(startSnackBar("error", error));
@@ -86,7 +86,9 @@ const Customer = () => {
     if(password !== password2) {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
     } else {
-      dispatch(updateCustomerProfile({id: params.accountId, email, address, pictureUrl, password}));
+      const body = JSON.stringify({ email, address, pictureUrl, password });
+      const accountId = params.accountId;
+      UsersService.updateCustomerProfile(accountId, body);
     }
   };
 
