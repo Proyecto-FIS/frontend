@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
-import { login } from "../../redux/actions/login";
+import UsersService from "../../services/UsersService";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -67,7 +67,9 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    dispatch(login(username, password));
+    
+    const body = JSON.stringify({ username, password });
+    UsersService.login(body);
   };
 
   return (

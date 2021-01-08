@@ -4,7 +4,6 @@ import { Grid } from "@material-ui/core";
 import ProductsService from "../services/ProductsService";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import PropTypes from 'prop-types';
 import ProductDetailSkeleton from "../components/Products/ProductDetailSkeleton";
 
 
@@ -37,17 +36,12 @@ class Product extends Component {
       <Grid container>
         <Grid container item sm={2} xs={1}></Grid>
         <Grid item sm={8} xs={10}>
-          {loading === true || loading === undefined ? (<ProductDetailSkeleton />) : (<ProductDetails product={product}/>)}
+          {loading === undefined || loading === true ? (<ProductDetailSkeleton />) : (<ProductDetails product={product}/>)}
         </Grid>
         <Grid container item sm={2} xs={1}></Grid>
       </Grid>
     );
   }
-}
-
-Product.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  product: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state =>({

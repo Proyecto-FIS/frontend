@@ -1,11 +1,10 @@
 import { LOGOUT } from "./types";
 
-export const logout = () => async dispatch => {
-
+const logout = () => async dispatch => {
   localStorage.removeItem('account');
-
   dispatch({
     type: LOGOUT
   });
-    
-  };
+};
+
+export default logout;

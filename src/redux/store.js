@@ -8,7 +8,11 @@ import UpdateProfileReducer from "./reducers/UpdateProfileReducer";
 import SnackbarReducer from "./reducers/SnackbarReducer";
 import LoaderReducer from "./reducers/LoaderReducer";
 import BillingProfileReducer from "./reducers/BillingProfileReducer";
+<<<<<<< HEAD
 import SubscriptionReducer from "./reducers/SubscriptionReducer";
+=======
+import CartReducer from "./reducers/CartReducer";
+>>>>>>> main
 
 
 import thunk from 'redux-thunk';
@@ -25,6 +29,7 @@ const reducers = combineReducers({
     BillingProfileReducer,
     SubscriptionReducer,
     AuthReducer,
+    CartReducer
 });
 
 const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;
