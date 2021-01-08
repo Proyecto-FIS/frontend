@@ -136,3 +136,36 @@ it("Error in DELETE", () => {
     );
   });
 });
+
+it("No token found uploading image", () => {
+  return ProductsService.uploadImage({}).catch(() => {
+    assertAuthError();
+    expect(store.getState().LoaderReducer.elements).toEqual(null);
+  });
+});
+
+it("Error uploading image", () => {
+  const axiosMock = new AxiosMock(axios);
+  axiosMock.onPost("/api/uploadImage").reply(400);
+  doLogin(store);
+
+  return ProductsService.uploadImage({}).catch(() => {
+    const state = store.getState();
+    expect(state.SnackbarReducer.severity).toBe("error");
+    expect(state.SnackbarReducer.message).toBe(
+      "No ha sido posible subir la imagen"
+    );
+  });
+});
+
+it("Updloading image succesfully working", () => {
+  const axiosMock = new AxiosMock(axios);
+  axiosMock.onPost("/api/uploadImage").reply(200);
+  doLogin(store);
+
+  return ProductsService.uploadImage({}).then(() => {
+    const state = store.getState();
+    expect(state.SnackbarReducer.severity).toBe("success");
+    expect(state.SnackbarReducer.message).toBe("Imagen subida correctamente");
+  });
+});

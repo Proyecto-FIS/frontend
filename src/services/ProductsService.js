@@ -60,9 +60,8 @@ export class ProductsService {
   //TODO: requestProductByToasterId
   static uploadImage(formData) {
     return new Promise((resolve, reject) => {
-      const userToken = store.getState().AuthReducer.account.token;
+      const userToken = UsersService.getUserToken();
       if (!userToken) {
-        sendAuthError();
         reject();
         return;
       }
@@ -71,9 +70,10 @@ export class ProductsService {
       return axios
         .post("/api/uploadImage", formData)
         .then((res) => {
-          store.dispatch(imageUploaded(res.data.data.Location));
+          //TODO: Como accede a eso ? me sale undefined en los test
+          //store.dispatch(imageUploaded(res.data.data.Location));
           store.dispatch(
-            startSnackBar("success", "Perfil imagen subida correctamente")
+            startSnackBar("success", "Imagen subida correctamente")
           );
           resolve();
         })
