@@ -3,6 +3,7 @@ import axios from "axios";
 import AxiosMock from 'axios-mock-adapter';
 import store from "../../redux/store";
 import startLoader from "../../redux/actions/Loader/startLoader";
+import { doLogin, doLogout } from "../../setupTests";
 
 const pageSize = 4;
 const beforeTimestamp = new Date();
@@ -35,6 +36,7 @@ const assertAuthError = () => {
 beforeEach(() => {
     localStorage.clear();
     store.dispatch(startLoader());  // Set to a known state
+    doLogout(store);
 });
 
 it("No token found", () => {
@@ -47,11 +49,9 @@ it("No token found", () => {
 
 it("GET working", () => {
     const axiosMock = new AxiosMock(axios);
-
     axiosMock.onGet("/api/history").reply(200, sampleData);
     axiosMock.onGet("/api/products").reply(200, { name: "productname", imageUrl: "testimage" });
-
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
         .then(() => {
@@ -73,8 +73,7 @@ it("GET working", () => {
 it("Error in GET", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onGet('/api/history').reply(401, "error");
-
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
         .catch(() => {
@@ -88,8 +87,7 @@ it("Error during product loading", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onGet('/api/history').reply(200, sampleData);
     axiosMock.onGet("/api/products").reply(500);
-
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
         .catch(() => {
