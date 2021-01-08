@@ -4,6 +4,7 @@ import AxiosMock from "axios-mock-adapter";
 import { waitFor } from "@testing-library/react";
 import store from "../../redux/store";
 import startLoader from "../../redux/actions/Loader/startLoader";
+import { doLogin, doLogout } from "../../setupTests";
 
 const assertAuthError = () => {
   const state = store.getState();
@@ -16,9 +17,10 @@ const assertAuthError = () => {
 beforeEach(() => {
   localStorage.clear();
   store.dispatch(startLoader());
+  doLogout(store);
 });
 
-it("GET working", () => {
+it("GET all products working", () => {
   const axiosMock = new AxiosMock(axios);
   const data = "expected_data";
   axiosMock.onGet("/api/products").reply(200, data);
@@ -32,26 +34,8 @@ it("GET working", () => {
   });
 });
 
-it("Error in GET", () => {
-  const axiosMock = new AxiosMock(axios);
-  axiosMock.onGet("/api/billing-profile").reply(401, "error");
-
-  localStorage.setItem("token", "sample_token");
-
-  BillingProfileService.requestProfiles();
-
-  waitFor(() => {
-    const state = store.getState();
-    expect(state.SnackbarReducer.severity).toBe("error");
-    expect(state.SnackbarReducer.message).toBe(
-      "Ha ocurrido un error en la carga de perfiles"
-    );
-    expect(state.LoaderReducer.elements).toEqual([]);
-  });
-});
-
 it("No token found in POST", () => {
-  return BillingProfileService.postNewProfile({}).catch(() => {
+  return ProductsService.postProduct({}).catch(() => {
     assertAuthError();
     expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
@@ -59,34 +43,34 @@ it("No token found in POST", () => {
 
 it("POST working", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onPost("/api/billing-profile").reply(200);
-  localStorage.setItem("token", "sample_token");
+  axiosMock.onPost("/api/products").reply(201);
+  doLogin(store);
 
-  return BillingProfileService.postNewProfile({}).then(() => {
+  return ProductsService.postProduct({}).then(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("success");
     expect(state.SnackbarReducer.message).toBe(
-      "Perfil guardado satisfactoriamente"
+      "Producto guardado correctamente"
     );
   });
 });
 
 it("Error in POST", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onPost("/api/billing-profile").reply(401);
-  localStorage.setItem("token", "sample_token");
+  axiosMock.onPost("/api/products").reply(400);
+  doLogin(store);
 
-  return BillingProfileService.postNewProfile({}).catch(() => {
+  return ProductsService.postProduct({}).catch(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("error");
     expect(state.SnackbarReducer.message).toBe(
-      "No ha sido posible guardar el perfil"
+      "No ha sido posible guardar el producto"
     );
   });
 });
 
 it("No token found in PUT", () => {
-  return BillingProfileService.editProfile({}).catch(() => {
+  return ProductsService.updateProduct({}).catch(() => {
     assertAuthError();
     expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
@@ -94,34 +78,34 @@ it("No token found in PUT", () => {
 
 it("PUT working", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onPut("/api/billing-profile").reply(200);
-  localStorage.setItem("token", "sample_token");
+  axiosMock.onPut("/api/products").reply(204);
+  doLogin(store);
 
-  return BillingProfileService.editProfile({}).then(() => {
+  return ProductsService.updateProduct({}).then(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("success");
     expect(state.SnackbarReducer.message).toBe(
-      "Perfil actualizado correctamente"
+      "Producto actualizado correctamente"
     );
   });
 });
 
 it("Error in PUT", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onPut("/api/billing-profile").reply(401);
-  localStorage.setItem("token", "sample_token");
+  axiosMock.onPut("/api/products").reply(400);
+  doLogin(store);
 
-  return BillingProfileService.editProfile({}).catch(() => {
+  return ProductsService.updateProduct({}).catch(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("error");
     expect(state.SnackbarReducer.message).toBe(
-      "No ha sido posible actualizar el perfil"
+      "No ha sido posible actualizar el producto"
     );
   });
 });
 
 it("No token found in DELETE", () => {
-  return BillingProfileService.deleteProfile({}).catch(() => {
+  return ProductsService.deleteProduct({}).catch(() => {
     assertAuthError();
     expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
@@ -129,28 +113,26 @@ it("No token found in DELETE", () => {
 
 it("DELETE working", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onDelete("/api/billing-profile").reply(200);
-  localStorage.setItem("token", "sample_token");
+  axiosMock.onDelete("/api/products").reply(200);
+  doLogin(store);
 
-  return BillingProfileService.deleteProfile({}).then(() => {
+  return ProductsService.deleteProduct({}).then(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("success");
-    expect(state.SnackbarReducer.message).toBe(
-      "Perfil eliminado sin problemas"
-    );
+    expect(state.SnackbarReducer.message).toBe("Producto borrado con éxito");
   });
 });
 
 it("Error in DELETE", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onDelete("/api/billing-profile").reply(401);
-  localStorage.setItem("token", "sample_token");
+  axiosMock.onDelete("/api/products").reply(400);
+  doLogin(store);
 
-  return BillingProfileService.deleteProfile({}).catch(() => {
+  return ProductsService.deleteProduct({}).catch(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("error");
     expect(state.SnackbarReducer.message).toBe(
-      "No se ha podido eliminar el perfil"
+      "No se ha podido eliminar el producto"
     );
   });
 });

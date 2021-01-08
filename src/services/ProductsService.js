@@ -13,6 +13,7 @@ import deletingProduct from "../redux/actions/Products/deletingProduct";
 import deletedProduct from "../redux/actions/Products/deletedProduct";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 import store from "../redux/store";
+import UsersService from "./UsersService";
 
 const sendAuthError = () =>
   store.dispatch(
@@ -57,7 +58,6 @@ export class ProductsService {
   }
 
   //TODO: requestProductByToasterId
-
   static uploadImage(formData) {
     return new Promise((resolve, reject) => {
       const userToken = store.getState().AuthReducer.account.token;
@@ -87,16 +87,20 @@ export class ProductsService {
   }
 
   static postProduct(newProduct) {
+    console.log(newProduct);
     return new Promise((resolve, reject) => {
-      const userToken = store.getState().AuthReducer.account.token;
+      const userToken = UsersService.getUserToken();
       if (!userToken) {
-        sendAuthError();
         reject();
         return;
       }
+      console.log(newProduct);
+      console.log(userToken);
       store.dispatch(creatingProduct());
       axios
-        .post("/api/products", { data: { userToken: userToken, newProduct } })
+        .post("/api/products", {
+          data: { userToken: userToken, product: newProduct },
+        })
         .then((res) => {
           store.dispatch(createdProduct(res));
           store.dispatch(clearProductErrors());
@@ -106,11 +110,12 @@ export class ProductsService {
           resolve();
         })
         .catch((err) => {
-          let errors = {};
-          Object.keys(err.response.data.errors).map(
-            (key) => (errors[key] = err.response.data.errors[key].message)
-          );
-          store.dispatch(setProductErrors(errors));
+          console.log(err);
+          //   let errors = {};
+          //   Object.keys(err.response.data.errors).map(
+          //     (key) => (errors[key] = err.response.data.errors[key].message)
+          //   );
+          //store.dispatch(setProductErrors(err));
           store.dispatch(
             startSnackBar("error", "No ha sido posible guardar el producto")
           );
@@ -119,11 +124,41 @@ export class ProductsService {
     });
   }
 
+  static updateProduct(updatedProduct) {
+    return new Promise((resolve, reject) => {
+      const userToken = UsersService.getUserToken();
+      if (!userToken) {
+        reject();
+        return;
+      }
+      //TODO:  que hace esto ?? es necesario en el put ?
+      store.dispatch(creatingProduct());
+      axios
+        .put("/api/products", {
+          data: { userToken: userToken, product: updatedProduct },
+        })
+        .then((res) => {
+          //TODO: misma pregunta, supongo que en esta caso si es necesario
+          store.dispatch(createdProduct(res));
+          store.dispatch(clearProductErrors());
+          store.dispatch(
+            startSnackBar("success", "Producto actualizado correctamente")
+          );
+          resolve();
+        })
+        .catch((err) => {
+          store.dispatch(
+            startSnackBar("error", "No ha sido posible actualizar el producto")
+          );
+          reject();
+        });
+    });
+  }
+
   static deleteProduct(productId) {
     return new Promise((resolve, reject) => {
-      const userToken = store.getState().AuthReducer.account.token;
+      const userToken = UsersService.getUserToken();
       if (!userToken) {
-        sendAuthError();
         reject();
         return;
       }
@@ -136,11 +171,14 @@ export class ProductsService {
         })
         .then(() => {
           store.dispatch(deletedProduct());
+          store.dispatch(
+            startSnackBar("success", "Producto borrado con éxito")
+          );
           resolve();
         })
         .catch((err) => {
           store.dispatch(
-            startSnackBar("error", "No ha sido posible borrar el producto")
+            startSnackBar("error", "No se ha podido eliminar el producto")
           );
           reject();
         });

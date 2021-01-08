@@ -218,7 +218,7 @@ class NewProduct extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    this.productsService.postProduct({
+    ProductsService.postProduct({
       providerId: this.props.account._id,
       name: this.state.title,
       description: this.state.description,
