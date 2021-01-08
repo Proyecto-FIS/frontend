@@ -56,7 +56,7 @@ class PurchaseSummary extends Component {
 
     render() {
 
-        const { products, totalPrice, billingProfiles, classes } = this.props;
+        const { /*products,*/ totalPrice, billingProfiles, classes } = this.props;
 
         const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
             <MenuItem key={i} value={i}>
