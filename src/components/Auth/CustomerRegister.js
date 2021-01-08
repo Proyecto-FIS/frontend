@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
@@ -190,7 +191,7 @@ const CustomerRegister = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link component={RouterLink} to="/login" variant="body2">
                 ¿Tienes ya una cuenta? Identifícate
               </Link>
             </Grid>

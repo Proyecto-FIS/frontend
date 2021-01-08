@@ -86,6 +86,7 @@ const Toaster = () => {
         setPictureUrl(user.pictureUrl)
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, user.address]);
   
   if(error) {
