@@ -2,12 +2,12 @@ import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
 
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import {Component, Fragment} from "react";
 import { Link, Redirect } from 'react-router-dom';
 
 import RegisterMenu from './Auth/RegisterMenu';
+import LoggedMenu from './Users/LoggedMenu';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,7 +26,6 @@ import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import PaymentIcon from '@material-ui/icons/Payment';
-import HistoryIcon from '@material-ui/icons/History';
 import CartService from "../services/CartService"
 
 const styles = (theme) => ({
@@ -78,10 +77,6 @@ class NavBar extends Component {
     render() {
         const {classes, account} = this.props;
         
-        const logoutHandler = () => {
-            this.usersService.logOut();
-        }
-
         const handleClose= () => {
             this.setState({
                 open: false
@@ -110,7 +105,7 @@ class NavBar extends Component {
     
         const authLinks = (
             <Fragment>
-                <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
+                {account && <LoggedMenu account={account}/> }
             </Fragment>
         );
     

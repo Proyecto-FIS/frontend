@@ -31,7 +31,7 @@ export class UsersService {
             })
     }
 
-    logOut = () => {
+    static logOut = () => {
         localStorage.removeItem('account');
         store.dispatch({type: LOGOUT});
     }
@@ -54,8 +54,7 @@ export class UsersService {
                 localStorage.setItem('account', JSON.stringify(response.data))
             })
             .catch(err => { 
-                store.dispatch(startSnackBar("error", err.message))
-              
+                store.dispatch(startSnackBar("error", err.response.data.message))
                 store.dispatch({type: REGISTER_ERROR})
             })
     }
@@ -110,7 +109,7 @@ export class UsersService {
                         store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
                     })
                     .catch(err => { 
-                        store.dispatch(startSnackBar("error", err.message))
+                        store.dispatch(startSnackBar("error", err.response.data.message))
                         store.dispatch({type: UPDATE_PROFILE_ERROR})
                     })
                     
@@ -143,7 +142,7 @@ export class UsersService {
                 localStorage.setItem('account', JSON.stringify(response.data))
             })
             .catch(err => { 
-                store.dispatch(startSnackBar("error", err.message))
+                store.dispatch(startSnackBar("error", err.response.data.message))
               
                 store.dispatch({type: REGISTER_ERROR})
             })
@@ -164,7 +163,7 @@ export class UsersService {
                 store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
             })
             .catch(err => { 
-                store.dispatch(startSnackBar("error", err.message))
+                store.dispatch(startSnackBar("error", err.response.data.message))
               
                 store.dispatch({type: PROFILE_ERROR})
             })
@@ -199,7 +198,7 @@ export class UsersService {
                         store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
                     })
                     .catch(err => { 
-                        store.dispatch(startSnackBar("error", err.message))
+                        store.dispatch(startSnackBar("error", err.response.data.message))
                         store.dispatch({type: UPDATE_PROFILE_ERROR})
                     })
                     
