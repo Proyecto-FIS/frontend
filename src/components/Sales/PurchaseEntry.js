@@ -33,7 +33,7 @@ class PurchaseEntry extends Component {
         const timestamp = new Intl.DateTimeFormat('es', { dateStyle: 'full', timeStyle: 'long' }).format(purchase.timestamp);
         const operationType = purchase.operationType === "payment" ? "Pago" : "Suscripción";
 
-        const productList = purchase.products && purchase.products.map((product, i) => (
+        const productList = purchase.products.map((product, i) => (
             <Grid key={i} container margin={2} item xs={11} alignItems="center">
                 <Card aria-label="purchaseProduct" className={classes.card}>
                     <Grid item xs={10}>
@@ -61,7 +61,7 @@ class PurchaseEntry extends Component {
                     <Typography variant="subtitle2" color="textSecondary" gutterBottom>Tipo de operación: {operationType}</Typography>
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography variant="subtitle2" gutterBottom>Lista de productos ({purchase.products ? purchase.products.length : 0})</Typography>
+                            <Typography variant="subtitle2" gutterBottom>Lista de productos ({purchase.products.length})</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Grid container spacing={1}>

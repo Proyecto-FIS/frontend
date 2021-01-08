@@ -44,7 +44,7 @@ class PurchaseHistory extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        purchases: state.LoaderReducer.elements
+        purchases: state.PurchaseHistoryReducer.elements
     };
 };
 

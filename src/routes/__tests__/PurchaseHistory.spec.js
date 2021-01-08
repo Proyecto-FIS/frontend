@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
 import { cleanup, screen } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../setupTests";
-import LoaderReducer from "../../redux/reducers/LoaderReducer";
-import startLoader from "../../redux/actions/Loader/startLoader";
-import finishLoader from "../../redux/actions/Loader/finishLoader";
+import PurchaseHistoryReducer from "../../redux/reducers/PurchaseHistoryReducer";
+import startLoader from "../../redux/actions/PurchaseHistory/load";
+import finishLoader from "../../redux/actions/PurchaseHistory/done";
 import PurchaseHistory from "../PurchaseHistory";
 import { MemoryRouter } from "react-router-dom";
 
@@ -11,7 +11,7 @@ let store = null;
 const renderComponent = () => renderRedux(<MemoryRouter><PurchaseHistory /></MemoryRouter>, store);
 
 beforeEach(() => {
-    store = createReduxStore({ LoaderReducer });
+    store = createReduxStore({ PurchaseHistoryReducer });
 });
 
 afterEach(cleanup);

@@ -3,7 +3,7 @@ import axios from "axios";
 import AxiosMock from 'axios-mock-adapter';
 import { waitFor } from "@testing-library/react";
 import store from "../../redux/store";
-import startLoader from "../../redux/actions/Loader/startLoader";
+import startLoader from "../../redux/actions/BillingProfile/load";
 import { doLogin, doLogout } from "../../setupTests";
 
 const assertAuthError = () => {
@@ -21,7 +21,7 @@ beforeEach(() => {
 it("No token found in GET", () => {
     BillingProfileService.requestProfiles();
     assertAuthError();
-    expect(store.getState().LoaderReducer.elements).toEqual([]);
+    expect(store.getState().BillingProfileReducer.elements).toEqual([]);
 });
 
 it("GET working", () => {
@@ -35,7 +35,7 @@ it("GET working", () => {
     waitFor(() => {
         const state = store.getState();
         expect(state.SnackbarReducer.message).toBe("");
-        expect(state.LoaderReducer.elements).toEqual(data);
+        expect(state.BillingProfileReducer.elements).toEqual(data);
     });
 });
 
@@ -50,7 +50,7 @@ it("Error in GET", () => {
         const state = store.getState();
         expect(state.SnackbarReducer.severity).toBe("error");
         expect(state.SnackbarReducer.message).toBe("Ha ocurrido un error en la carga de perfiles");
-        expect(state.LoaderReducer.elements).toEqual([]);
+        expect(state.BillingProfileReducer.elements).toEqual([]);
     });
 });
 
@@ -58,7 +58,7 @@ it("No token found in POST", () => {
     return BillingProfileService.postNewProfile({})
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual(null);
+            expect(store.getState().BillingProfileReducer.elements).toEqual(null);
         });
 });
 
@@ -92,7 +92,7 @@ it("No token found in PUT", () => {
     return BillingProfileService.editProfile({})
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual(null);
+            expect(store.getState().BillingProfileReducer.elements).toEqual(null);
         });
 });
 
@@ -126,7 +126,7 @@ it("No token found in DELETE", () => {
     return BillingProfileService.deleteProfile({})
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual(null);
+            expect(store.getState().BillingProfileReducer.elements).toEqual(null);
         });
 });
 
