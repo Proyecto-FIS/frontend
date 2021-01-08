@@ -1,10 +1,24 @@
 import React, { Component } from "react";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Button, Select, MenuItem, InputLabel, FormControl, Grid, Typography } from "@material-ui/core";
 import { connect } from "react-redux";
+import { withStyles } from "@material-ui/core/styles";
 import BillingProfileService from "../services/BillingProfileService";
+import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
+import MainGrid from "../components/Common/MainGrid";
 
-const notSelectedText = "No seleccionado";
+const styles = (theme) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(1),
+    },
+    form: {
+        display: "flex",
+        flexDirection: "column",
+    }
+});
 
 class PurchaseSummary extends Component {
 
@@ -12,7 +26,8 @@ class PurchaseSummary extends Component {
         super(props);
 
         this.state = {
-            billingProfile: notSelectedText
+            billingProfile: "",
+            operationType: "",
         };
 
         BillingProfileService.requestProfiles();
@@ -24,36 +39,77 @@ class PurchaseSummary extends Component {
         });
     }
 
+    changeOperationType(ev) {
+        this.setState({
+            operationType: ev.target.value
+        });
+    }
+
+    pay() {
+        if (this.state.billingProfile === "" || this.state.operationType === "") {
+            this.props.startSnackBar("warning", "Hay campos sin rellenar");
+            return;
+        }
+
+        // TODO with tests
+    }
+
     render() {
 
-        const { products, totalPrice, billingProfiles } = this.props;
+        const { products, totalPrice, billingProfiles, classes } = this.props;
 
         const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
-            <MenuItem key={i} value={profile.name}>
-                {profile.name}
+            <MenuItem key={i} value={i}>
+                {`${profile.name}, ${profile.address}, ${profile.city}, ${profile.province}, ${profile.country}`}
             </MenuItem>
         ));
 
-        const defaultProfile = billingProfiles === null ? (
-            <MenuItem value={notSelectedText}>
-                <em>Cargando perfiles...</em>
-            </MenuItem>
-        ) : (
-                <MenuItem value={notSelectedText}>
-                    <em>No seleccionado</em>
-                </MenuItem>
-            );
+        const defaultProfile = <MenuItem value={""}><em>{billingProfiles === null ? "Cargando perfiles..." : "No seleccionado"}</em></MenuItem>
 
         return (
-            <div>
-                <Select
-                    value={this.state.billingProfile}
-                    onChange={ev => this.changeBillingProfile(ev)}
-                    label="Perfil de entrega">
-                    {defaultProfile}
-                    {profileList}
-                </Select>
-            </div>
+            <MainGrid container className={classes.form}>
+                <Grid item>
+                    <Typography variant="h3" align="center">Resumen del pedido</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
+                        <InputLabel id="billing-profile-label">Perfil de entrega</InputLabel>
+                        <Select
+                            className={classes.selectEmpty}
+                            labelId="billing-profile-label"
+                            value={this.state.billingProfile}
+                            onChange={ev => this.changeBillingProfile(ev)}>
+                            {defaultProfile}
+                            {profileList}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={8}>
+                    <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
+                        <InputLabel id="operation-type-label">Tipo de operación</InputLabel>
+                        <Select
+                            className={classes.selectEmpty}
+                            labelId="operation-type-label"
+                            value={this.state.operationType}
+                            onChange={ev => this.changeOperationType(ev)}>
+                            <MenuItem value={""}>
+                                <em>No seleccionado</em>
+                            </MenuItem>
+                            <MenuItem value={"payment"}>
+                                Pago normal ({totalPrice} €)
+                        </MenuItem>
+                            <MenuItem value={"subscription"}>
+                                Suscripción mensual ({totalPrice} €/mes)
+                        </MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid container item direction="row-reverse">
+                    <Grid item>
+                        <Button variant="contained" color="secondary" onClick={ev => this.pay()}>Pagar</Button>
+                    </Grid>
+                </Grid>
+            </MainGrid>
         );
     }
 }
@@ -66,4 +122,8 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(PurchaseSummary);
+const mapDispatchToProps = {
+    startSnackBar,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PurchaseSummary));
