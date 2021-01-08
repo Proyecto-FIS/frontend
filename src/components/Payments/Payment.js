@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useDispatch } from "react-redux";
 // import axios from 'axios';
 // Material UI Components
 import Button from '@material-ui/core/Button';
@@ -12,6 +13,7 @@ import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
 import CardInput from './CardInput';
 // Service
 import PaymentService from "../../services/PaymentService";
+import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
 const useStyles = makeStyles({
   root: {
@@ -35,10 +37,14 @@ const useStyles = makeStyles({
 });
 
 function Payment() {
+
+  const dispatch = useDispatch();
   const classes = useStyles();
   // State
   const [email, setEmail] = useState('');
-  
+  const [price, setPrice] = useState('');
+  const billing_profile_id = 1;
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -49,10 +55,10 @@ function Payment() {
       return;
     }
 
-    //const res = await axios.post('/api/pay', {email: email});
-    const res = await PaymentService.postPayment(email);
+    const res = await PaymentService.postPayment(email, price, billing_profile_id);
 
     const clientSecret = res.data['client_secret'];
+    console.log(clientSecret);
 
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
@@ -62,10 +68,11 @@ function Payment() {
         },
       },
     });
-
+    
     if (result.error) {
-      // Show error to your customer (e.g., insufficient funds)
       console.log(result.error.message);
+      // Show error to your customer (e.g., insufficient funds)
+      dispatch(startSnackBar("error", '¡Ha habido un error!' + result.error.message));
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {
@@ -75,6 +82,7 @@ function Payment() {
         // execution. Set up a webhook or plugin to listen for the
         // payment_intent.succeeded event that handles any business critical
         // post-payment actions.
+        dispatch(startSnackBar("success", "Pago realizado satisfactoriamente"));
       }
     }
   };
@@ -96,6 +104,7 @@ function Payment() {
 
     if (result.error) {
       console.log(result.error.message);
+      dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
     } else {
       console.log(result);
       const res = await PaymentService.postSubscription(result.paymentMethod.id, email);
@@ -106,19 +115,22 @@ function Payment() {
       if (status === 'requires_action') {
         stripe.confirmCardPayment(client_secret).then(function(result) {
           if (result.error) {
-            console.log('There was an issue!');
+            console.log('¡Ha habido un error!');
             console.log(result.error);
             // Display error message in your UI.
             // The card was declined (i.e. insufficient funds, card has expired, etc)
+            dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
           } else {
             console.log('You got the money!');
             // Show a success message to your customer
+            dispatch(startSnackBar("success", "La subscripción se ha realizado satisfactoriamente"));
           }
         });
       } else {
         console.log('You got the money!');
         // No additional information was needed
         // Show a success message to your customer
+        dispatch(startSnackBar("success", "La subscripción se ha realizado satisfactoriamente"));
       }
     }
   };
@@ -136,6 +148,18 @@ function Payment() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label='Price'
+          id='outlined-price-input'
+          helperText={`Price product TEST`}
+          margin='normal'
+          variant='outlined'
+          type='number'
+          required
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
           fullWidth
         />
         <CardInput />

@@ -13,7 +13,7 @@ class SuccessPayment extends Component {
                 <p>
                     We appreciate your business!
                     If you have any questions, please email
-                    <a href="mailto:orders@example.com">orders@example.com</a>.
+                    <a href="mailto:coffainestore@gmail.com">coffainestore@gmail.com</a>.
                 </p>
             </Grid>
         );
