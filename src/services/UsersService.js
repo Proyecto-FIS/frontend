@@ -31,7 +31,7 @@ export class UsersService {
             })
     }
 
-    logOut = () => {
+    static logOut = () => {
         localStorage.removeItem('account');
         store.dispatch({type: LOGOUT});
     }
