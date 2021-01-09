@@ -24,11 +24,8 @@ const reducers = combineReducers({
     DeliveriesReducer,
     SnackbarReducer,
     BillingProfileReducer,
-<<<<<<< HEAD
     PaymentReducer,
-=======
     PurchaseHistoryReducer,
->>>>>>> main
     AuthReducer,
     CartReducer
 });
