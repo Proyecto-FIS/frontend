@@ -48,6 +48,7 @@ class PurchaseForm extends Component {
         this.state = {
             billingProfile: "",
             operationType: "",
+            creditCardError: true,
         };
 
         BillingProfileService.requestProfiles();
@@ -65,10 +66,20 @@ class PurchaseForm extends Component {
         });
     }
 
+    checkCreditCard(ev) {
+        this.setState({
+            creditCardError: ev.error === undefined && !ev.empty ? false : true
+        });
+    }
+
     pay(event) {
-        // TODO Comprobar tarjeta de crédito
         if (this.state.billingProfile === "" || this.state.operationType === "") {
             this.props.startSnackBar("warning", "Hay campos sin rellenar");
+            return;
+        }
+
+        if(this.state.creditCardError) {
+            this.props.startSnackBar("error", "La información de la tarjeta no es válida");
             return;
         }
 
@@ -197,7 +208,7 @@ class PurchaseForm extends Component {
                     </FormControl>
                 </Grid>
                 <Grid item>
-                    <CardElement options={CARD_ELEMENT_OPTIONS} />
+                    <CardElement options={CARD_ELEMENT_OPTIONS} onChange={(ev) => this.checkCreditCard(ev)} />
                 </Grid>
                 <Grid container item direction="row-reverse">
                     <Grid item>
