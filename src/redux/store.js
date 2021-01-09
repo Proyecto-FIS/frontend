@@ -6,7 +6,7 @@ import DeliveriesReducer from "./reducers/DeliveriesReducer";
 import ProfileReducer from "./reducers/ProfileReducer";
 import UpdateProfileReducer from "./reducers/UpdateProfileReducer";
 import SnackbarReducer from "./reducers/SnackbarReducer";
-import LoaderReducer from "./reducers/LoaderReducer";
+import PurchaseHistoryReducer from "./reducers/PurchaseHistoryReducer";
 import BillingProfileReducer from "./reducers/BillingProfileReducer";
 // import SubscriptionReducer from "./reducers/SubscriptionReducer";
 import PaymentReducer from "./reducers/PaymentReducer";
@@ -23,9 +23,12 @@ const reducers = combineReducers({
     UpdateProfileReducer,
     DeliveriesReducer,
     SnackbarReducer,
-    LoaderReducer,
     BillingProfileReducer,
+<<<<<<< HEAD
     PaymentReducer,
+=======
+    PurchaseHistoryReducer,
+>>>>>>> main
     AuthReducer,
     CartReducer
 });

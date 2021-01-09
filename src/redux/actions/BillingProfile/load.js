@@ -1,4 +1,4 @@
-export const type = "START_LOADER";
+export const type = "BILLINGPROFILE_LOAD";
 
 const action = () => {
     return {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 import UsersService from "../../services/UsersService";
@@ -124,11 +125,11 @@ const Login = () => {
           <Grid container>
             <Grid item>
             ¿No tienes cuenta? Regístrate {' '}
-              <Link href="/customer-register" variant="body2">
+              <Link component={RouterLink} to="/customer-register" variant="body2">
                 {"como customer"}
               </Link>
               {' '} o {' '}
-              <Link href="/toaster-register" variant="body2">
+              <Link component={RouterLink} to="/toaster-register" variant="body2">
                 {"como toaster"}
               </Link>
               .

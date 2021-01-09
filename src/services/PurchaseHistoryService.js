@@ -1,8 +1,9 @@
 import axios from "axios";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
-import startLoader from "../redux/actions/Loader/startLoader";
-import finishLoader from "../redux/actions/Loader/finishLoader";
+import startLoader from "../redux/actions/PurchaseHistory/load";
+import finishLoader from "../redux/actions/PurchaseHistory/done";
 import store from "../redux/store";
+import UsersService from "./UsersService";
 
 const addProductsData = (purchases) => {
 
@@ -42,9 +43,8 @@ export class PurchaseHistoryService {
 
             store.dispatch(startLoader());
 
-            const userToken = localStorage.getItem("token");
+            const userToken = UsersService.getUserToken();
             if (!userToken) {
-                store.dispatch(startSnackBar("error", "No se encuentra autenticado ahora mismo"));
                 store.dispatch(finishLoader());
                 reject();
                 return;

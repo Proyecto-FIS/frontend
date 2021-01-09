@@ -3,7 +3,8 @@ import axios from "axios";
 import AxiosMock from 'axios-mock-adapter';
 import { waitFor } from "@testing-library/react";
 import store from "../../redux/store";
-import startLoader from "../../redux/actions/Loader/startLoader";
+import startLoader from "../../redux/actions/BillingProfile/load";
+import { doLogin, doLogout } from "../../setupTests";
 
 const assertAuthError = () => {
     const state = store.getState();
@@ -14,35 +15,34 @@ const assertAuthError = () => {
 beforeEach(() => {
     localStorage.clear();
     store.dispatch(startLoader());
+    doLogout(store);
 });
 
 it("No token found in GET", () => {
     BillingProfileService.requestProfiles();
     assertAuthError();
-    expect(store.getState().LoaderReducer.elements).toEqual([]);
+    expect(store.getState().BillingProfileReducer.elements).toEqual([]);
 });
 
 it("GET working", () => {
     const axiosMock = new AxiosMock(axios);
     const data = "expected_data";
     axiosMock.onGet('/api/billing-profile').reply(200, data);
-
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     BillingProfileService.requestProfiles();
 
     waitFor(() => {
         const state = store.getState();
         expect(state.SnackbarReducer.message).toBe("");
-        expect(state.LoaderReducer.elements).toEqual(data);
+        expect(state.BillingProfileReducer.elements).toEqual(data);
     });
 });
 
 it("Error in GET", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onGet('/api/billing-profile').reply(401, "error");
-
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     BillingProfileService.requestProfiles();
 
@@ -50,7 +50,7 @@ it("Error in GET", () => {
         const state = store.getState();
         expect(state.SnackbarReducer.severity).toBe("error");
         expect(state.SnackbarReducer.message).toBe("Ha ocurrido un error en la carga de perfiles");
-        expect(state.LoaderReducer.elements).toEqual([]);
+        expect(state.BillingProfileReducer.elements).toEqual([]);
     });
 });
 
@@ -58,14 +58,14 @@ it("No token found in POST", () => {
     return BillingProfileService.postNewProfile({})
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual(null);
+            expect(store.getState().BillingProfileReducer.elements).toEqual(null);
         });
 });
 
 it("POST working", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onPost('/api/billing-profile').reply(200);
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return BillingProfileService.postNewProfile({})
         .then(() => {
@@ -78,7 +78,7 @@ it("POST working", () => {
 it("Error in POST", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onPost('/api/billing-profile').reply(401);
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return BillingProfileService.postNewProfile({})
         .catch(() => {
@@ -92,14 +92,14 @@ it("No token found in PUT", () => {
     return BillingProfileService.editProfile({})
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual(null);
+            expect(store.getState().BillingProfileReducer.elements).toEqual(null);
         });
 });
 
 it("PUT working", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onPut('/api/billing-profile').reply(200);
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return BillingProfileService.editProfile({})
         .then(() => {
@@ -112,7 +112,7 @@ it("PUT working", () => {
 it("Error in PUT", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onPut('/api/billing-profile').reply(401);
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return BillingProfileService.editProfile({})
         .catch(() => {
@@ -126,14 +126,14 @@ it("No token found in DELETE", () => {
     return BillingProfileService.deleteProfile({})
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual(null);
+            expect(store.getState().BillingProfileReducer.elements).toEqual(null);
         });
 });
 
 it("DELETE working", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onDelete('/api/billing-profile').reply(200);
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return BillingProfileService.deleteProfile({})
         .then(() => {
@@ -146,7 +146,7 @@ it("DELETE working", () => {
 it("Error in DELETE", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onDelete('/api/billing-profile').reply(401);
-    localStorage.setItem("token", "sample_token");
+    doLogin(store);
 
     return BillingProfileService.deleteProfile({})
         .catch(() => {
