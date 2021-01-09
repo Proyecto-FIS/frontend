@@ -1,4 +1,4 @@
-import { type as SET_SUBSCRIPTION } from "../actions/Subscription/setSubscription";
+import { type as SET_SUBSCRIPTION } from "../actions/Payment/setSubscription";
 
 const defaultState = {
     subscription: null

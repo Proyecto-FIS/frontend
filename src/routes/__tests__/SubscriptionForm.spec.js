@@ -3,7 +3,7 @@ import { cleanup, screen, fireEvent } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../setupTests";
 import SubscriptionForm from "../SubscriptionForm";
 import SubscriptionService from "../../services/SubscriptionService";
-import setSubscription from "../../redux/actions/Subscription/setSubscription";
+import setSubscription from "../../redux/actions/Payment/setSubscription";
 import SubscriptionReducer from "../../redux/reducers/SubscriptionReducer";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";

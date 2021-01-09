@@ -3,7 +3,7 @@ import { Card, CardContent, Grid, Typography, IconButton } from "@material-ui/co
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SubscriptionService from "../../services/SubscriptionService";
-import setSubscription from "../../redux/actions/Subscription/setSubscription";
+import setSubscription from "../../redux/actions/Payment/setSubscription";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 

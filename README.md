@@ -11,3 +11,4 @@ Create the following files in the project root folder:
 A summary of needed environment variables is here:
 - API_ENDPOINT_URL: URL pointing to the Coffaine API service
 - PORT: only needed in production environment
+- REACT_APP_STRIPE_PUBLIC_KEY: public api stripe key 
