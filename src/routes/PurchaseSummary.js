@@ -118,7 +118,7 @@ const mapStateToProps = (state) => {
     return {
         products: state.CartReducer.productList,
         totalPrice: state.CartReducer.totalPrice,
-        billingProfiles: state.LoaderReducer.elements
+        billingProfiles: state.BillingProfileReducer.elements
     };
 };
 

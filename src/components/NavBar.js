@@ -4,7 +4,8 @@ import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import {Component, Fragment} from "react";
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { withRouter } from "react-router";
 
 import RegisterMenu from './Auth/RegisterMenu';
 import LoggedMenu from './Users/LoggedMenu';
@@ -26,7 +27,7 @@ import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import PaymentIcon from '@material-ui/icons/Payment';
-import CartService from "../services/CartService"
+import CartService from "../services/CartService";
 
 const styles = (theme) => ({
     root: {
@@ -67,7 +68,6 @@ class NavBar extends Component {
         super(props)
         this.state = {
             open: false,
-            redirect: null
         }
     }
 
@@ -99,8 +99,8 @@ class NavBar extends Component {
         const handlePurchase = () => {
             this.setState({
                 open: false,
-                redirect: "/purchase"
-            })
+            });
+            this.props.history.push("/purchase");
         }
     
         const authLinks = (
@@ -151,10 +151,6 @@ class NavBar extends Component {
             </Fragment>
         );
     
-        if(this.state.redirect) {
-            console.log(this.state.redirect)
-            return <Redirect to={this.state.redirect} />
-        }
         return (
             <AppBar position="static" className={classes.root}>
                 <Toolbar>
@@ -180,4 +176,4 @@ const mapStateToProps = state =>({
 });
 
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(NavBar));
+export default withRouter(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(NavBar)));
