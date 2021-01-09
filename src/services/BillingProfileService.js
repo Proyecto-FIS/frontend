@@ -1,7 +1,7 @@
 import axios from "axios";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
-import startLoader from "../redux/actions/Loader/startLoader";
-import finishLoader from "../redux/actions/Loader/finishLoader";
+import startLoader from "../redux/actions/BillingProfile/load";
+import finishLoader from "../redux/actions/BillingProfile/done";
 import store from "../redux/store";
 import UsersService from "./UsersService";
 

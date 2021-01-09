@@ -1,5 +1,5 @@
-import { type as START_LOADER } from "../actions/Loader/startLoader";
-import { type as FINISH_LOADER } from "../actions/Loader/finishLoader";
+import { type as PURCHASE_HISTORY_LOAD } from "../actions/PurchaseHistory/load";
+import { type as PURCHASE_HISTORY_DONE } from "../actions/PurchaseHistory/done";
 
 const defaultState = {
     elements: null
@@ -8,11 +8,11 @@ const defaultState = {
 const reducer = (state = defaultState, { type, payload }) => {
 
     switch (type) {
-        case START_LOADER:
+        case PURCHASE_HISTORY_LOAD:
             return { 
                 elements: null
             };
-        case FINISH_LOADER:
+        case PURCHASE_HISTORY_DONE:
             return {
                 elements: payload.elements
             };

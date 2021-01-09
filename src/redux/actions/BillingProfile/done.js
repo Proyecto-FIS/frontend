@@ -1,4 +1,4 @@
-export const type = "FINISH_LOADER";
+export const type = "BILLINGPROFILE_DONE";
 
 const action = (elements = []) => {
     return {

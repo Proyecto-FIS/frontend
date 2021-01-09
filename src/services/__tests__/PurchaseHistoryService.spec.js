@@ -2,7 +2,7 @@ import PurchaseHistoryService from "../PurchaseHistoryService";
 import axios from "axios";
 import AxiosMock from 'axios-mock-adapter';
 import store from "../../redux/store";
-import startLoader from "../../redux/actions/Loader/startLoader";
+import startLoader from "../../redux/actions/PurchaseHistory/load";
 import { doLogin, doLogout } from "../../setupTests";
 
 const pageSize = 4;
@@ -43,7 +43,7 @@ it("No token found", () => {
     PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
         .catch(() => {
             assertAuthError();
-            expect(store.getState().LoaderReducer.elements).toEqual([]);
+            expect(store.getState().PurchaseHistoryReducer.elements).toEqual([]);
         });
 });
 
@@ -56,11 +56,11 @@ it("GET working", () => {
     return PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
         .then(() => {
             const state = store.getState();
-            expect(state.LoaderReducer.elements.length).toBe(1);
-            expect(state.LoaderReducer.elements[0].userID).toBe("userID");
-            expect(state.LoaderReducer.elements[0].operationType).toBe("payment");
-            expect(state.LoaderReducer.elements[0].products.length).toBe(2);
-            state.LoaderReducer.elements[0].products.forEach((product, i) => {
+            expect(state.PurchaseHistoryReducer.elements.length).toBe(1);
+            expect(state.PurchaseHistoryReducer.elements[0].userID).toBe("userID");
+            expect(state.PurchaseHistoryReducer.elements[0].operationType).toBe("payment");
+            expect(state.PurchaseHistoryReducer.elements[0].products.length).toBe(2);
+            state.PurchaseHistoryReducer.elements[0].products.forEach((product, i) => {
                 expect(product._id).toBe((i + 1).toString());
                 expect(product.quantity).toBe(sampleData[0].products[i].quantity);
                 expect(product.unitPriceEuros).toBe(sampleData[0].products[i].unitPriceEuros);
