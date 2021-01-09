@@ -1,23 +1,27 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
-import Roaster from "./Roaster";
+
+import ToasterSkeleton from "./ToasterSkeleton";
 import UsersService from "../../services/UsersService";
+
+import { Grid } from "@material-ui/core";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import { Divider } from '@material-ui/core';
 
-class RoastersList extends React.Component {
+
+class ToastersList extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            roasters: [] }
+            toasters: [] }
     }
 
     componentDidMount(){ 
-        UsersService.getAllRoasters().then(
+        UsersService.getAllToasters().then(
             (result) => {
                 this.setState({
-                    roasters: result.data
+                    toasters: result.data
                 })
             }
         )
@@ -29,16 +33,18 @@ class RoastersList extends React.Component {
             <CssBaseline />
             <main>
               <div>
-                <Container maxWidth="sm">
-                  <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                    Roasters
-                  </Typography>
+                <Container maxWidth="md">
+                  <Typography component="h1" variant="h4" style={{ textAlign: 'center', marginTop: "24px",
+                marginBottom: "8px"}}>
+                    Toasters
+                  </Typography> 
+                  <Divider variant="fullWidth" /><br/>
                 </Container>
               </div>
               <Container maxWidth="md">
                 <Grid container spacing={4}>
-                  {this.state.roasters.map((roaster) => (
-                      <Roaster roaster={roaster}></Roaster>
+                  {this.state.toasters.map((toaster) => (
+                      <ToasterSkeleton toaster={toaster}/>
                   ))}
                 </Grid>
               </Container>
@@ -49,6 +55,6 @@ class RoastersList extends React.Component {
     }
     
 }
-export default RoastersList;
+export default ToastersList;
 
 

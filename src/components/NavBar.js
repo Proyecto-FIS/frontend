@@ -2,6 +2,7 @@ import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
 
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import StorefrontIcon from '@material-ui/icons/Storefront';
 
 import {Component, Fragment} from "react";
 import { Link, Redirect } from 'react-router-dom';
@@ -163,6 +164,7 @@ class NavBar extends Component {
                     <Typography variant="h6" className={classes.auth}>
                         <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
                     </Typography>
+                    <Button style={{marginRight: '15px'}} variant="contained" color="primary" startIcon={<StorefrontIcon />} component={ Link } to="/toasters">Toasters</Button>
                     { account && account.isCustomer ? cart : null }
                     { account ? authLinks : guestLinks }
 

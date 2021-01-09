@@ -213,16 +213,9 @@ export class UsersService {
           
     }
 
-
-    static getAllRoasters() {
+    static getAllToasters() {
         return axios.get("/api/toasters")
     }
-
-    getRoaster = (roasterId) => {
-        return axios.get("/api/toasters", { roasterId })
-    }
-
-
 
 }
 
