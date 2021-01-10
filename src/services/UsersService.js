@@ -4,7 +4,15 @@ import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, RE
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 
 export class UsersService {
-
+    static getUserToken = () => {
+        const account = store.getState().AuthReducer.account;
+        if(account) {
+            return account.token;
+        } else {
+            store.dispatch(startSnackBar("error", "No se encuentra autenticado ahora mismo"));
+            return null;
+        }
+    };
 
     // --------- AUTH -----------
     static login = (body) => {
