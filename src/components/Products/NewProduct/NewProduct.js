@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import {
   Card,
@@ -10,104 +10,54 @@ import {
   TextField,
   Grid,
 } from "@material-ui/core";
+import Validators from "../../../utils/Validators";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { withStyles } from "@material-ui/core/styles";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import CreateIcon from "@material-ui/icons/Create";
 import AddIcon from "@material-ui/icons/Add";
-import ProductsService from "../../services/ProductsService";
+import ProductsService from "../../../services/ProductsService";
 import imageCompression from "browser-image-compression";
 import { connect } from "react-redux";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { Redirect } from "react-router-dom";
-
-const styles = (theme) => ({
-  div: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  divImage: {
-    position: "relative",
-    margin: "0 auto",
-  },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-  },
-  image: {
-    minWidth: 200,
-    maxWidth: 400,
-    maxHeight: 500,
-    [theme.breakpoints.down("xs")]: {
-      minWidth: 150,
-    },
-  },
-  content: {
-    padding: 25,
-    width: "100%",
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 200,
-    maxWidth: 450,
-  },
-  input: {
-    margin: "10px",
-    width: "100%",
-  },
-  inputHalf: {
-    margin: "10px",
-    width: "45%",
-  },
-  inputInline: {
-    display: "inline-flex",
-    width: "100%",
-  },
-  button: {
-    float: "right",
-  },
-  errorText: {
-    color: "#f44336",
-    margin: 0,
-    "font-size": "0.75rem",
-    "margin-top": "3px",
-    "text-align": "left",
-    "font-family": "Roboto",
-    "font-weight": 400,
-    "line-height": 1.66,
-    "letter-spacing": " 0.03333em",
-  },
-});
+import styles from "./FormStyles";
+import fields from "./FormFields";
 
 class NewProduct extends Component {
-  state = {
-    title: "",
-    description: "",
-    grinds: [],
-    stock: 0,
-    productImg: "",
-    formatTypes: [
-      {
-        name: "",
-        price: 0,
-      },
-    ],
-    errors: {},
-    redirect: null,
-  };
+  constructor(props) {
+    super(props);
+    this.state = this.getDefaultState(props.product);
+  }
+
+  getDefaultState(product = null) {
+    let state = {
+      values: {},
+      errors: {},
+      redirect: null,
+      formCorrect: false,
+    };
+
+    if (product) {
+      Object.values(fields).forEach((field) => {
+        state.values[field.name] = product[field.name];
+        state.errors[field.name] = "";
+      });
+      state.values._id = product._id;
+    } else {
+      Object.values(fields).forEach((field) => {
+        state.values[field.name] = field.defaultValue;
+        state.errors[field.name] = "";
+      });
+    }
+    console.log(state);
+    return state;
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.newProduct?.created) {
       this.setState({ redirect: "/" });
-    }
-    if (
-      prevProps.newProduct?.loading === true &&
-      this.props.newProduct?.errors
-    ) {
-      this.setState({
-        errors: this.props.newProduct.errors,
-      });
     }
     if (
       prevProps.newProduct?.loading === true &&
@@ -147,27 +97,27 @@ class NewProduct extends Component {
     fileInput.click();
   };
   createFormatTypes() {
-    return Array.isArray(this.state.formatTypes)
-      ? this.state.formatTypes?.map((el, i) => (
+    return Array.isArray(this.state.values.format)
+      ? this.state.values.format?.map((el, i) => (
           <div key={i} className={this.props.classes.inputInline}>
             <TextField
               className={this.props.classes.input}
-              id="name"
+              id={fields.format.name}
               name="name"
-              placeholder="Format"
-              error={this.state.errors[`format.${i}.name`] ? true : false}
-              helperText={this.state.errors[`format.${i}.name`]}
+              value={this.state.values.format[i].name}
+              placeholder={fields.format.label}
               onChange={this.handleFormatChange.bind(this, i)}
             />
             <CurrencyTextField
               className={this.props.classes.input}
               name="price"
+              value={this.state.values.format[i].price}
               placeholder="Price"
               variant="standard"
               currencySymbol="€"
               outputFormat="number"
               minimumValue="0"
-              onChange={this.handleFormatChange.bind(this.value, i)}
+              onChange={this.handleFormatChange.bind(this, i)}
             />
             {i > 0 ? (
               <IconButton
@@ -181,40 +131,75 @@ class NewProduct extends Component {
         ))
       : null;
   }
+  checkFormCorrect(state) {
+    console.log(state);
+    return Object.values(fields).reduce((ac, v) => {
+      console.log(state.errors[v.name], state.values[v.name]);
+      return state.errors[v.name] !== "" ||
+        state.values[v.name] === "" ||
+        state.values.format[0].name !== ""
+        ? false
+        : ac;
+    }, true);
+  }
   addClick() {
-    let values = this.state.formatTypes;
+    let newFormat = this.state.values.format;
+    newFormat.push({
+      name: "",
+      price: "0",
+    });
     this.setState({
-      formatTypes: [
-        ...values,
-        {
-          name: "",
-          price: 0,
-        },
-      ],
+      values: {
+        format: newFormat,
+      },
+      formCorrect: false,
     });
   }
   removeClick(i) {
     console.log(i);
-    let values = [...this.state.formatTypes];
-    console.log(values);
-    values.splice(i, 1);
-    console.log("Despues");
-    console.log(values);
-    this.setState({ formatTypes: values });
+    let lastValues = this.state.values.format;
+    lastValues.splice(i, 1);
+    this.setState({
+      values: {
+        format: lastValues,
+      },
+    });
   }
-  handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
+  handleChange = (field, e) => {
+    this.setState((prevState) => {
+      let newState = prevState;
+      newState.values[field.name] = e.target.value;
+      newState.errors[field.name] = Validators.validate(
+        field.validators,
+        e.target.value
+      );
+      newState.formCorrect = this.checkFormCorrect(newState);
+      return newState;
+    });
   };
-  handleGrindChange = (event, values) => {
-    this.setState({ grinds: values });
+  handleGrindChange = (values) => {
+    this.setState((prevState) => {
+      let newState = prevState;
+      newState.values.grind = values;
+      newState.errors.grinds = Validators.validate(
+        fields.grind.validators,
+        values
+      );
+      newState.formCorrect = this.checkFormCorrect(newState);
+      return newState;
+    });
   };
   handleFormatChange = (i, event) => {
-    let formats = this.state.formatTypes;
-    if (event.target.name === "name") formats[i].name = event.target.value;
-    else {
-      formats[i].price = event.target.value;
-    }
-    this.setState({ formatTypes: formats });
+    this.setState((prevState) => {
+      let newState = prevState;
+      newState.values.format[i][event.target.name] = event.target.value;
+      newState.errors.format = Validators.validate(
+        fields.format.validators,
+        newState.values.format
+      );
+      newState.formCorrect = this.checkFormCorrect(newState);
+      return newState;
+    });
   };
   handleSubmit = (event) => {
     event.preventDefault();
@@ -283,33 +268,33 @@ class NewProduct extends Component {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     className={classes.input}
-                    id="title"
-                    name="title"
-                    placeholder="Title"
-                    error={errors.name ? true : false}
-                    helperText={errors.name}
-                    onChange={this.handleChange}
+                    id={fields.name.name}
+                    name={fields.name.label}
+                    placeholder={fields.name.label}
+                    error={this.state.errors[fields.name.name]}
+                    helperText={this.state.errors[fields.name.name]}
+                    onChange={this.handleChange.bind(this, fields.name)}
                     fullWidth
                   />
                   <TextField
                     className={classes.input}
-                    id="description"
-                    name="description"
-                    placeholder="Description"
-                    error={errors.description ? true : false}
+                    id={fields.description.name}
+                    name={fields.description.label}
+                    placeholder={fields.description.label}
+                    error={this.state.errors[fields.description.name]}
                     helperText={errors.description}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange.bind(this, fields.description)}
                     fullWidth
                   />
                   <TextField
                     className={classes.input}
-                    id="stock"
-                    name="stock"
-                    placeholder="Stock"
-                    type="number"
-                    error={errors.stock ? true : false}
+                    id={fields.stock.name}
+                    name={fields.stock.label}
+                    placeholder={fields.stock.label}
+                    error={this.state.errors[fields.stock.name]}
                     helperText={errors.stock}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange.bind(this, fields.stock)}
+                    type="number"
                     fullWidth
                   />
                   <Typography
@@ -323,13 +308,13 @@ class NewProduct extends Component {
                     multiple
                     options={grindTypes}
                     className={classes.input}
-                    onChange={this.handleGrindChange}
+                    onChange={(ev, value) => this.handleGrindChange(value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         variant="standard"
-                        error={errors.grind ? true : false}
-                        helperText={errors.grind}
+                        error={this.state.errors[fields.grind.name]}
+                        helperText={this.state.errors[fields.grind.name]}
                         label="Grind Types"
                         placeholder="Grind Types"
                       />
@@ -352,6 +337,11 @@ class NewProduct extends Component {
                   >
                     <AddIcon />
                   </IconButton>
+                  {this.state.errors.format !== "" ? (
+                    <p className={classes.errorText} id="name-helper-text">
+                      {this.state.errors.format}
+                    </p>
+                  ) : null}
                   <br />
                   <br />
                   <br />
@@ -362,6 +352,7 @@ class NewProduct extends Component {
                     color="primary"
                     size="large"
                     className={classes.button}
+                    disabled={!this.state.formCorrect}
                     endIcon={<CreateIcon />}
                   >
                     Crear
