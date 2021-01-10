@@ -6,7 +6,6 @@ import loadingProduct from "../redux/actions/loadingProduct";
 import creatingProduct from "../redux/actions/creatingProduct";
 import imageUploaded from "../redux/actions/imageUploaded";
 import loadingError from "../redux/actions/loadingError";
-import setProductErrors from "../redux/actions/setProductErrors";
 import clearProductErrors from "../redux/actions/clearProductErrors";
 import createdProduct from "../redux/actions/createdProduct";
 import deletingProduct from "../redux/actions/Products/deletingProduct";
@@ -14,11 +13,6 @@ import deletedProduct from "../redux/actions/Products/deletedProduct";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 import store from "../redux/store";
 import UsersService from "./UsersService";
-
-const sendAuthError = () =>
-  store.dispatch(
-    startSnackBar("error", "No se encuentra autenticado ahora mismo")
-  );
 
 export class ProductsService {
   static requestAllProducts() {
@@ -154,6 +148,9 @@ export class ProductsService {
       }
       store.dispatch(deletingProduct());
 
+      console.log(userToken)
+      console.log(productId)
+
       axios
         .delete("/api/products", {
           data: { userToken: userToken },
@@ -167,6 +164,10 @@ export class ProductsService {
           resolve();
         })
         .catch((err) => {
+          console.log(err)
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
           store.dispatch(
             startSnackBar("error", "No se ha podido eliminar el producto")
           );

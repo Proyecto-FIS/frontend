@@ -1,5 +1,4 @@
 import { Component, Fragment } from "react";
-import PropTypes from 'prop-types';
 import {
     Card,
     CardContent,
@@ -57,7 +56,6 @@ const styles = (theme) => ({
 
 class ProductDetails extends Component {
     cartService = new CartService();
-    productsService = new ProductsService();
 
     state = {
         productList: [],
@@ -115,7 +113,7 @@ class ProductDetails extends Component {
     }
 
     handleDeleteProduct = (id) => {
-        this.productsService.deleteProduct(this.props.account.token, id)
+        ProductsService.deleteProduct(id)
     }
 
     render() {
@@ -220,12 +218,6 @@ class ProductDetails extends Component {
             </Card>
         );
     }
-}
-
-ProductDetails.propTypes = {
-    product: PropTypes.object.isRequired,
-    classes: PropTypes.object.isRequired,
-    account: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state =>({
