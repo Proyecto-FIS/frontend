@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 import PropTypes from 'prop-types';
 import {
     Card,
@@ -13,6 +13,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Select from '@material-ui/core/Select';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { connect } from "react-redux";
 import CartService from "../../services/CartService"
 import ProductsService from "../../services/ProductsService"
@@ -44,6 +45,12 @@ const styles = (theme) => ({
         maxWidth: 450,
     },
     button: {
+        float: 'right',
+        margin: '0px 20px 0px 0px'
+    },
+    toasterButtons: {
+        margin: '50px 0px 0px 0px',
+        display: 'flex',
         float: 'right'
     }
 });
@@ -182,17 +189,31 @@ class ProductDetails extends Component {
                         </Button>
                         ) : null}
                         {(account && !account.isCustomer && account._id === providerId) ? (
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            size="large"
-                            onClick={() => this.handleDeleteProduct(_id)}
-                            disabled={this.props.productDetails.loading}
-                            className={classes.button}
-                            endIcon={<DeleteIcon />}
-                        >
-                            Borrar Producto
-                        </Button>
+                        <Fragment>
+                            <div className={classes.toasterButtons}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                disabled={this.props.productDetails.loading}
+                                className={classes.button}
+                                endIcon={<EditIcon />}
+                            >
+                                Editar Producto
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                size="large"
+                                onClick={() => this.handleDeleteProduct(_id)}
+                                disabled={this.props.productDetails.loading}
+                                className={classes.button}
+                                endIcon={<DeleteIcon />}
+                            >
+                                Borrar Producto
+                            </Button>
+                            </div>
+                        </Fragment>
                         ) : null }
                     </CardContent>
                 </div>
