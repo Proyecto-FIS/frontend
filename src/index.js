@@ -8,7 +8,7 @@ import PrivateRoute from "./components/Common/PrivateRoute";
 import store from "./redux/store";
 
 import Products from "./routes/Products";
-import Roasters from "./routes/Roasters";
+import Toasters from "./routes/Toasters";
 import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
@@ -32,7 +32,7 @@ ReactDOM.render(
             <Switch>
                 <PrivateRoute exact path="/purchase" component={PurchaseSummary} />
                 <PrivateRoute exact path="/purchase-history" component={PurchaseHistory} />
-                <Route exact path="/roasters" component={Roasters} />
+                <Route exact path="/toasters" component={Toasters} />
                 <Route exact path="/deliveries" component={Deliveries} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/customer-register" component={RegisterCustomer} />
@@ -45,7 +45,6 @@ ReactDOM.render(
                 <Route exact path="/products/:productId" component={Product} />
                 <PrivateRoute exact path="/billingprofiles/add" component={BillingProfileForm} />
                 <PrivateRoute exact path="/billingprofiles" component={BillingProfileList} />
-                <Route exact path="/roasters" component={Roasters} />
             </Switch>
         </Router>
         <SnackbarListener />

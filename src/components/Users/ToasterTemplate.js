@@ -22,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  avatar2: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+    width: theme.spacing(9),
+    height: theme.spacing(9),
+  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -52,7 +58,7 @@ return (
             </Typography> 
 
             {props.user.pictureUrl ?
-            <Avatar alt={props.user.account.username} src={props.user.pictureUrl} /> :
+            <Avatar className={classes.avatar2} alt={props.user.account.username} src={props.user.pictureUrl} /> :
               <Avatar className={classes.avatar}/>}
         </div>
 
