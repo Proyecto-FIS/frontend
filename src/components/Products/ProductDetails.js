@@ -86,23 +86,26 @@ class ProductDetails extends Component {
             const id = event.target.value
             const format = formats.find(f => { return f._id===id})
             this.setState({
+                formatType: format,
                 productPrice: format.price
-            })
+            });
+       }else{
+            this.setState({
+                [name]: event.target.value,
+              });
         }
-        this.setState({
-          [name]: event.target.value,
-        });
     };
 
     handleAddCart = (id) =>{
         let product = {
             _id: id,
             quantity: 1,
+            format: this.state.formatType.name,
             unitPriceEuros: this.state.productPrice,
             name: this.props.product.name,
             imageUrl: this.props.product.imageUrl
         }
-        let productList = this.state.productList
+        let productList = this.props.productList
         let found = productList.find(p => p._id === product._id)
         if(found){
             found.quantity = found.quantity + 1   
@@ -154,7 +157,7 @@ class ProductDetails extends Component {
                             <InputLabel>Formato</InputLabel>
                             <Select
                                 native
-                                value={this.state.formatType}
+                                value={this.state.formatType._id}
                                 onChange={e => this.handleChange(e)}
                                 inputProps={{
                                     name: "formatType",

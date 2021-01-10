@@ -56,7 +56,7 @@ class PurchaseSummary extends Component {
 
     render() {
 
-        const { products, totalPrice, billingProfiles, classes } = this.props;
+        const { /*products,*/ totalPrice, billingProfiles, classes } = this.props;
 
         const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
             <MenuItem key={i} value={i}>
@@ -118,7 +118,7 @@ const mapStateToProps = (state) => {
     return {
         products: state.CartReducer.productList,
         totalPrice: state.CartReducer.totalPrice,
-        billingProfiles: state.LoaderReducer.elements
+        billingProfiles: state.BillingProfileReducer.elements
     };
 };
 
