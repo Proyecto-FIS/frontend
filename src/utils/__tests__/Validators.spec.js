@@ -75,3 +75,9 @@ it("validateObjetctField", () => {
   );
   expect(validateObjetctField({})).toBe(`No existe el campo ${field}`);
 });
+
+it("notEmptyString", () => {
+  const checkString = Validators.NotEmptyString();
+  expect(checkString("NotEmptyString")).toBe("");
+  expect(checkString("")).toBe("El campo esta vacío");
+});

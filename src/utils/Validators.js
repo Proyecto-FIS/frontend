@@ -8,6 +8,14 @@ class Validators {
       return "";
     };
   }
+  static NotEmptyString(){
+    return (v) => {
+      if (v === "")
+        return "El campo esta vacío"
+      else
+        return ""
+    }
+  }
 
   static CheckInteger() {
     return (v) => {

@@ -1,5 +1,4 @@
-import { Component, Fragment } from "react";
-import PropTypes from "prop-types";
+import { Component } from "react";
 import {
   Card,
   CardContent,
@@ -51,7 +50,6 @@ class NewProduct extends Component {
         state.errors[field.name] = "";
       });
     }
-    console.log(state);
     return state;
   }
 
@@ -66,8 +64,16 @@ class NewProduct extends Component {
       document.getElementById(
         "productImg"
       ).src = this.props.newProduct.productImage;
-      this.setState({
-        productImg: this.props.newProduct.productImage,
+
+      this.setState((prevState) => {
+        let newState = prevState;
+        newState.values.productImg = this.props.newProduct.productImage;
+        newState.errors.productImg = Validators.validate(
+          fields.productImg.validators,
+          this.props.newProduct.productImage
+        );
+        newState.formCorrect = this.checkFormCorrect(newState);
+        return newState;
       });
     }
   }
@@ -81,16 +87,15 @@ class NewProduct extends Component {
         return true;
       },
     };
-    let formData = await imageCompression(image, options)
+    imageCompression(image, options)
       .then(function (compressedImage) {
         const data = new FormData();
         data.append("cover", compressedImage, image.name);
         return data;
       })
+      .then((formData) => ProductsService.uploadImage(formData))
       .catch((error) => {
-        console.log(error.message);
       });
-    ProductsService.uploadImage(formData);
   };
   handleUploadImage = () => {
     const fileInput = document.getElementById("coverInput");
@@ -116,6 +121,7 @@ class NewProduct extends Component {
               variant="standard"
               currencySymbol="€"
               outputFormat="number"
+              digitGroupSeparator=""
               minimumValue="0"
               onChange={this.handleFormatChange.bind(this, i)}
             />
@@ -132,15 +138,11 @@ class NewProduct extends Component {
       : null;
   }
   checkFormCorrect(state) {
-    console.log(state);
-    return Object.values(fields).reduce((ac, v) => {
-      console.log(state.errors[v.name], state.values[v.name]);
-      return state.errors[v.name] !== "" ||
-        state.values[v.name] === "" ||
-        state.values.format[0].name !== ""
-        ? false
+    let result = Object.values(fields).reduce((ac, v) => {
+      return state.errors[v.name] !== "" || (typeof(state.values[v.name]) === "string" && state.values[v.name] === "") || (Array.isArray(state.values[v.name]) && state.values[v.name].length === 0) ? false
         : ac;
     }, true);
+    return result;
   }
   addClick() {
     let newFormat = this.state.values.format;
@@ -156,7 +158,6 @@ class NewProduct extends Component {
     });
   }
   removeClick(i) {
-    console.log(i);
     let lastValues = this.state.values.format;
     lastValues.splice(i, 1);
     this.setState({
@@ -181,7 +182,7 @@ class NewProduct extends Component {
     this.setState((prevState) => {
       let newState = prevState;
       newState.values.grind = values;
-      newState.errors.grinds = Validators.validate(
+      newState.errors.grind = Validators.validate(
         fields.grind.validators,
         values
       );
@@ -205,12 +206,12 @@ class NewProduct extends Component {
     event.preventDefault();
     ProductsService.postProduct({
       providerId: this.props.account._id,
-      name: this.state.title,
-      description: this.state.description,
-      grind: this.state.grinds,
-      stock: this.state.stock,
-      imageUrl: this.state.productImg,
-      format: this.state.formatTypes,
+      name: this.state.values.name,
+      description: this.state.values.description,
+      grind: this.state.values.grind,
+      stock: this.state.values.stock,
+      imageUrl: this.state.values.productImg,
+      format: this.state.values.format,
     });
   };
 
@@ -218,7 +219,6 @@ class NewProduct extends Component {
     const { errors } = this.state;
     const {
       classes,
-      newProduct: { loading },
     } = this.props;
     const grindTypes = [
       "Grueso",
@@ -270,8 +270,9 @@ class NewProduct extends Component {
                     className={classes.input}
                     id={fields.name.name}
                     name={fields.name.label}
+                    value={this.state.values.name}
                     placeholder={fields.name.label}
-                    error={this.state.errors[fields.name.name]}
+                    error={this.state.errors[fields.name.name] !==""}
                     helperText={this.state.errors[fields.name.name]}
                     onChange={this.handleChange.bind(this, fields.name)}
                     fullWidth
@@ -280,8 +281,9 @@ class NewProduct extends Component {
                     className={classes.input}
                     id={fields.description.name}
                     name={fields.description.label}
+                    value={this.state.values.description}
                     placeholder={fields.description.label}
-                    error={this.state.errors[fields.description.name]}
+                    error={this.state.errors[fields.description.name] !==""}
                     helperText={errors.description}
                     onChange={this.handleChange.bind(this, fields.description)}
                     fullWidth
@@ -290,8 +292,9 @@ class NewProduct extends Component {
                     className={classes.input}
                     id={fields.stock.name}
                     name={fields.stock.label}
+                    value={this.state.values.stock}
                     placeholder={fields.stock.label}
-                    error={this.state.errors[fields.stock.name]}
+                    error={this.state.errors[fields.stock.name] !==""}
                     helperText={errors.stock}
                     onChange={this.handleChange.bind(this, fields.stock)}
                     type="number"
@@ -313,10 +316,10 @@ class NewProduct extends Component {
                       <TextField
                         {...params}
                         variant="standard"
-                        error={this.state.errors[fields.grind.name]}
+                        error={this.state.errors[fields.grind.name] !==""}
                         helperText={this.state.errors[fields.grind.name]}
-                        label="Grind Types"
-                        placeholder="Grind Types"
+                        label="Tipos de molido"
+                        placeholder="Tipos de molido"
                       />
                     )}
                   />
@@ -366,12 +369,6 @@ class NewProduct extends Component {
     );
   }
 }
-
-NewProduct.propTypes = {
-  classes: PropTypes.object.isRequired,
-  newProduct: PropTypes.object.isRequired,
-  account: PropTypes.object.isRequired,
-};
 
 const mapStateToProps = (state) => ({
   newProduct: state.ProductsReducer.newProduct,

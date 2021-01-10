@@ -5,7 +5,9 @@ const fields = {
     label: "Imagen",
     name: "productImg",
     defaultValue: "",
-    validators: [Validators.StringLength(1, 100)],
+    validators: [
+      Validators.StringLength(1, 100)
+    ],
   },
   name: {
     label: "Nombre",
@@ -22,22 +24,23 @@ const fields = {
   stock: {
     label: "Stock",
     name: "stock",
-    defaultValue: 0,
+    defaultValue: "0",
     validators: [
+      Validators.NotEmptyString(),
       Validators.CheckInteger(),
       Validators.CheckIntegerRange(0, 999),
     ],
   },
   grind: {
     label: "Molido",
-    name: "grinds",
+    name: "grind",
     defaultValue: [],
     validators: [Validators.notEmptyArray()],
   },
   format: {
     label: "Formato",
     name: "format",
-    defaultValue: [{ name: "", price: "0" }],
+    defaultValue: [{ name: "Peso", price: "0" }],
     validators: [
       Validators.notEmptyArray(),
       Validators.validateArray([
