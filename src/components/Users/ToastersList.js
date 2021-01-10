@@ -1,6 +1,6 @@
 import React from "react";
 
-import ToasterSkeleton from "./ToasterSkeleton";
+import ToasterDetails from "./ToasterDetails";
 import UsersService from "../../services/UsersService";
 import { connect } from "react-redux";
 import { Grid } from "@material-ui/core";
@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { Divider } from '@material-ui/core';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ProductSkeleton from "../Products/ProductSkeleton";
 
 class ToastersList extends React.Component {
 
@@ -38,9 +38,9 @@ class ToastersList extends React.Component {
               <Container maxWidth="md">
                 <Grid container spacing={4}>
                 {loading ? (
-                  <CircularProgress/>
+                  <ProductSkeleton/>
                   ) : (
-                    toasters.map(toaster => (<ToasterSkeleton key={toaster._id} toaster={toaster}/>))
+                    toasters.map(toaster => (<ToasterDetails key={toaster._id} toaster={toaster}/>))
                   )
                 }
                 </Grid>

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ToasterSkeleton(props){
+function ToasterDetails(props){
   const classes = useStyles();
   return (
       <Grid item key={props.toaster._id} xs={12} sm={6} md={4}>
@@ -90,4 +90,4 @@ function ToasterSkeleton(props){
   );
 }
 
-export default ToasterSkeleton
+export default ToasterDetails
