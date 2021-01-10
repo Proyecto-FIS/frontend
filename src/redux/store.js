@@ -9,7 +9,7 @@ import SnackbarReducer from "./reducers/SnackbarReducer";
 import PurchaseHistoryReducer from "./reducers/PurchaseHistoryReducer";
 import BillingProfileReducer from "./reducers/BillingProfileReducer";
 import CartReducer from "./reducers/CartReducer";
-
+import ToastersReducer from "./reducers/ToastersReducer";
 
 import thunk from 'redux-thunk';
 
@@ -24,7 +24,8 @@ const reducers = combineReducers({
     BillingProfileReducer,
     PurchaseHistoryReducer,
     AuthReducer,
-    CartReducer
+    CartReducer,
+    ToastersReducer
 });
 
 const accountFromStorage = localStorage.getItem('account') ? JSON.parse(localStorage.getItem('account')) : null;

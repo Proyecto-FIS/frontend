@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 
 import Products from "./routes/Products";
-import Roasters from "./routes/Roasters";
+import Toasters from "./routes/Toasters";
 import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
@@ -31,7 +31,7 @@ ReactDOM.render(
             <Switch>
                 <Route exact path="/purchase" component={PurchaseSummary} />
                 <Route exact path="/purchase-history" component={PurchaseHistory} />
-                <Route exact path="/roasters" component={Roasters} />
+                <Route exact path="/toasters" component={Toasters} />
                 <Route exact path="/deliveries" component={Deliveries} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/customer-register" component={RegisterCustomer} />
@@ -44,7 +44,6 @@ ReactDOM.render(
                 <Route exact path="/products/:productId" component={Product} />
                 <Route exact path="/billingprofiles/add" component={BillingProfileForm} />
                 <Route exact path="/billingprofiles" component={BillingProfileList} />
-                <Route exact path="/roasters" component={Roasters} />
             </Switch>
         </Router>
         <SnackbarListener />
