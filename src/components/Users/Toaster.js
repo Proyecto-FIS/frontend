@@ -70,7 +70,7 @@ const Toaster = () => {
   const accountLogin = useSelector(state => state.AuthReducer);
 
   const toasterProfile = useSelector(state => state.ProfileReducer);
-  const { loading, error, user } = toasterProfile;
+  const { loading, error, user, toasterProducts } = toasterProfile;
 
   
   const {account: accFromUser} = user;
@@ -149,7 +149,7 @@ const Toaster = () => {
   if(!account) {
     return (
       <Container component="main" maxWidth="md">
-        <ToasterTemplateLogout user={user}/>
+        <ToasterTemplateLogout loading={loading} user={user} toasterProducts={toasterProducts}/>
       </Container>
     )
   }
@@ -352,7 +352,7 @@ const Toaster = () => {
           </Grid>
 
           <Grid className={classes.gri} item xs={9}>
-              <ToasterTemplate user={user}/>
+              <ToasterTemplate loading={loading} user={user} toasterProducts={toasterProducts}/>
           </Grid>
 
           </Fragment>
@@ -360,7 +360,7 @@ const Toaster = () => {
           : 
           
           <Container component="main" maxWidth="md">
-            <ToasterTemplate user={user}/>
+            <ToasterTemplate loading={loading} user={user} toasterProducts={toasterProducts}/>
           </Container>
         }
           
