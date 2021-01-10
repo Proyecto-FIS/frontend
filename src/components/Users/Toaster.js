@@ -360,7 +360,7 @@ const Toaster = () => {
           : 
           
           <Container component="main" maxWidth="md">
-            <ToasterTemplateLogout user={user}/>
+            <ToasterTemplate user={user}/>
           </Container>
         }
           

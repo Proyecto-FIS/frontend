@@ -2,32 +2,25 @@ import React from "react";
 
 import ToasterSkeleton from "./ToasterSkeleton";
 import UsersService from "../../services/UsersService";
-
+import { connect } from "react-redux";
 import { Grid } from "@material-ui/core";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { Divider } from '@material-ui/core';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class ToastersList extends React.Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            toasters: [] }
-    }
+
 
     componentDidMount(){ 
-        UsersService.getAllToasters().then(
-            (result) => {
-                this.setState({
-                    toasters: result.data
-                })
-            }
-        )
+        UsersService.getAllToasters();
     }
 
     render(){
+      const { toasters, loading } = this.props;
+
         return (
             <React.Fragment>
             <CssBaseline />
@@ -41,11 +34,15 @@ class ToastersList extends React.Component {
                   <Divider variant="fullWidth" /><br/>
                 </Container>
               </div>
+              
               <Container maxWidth="md">
                 <Grid container spacing={4}>
-                  {this.state.toasters.map((toaster) => (
-                      <ToasterSkeleton toaster={toaster}/>
-                  ))}
+                {loading ? (
+                  <CircularProgress/>
+                  ) : (
+                    toasters.map(toaster => (<ToasterSkeleton key={toaster._id} toaster={toaster}/>))
+                  )
+                }
                 </Grid>
               </Container>
             </main>
@@ -55,6 +52,14 @@ class ToastersList extends React.Component {
     }
     
 }
-export default ToastersList;
+
+const mapStateToProps = (state) => {
+  return {
+      toasters: state.ToastersReducer.toasters,
+      loading: state.ToastersReducer.loading
+  };
+};
+
+export default connect(mapStateToProps) (ToastersList);
 
 

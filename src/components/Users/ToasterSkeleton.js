@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
   },
   cardMedia: {
     paddingTop: '56.25%', // 16:9
-    heigh: '100px',
-  },
+    height: '100px',
+},
   cardContent: {
     flexGrow: 1,
   },
@@ -49,7 +49,9 @@ function ToasterSkeleton(props){
         <Card className={classes.card}>
 
           <CardMedia
+            component="div"
             className={classes.cardMedia}
+            
             image={props.toaster.pictureUrl}
             title={props.toaster.name}
           />
