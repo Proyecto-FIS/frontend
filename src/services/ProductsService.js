@@ -70,8 +70,7 @@ export class ProductsService {
       return axios
         .post("/api/uploadImage", formData)
         .then((res) => {
-          //TODO: Como accede a eso ? me sale undefined en los test
-          //store.dispatch(imageUploaded(res.data.data.Location));
+          store.dispatch(imageUploaded(res.data.data.Location));
           store.dispatch(
             startSnackBar("success", "Imagen subida correctamente")
           );
@@ -94,13 +93,9 @@ export class ProductsService {
         reject();
         return;
       }
-      console.log(newProduct);
-      console.log(userToken);
       store.dispatch(creatingProduct());
       axios
-        .post("/api/products", {
-          data: { userToken: userToken, product: newProduct },
-        })
+        .post("/api/products", { userToken: userToken, product: newProduct })
         .then((res) => {
           store.dispatch(createdProduct(res));
           store.dispatch(clearProductErrors());
@@ -111,11 +106,6 @@ export class ProductsService {
         })
         .catch((err) => {
           console.log(err);
-          //   let errors = {};
-          //   Object.keys(err.response.data.errors).map(
-          //     (key) => (errors[key] = err.response.data.errors[key].message)
-          //   );
-          //store.dispatch(setProductErrors(err));
           store.dispatch(
             startSnackBar("error", "No ha sido posible guardar el producto")
           );

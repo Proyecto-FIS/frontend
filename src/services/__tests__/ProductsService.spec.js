@@ -160,7 +160,8 @@ it("Error uploading image", () => {
 
 it("Updloading image succesfully working", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onPost("/api/uploadImage").reply(200);
+  const data = { data: { Location: "location example" } };
+  axiosMock.onPost("/api/uploadImage").reply(200, data);
   doLogin(store);
 
   return ProductsService.uploadImage({}).then(() => {

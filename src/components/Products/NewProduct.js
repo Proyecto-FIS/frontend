@@ -362,7 +362,6 @@ class NewProduct extends Component {
                     color="primary"
                     size="large"
                     className={classes.button}
-                    disabled={loading}
                     endIcon={<CreateIcon />}
                   >
                     Crear
