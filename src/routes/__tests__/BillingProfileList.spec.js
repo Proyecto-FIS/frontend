@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
 import { cleanup, screen, fireEvent } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../setupTests";
-import LoaderReducer from "../../redux/reducers/LoaderReducer";
 import BillingProfileReducer from "../../redux/reducers/BillingProfileReducer";
-import startLoader from "../../redux/actions/Loader/startLoader";
-import finishLoader from "../../redux/actions/Loader/finishLoader";
+import startLoader from "../../redux/actions/BillingProfile/load";
+import finishLoader from "../../redux/actions/BillingProfile/done";
 import BillingProfileList from "../BillingProfileList";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
@@ -21,7 +20,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    store = createReduxStore({ LoaderReducer, BillingProfileReducer });
+    store = createReduxStore({ BillingProfileReducer });
 });
 
 afterEach(cleanup);

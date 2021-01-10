@@ -1,10 +1,9 @@
 import axios from "axios";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
-import startLoader from "../redux/actions/Loader/startLoader";
-import finishLoader from "../redux/actions/Loader/finishLoader";
+import startLoader from "../redux/actions/BillingProfile/load";
+import finishLoader from "../redux/actions/BillingProfile/done";
 import store from "../redux/store";
-
-const sendAuthError = () => store.dispatch(startSnackBar("error", "No se encuentra autenticado ahora mismo"));
+import UsersService from "./UsersService";
 
 export class BillingProfileService {
 
@@ -12,9 +11,8 @@ export class BillingProfileService {
 
         store.dispatch(startLoader());
 
-        const userToken = localStorage.getItem("token");
+        const userToken = UsersService.getUserToken();
         if (!userToken) {
-            sendAuthError();
             store.dispatch(finishLoader());
             return;
         }
@@ -32,9 +30,8 @@ export class BillingProfileService {
     static postNewProfile(profile) {
         return new Promise((resolve, reject) => {
 
-            const userToken = localStorage.getItem("token");
+            const userToken = UsersService.getUserToken();
             if (!userToken) {
-                sendAuthError();
                 reject();
                 return;
             }
@@ -54,9 +51,8 @@ export class BillingProfileService {
     static deleteProfile(profile) {
 
         return new Promise((resolve, reject) => {
-            const userToken = localStorage.getItem("token");
+            const userToken = UsersService.getUserToken();
             if (!userToken) {
-                sendAuthError();
                 reject();
                 return;
             }
@@ -76,9 +72,8 @@ export class BillingProfileService {
     static editProfile(profile) {
         return new Promise((resolve, reject) => {
 
-            const userToken = localStorage.getItem("token");
+            const userToken = UsersService.getUserToken();
             if (!userToken) {
-                sendAuthError();
                 reject();
                 return;
             }
