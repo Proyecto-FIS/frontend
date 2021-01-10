@@ -123,7 +123,7 @@ class NavBar extends Component {
                     <DialogTitle id="simple-dialog-title">Carro de la compra</DialogTitle>
                     <List>
                         {this.props.quantity > 0 ? this.props.productList.map((product) => (
-                            <ProductListItem product={product} handleDeleteItem={handleDeleteItem(product)}/>
+                            <ProductListItem key={`product-${product._id}`} product={product} handleDeleteItem={handleDeleteItem}/>
                         )) : <Typography variant="h5" color="textSecondary" className={classes.dialogText}>El carro está vacío</Typography>}
                         {this.props.quantity > 0 ? (
                         <Fragment>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
+import { withStyles } from "@material-ui/core/styles";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 class ProductListItem extends Component {
     render(){
+        console.log(this.props)
         const {classes, product, handleDeleteItem} = this.props;
         return (
             <ListItem button key={`item-${product._id}`}>
@@ -29,12 +30,6 @@ class ProductListItem extends Component {
 
 }
 
-const mapStateToProps = (state) => {
-    return {
-        product: state.product,
-        handleDeleteItem: state.handleDeleteItem
-    };
-};
 
-export default connect(mapStateToProps)(ProductListItem);
+export default (withStyles({ withTheme: true })(ProductListItem));
 
