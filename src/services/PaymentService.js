@@ -2,7 +2,6 @@ import axios from "axios";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 import UsersService from "./UsersService";
 import store from "../redux/store";
-import { CardElement } from "@stripe/react-stripe-js";
 
 export class PaymentService {
 

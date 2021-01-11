@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Button, Select, MenuItem, InputLabel, FormControl, Grid, Typography } from "@material-ui/core";
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import BillingProfileService from "../../services/BillingProfileService";
@@ -7,6 +9,7 @@ import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 import MainGrid from "../Common/MainGrid";
 import { CardElement } from "@stripe/react-stripe-js";
 import PaymentService from "../../services/PaymentService";
+import Paper from '@material-ui/core/Paper';
 
 const styles = (theme) => ({
     formControl: {
@@ -19,7 +22,23 @@ const styles = (theme) => ({
     form: {
         display: "flex",
         flexDirection: "column",
-    }
+    },
+    paper: {
+        padding: theme.spacing(7),
+        margin: 'auto',
+        maxWidth: 1200,
+    },
+    root: {
+        padding: theme.spacing(4),
+        flexGrow: 1,
+    },
+    cardpay: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+    },
+    titleForm: {
+        paddingBottom: theme.spacing(4),
+    },
 });
 
 const CARD_ELEMENT_OPTIONS = {
@@ -104,7 +123,7 @@ class PurchaseForm extends Component {
         
         let products = [];
         this.props.products.forEach((product, i) => {
-            products.push({ _id: product._id, quantity: product.quantity });
+            products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
         
         PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
@@ -127,7 +146,7 @@ class PurchaseForm extends Component {
 
         let products = [];
         this.props.products.forEach((product, i) => {
-            products.push({ _id: product._id, quantity: product.quantity });
+            products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
         
         PaymentService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
@@ -154,9 +173,12 @@ class PurchaseForm extends Component {
         const defaultProfile = <MenuItem value={""}><em>{billingProfiles === null ? "Cargando perfiles..." : "No seleccionado"}</em></MenuItem>
 
         return (
+            <div className={classes.root}>
+            <Paper className={classes.paper}>
+              
             <MainGrid container className={classes.form}>
-                <Grid item>
-                    <Typography variant="h3" align="center">Resumen del pedido</Typography>
+                <Grid item className={classes.titleForm}>
+                    <Typography variant="h4" align="center">Resumen del pedido</Typography>
                 </Grid>
                 <Grid item xs={8}>
                     <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
@@ -191,8 +213,12 @@ class PurchaseForm extends Component {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item>
-                    <CardElement options={CARD_ELEMENT_OPTIONS} onChange={(ev) => this.checkCreditCard(ev)} />
+                <Grid item xs className={classes.cardpay}>
+                    <Card>
+                        <CardContent>
+                            <CardElement options={CARD_ELEMENT_OPTIONS} onChange={(ev) => this.checkCreditCard(ev)} />
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid container item direction="row-reverse">
                     <Grid item>
@@ -200,6 +226,8 @@ class PurchaseForm extends Component {
                     </Grid>
                 </Grid>
             </MainGrid>
+            </Paper>
+    </div>
         );
     }
 }
