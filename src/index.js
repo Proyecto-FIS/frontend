@@ -20,8 +20,8 @@ import Toaster from "./routes/Toaster";
 import BillingProfileList from "./routes/BillingProfileList";
 import BillingProfileForm from "./routes/BillingProfileForm";
 import PurchaseHistory from "./routes/PurchaseHistory";
+import DeliveryForm from "./routes/DeliveryForm";
 import PurchaseSummary from "./routes/PurchaseSummary";
-
 import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
 
@@ -34,6 +34,8 @@ ReactDOM.render(
                 <PrivateRoute exact path="/purchase-history" component={PurchaseHistory} />
                 <Route exact path="/toasters" component={Toasters} />
                 <Route exact path="/deliveries" component={Deliveries} />
+                <Route exact path="/deliveries/add" component={DeliveryForm} />
+                <Route exact path="/deliveries/:deliveryId" component={DeliveryForm}/>
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/customer-register" component={RegisterCustomer} />
                 <Route exact path="/toaster-register" component={RegisterToaster} />
