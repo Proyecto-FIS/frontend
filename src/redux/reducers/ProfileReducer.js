@@ -1,4 +1,4 @@
-import { PROFILE_REQUEST, PROFILE_ERROR, PROFILE_SUCCESS} from "../actions/types";
+import { PROFILE_REQUEST, PROFILE_ERROR, PROFILE_SUCCESS, TOASTER_PRODUCTS_REQUEST, TOASTER_PRODUCTS_SUCCESS, TOASTER_PRODUCTS_ERROR} from "../actions/types";
 
 
 const defaultState = {
@@ -22,6 +22,24 @@ const reducer = (state = defaultState, { type, payload }) => {
                loading: false,
                error: payload
            }
+        case TOASTER_PRODUCTS_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                toasterProducts: []
+            };
+        case TOASTER_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                toasterProducts: payload
+            };
+        case TOASTER_PRODUCTS_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: payload
+            };
        default:
            return state;
    }

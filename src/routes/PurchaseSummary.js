@@ -21,4 +21,17 @@ class PurchaseSummary extends Component {
     }
 }
 
-export default PurchaseSummary;
+// export default PurchaseSummary;
+const mapStateToProps = (state) => {
+    return {
+        products: state.CartReducer.productList,
+        totalPrice: state.CartReducer.totalPrice,
+        billingProfiles: state.BillingProfileReducer.elements
+    };
+};
+
+const mapDispatchToProps = {
+    startSnackBar,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PurchaseSummary));

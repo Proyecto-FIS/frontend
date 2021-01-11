@@ -4,10 +4,11 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
+import PrivateRoute from "./components/Common/PrivateRoute";
 import store from "./redux/store";
 
 import Products from "./routes/Products";
-import Roasters from "./routes/Roasters";
+import Toasters from "./routes/Toasters";
 import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
@@ -29,9 +30,9 @@ ReactDOM.render(
         <Router>
             <NavBar />
             <Switch>
-                <Route exact path="/purchase" component={PurchaseSummary} />
-                <Route exact path="/purchase-history" component={PurchaseHistory} />
-                <Route exact path="/roasters" component={Roasters} />
+                <PrivateRoute exact path="/purchase" component={PurchaseSummary} />
+                <PrivateRoute exact path="/purchase-history" component={PurchaseHistory} />
+                <Route exact path="/toasters" component={Toasters} />
                 <Route exact path="/deliveries" component={Deliveries} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/customer-register" component={RegisterCustomer} />
@@ -42,9 +43,8 @@ ReactDOM.render(
                 <Route exact path="/products" component={Products} />
                 <Route exact path="/products/new" component={CreateProduct} />
                 <Route exact path="/products/:productId" component={Product} />
-                <Route exact path="/billingprofiles/add" component={BillingProfileForm} />
-                <Route exact path="/billingprofiles" component={BillingProfileList} />
-                <Route exact path="/roasters" component={Roasters} />
+                <PrivateRoute exact path="/billingprofiles/add" component={BillingProfileForm} />
+                <PrivateRoute exact path="/billingprofiles" component={BillingProfileList} />
             </Switch>
         </Router>
         <SnackbarListener />

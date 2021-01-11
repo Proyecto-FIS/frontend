@@ -1,10 +1,9 @@
 import axios from "axios";
 import store from "../redux/store";
-import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST } from "../redux/actions/types";
+import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST, GET_TOASTERS_SUCCESS, REQUEST_TOASTERS, TOASTER_PRODUCTS_ERROR, TOASTER_PRODUCTS_SUCCESS, TOASTER_PRODUCTS_REQUEST } from "../redux/actions/types";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 
 export class UsersService {
-
     static getUserToken = () => {
         const account = store.getState().AuthReducer.account;
         if(account) {
@@ -170,9 +169,20 @@ export class UsersService {
         
             .then(response => {
                 store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
+
+                store.dispatch({type: TOASTER_PRODUCTS_REQUEST});
+                axios.get(`/api/products?providerId=${accountId}`, config)
+                    .then(response => {
+                        store.dispatch({type: TOASTER_PRODUCTS_SUCCESS, payload: response.data})
+                    })
+                    .catch(err => {
+                        store.dispatch(startSnackBar("error", err))
+              
+                        store.dispatch({type: TOASTER_PRODUCTS_ERROR})
+                    })
             })
             .catch(err => { 
-                store.dispatch(startSnackBar("error", err.response.data.message))
+                store.dispatch(startSnackBar("error", err))
               
                 store.dispatch({type: PROFILE_ERROR})
             })
@@ -222,16 +232,13 @@ export class UsersService {
           
     }
 
-
-    static getAllRoasters() {
-        return axios.get("/api/toasters")
+    static getAllToasters = () => {
+        store.dispatch({type: REQUEST_TOASTERS});
+        axios.get("/api/toasters")
+            .then(response => store.dispatch({type: GET_TOASTERS_SUCCESS, payload:response.data}))
+            .catch(err => 
+                store.dispatch(startSnackBar("error", err.response.data.message)))
     }
-
-    getRoaster = (roasterId) => {
-        return axios.get("/api/toasters", { roasterId })
-    }
-
-
 
 }
 

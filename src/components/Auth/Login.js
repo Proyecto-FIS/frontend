@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  circularSpace: {
+    marginRight: theme.spacing(3)
+  }
 }));
 
 const Login = () => {
@@ -86,7 +89,7 @@ const Login = () => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
-        {loading && <CircularProgress /> }
+        
           <TextField
             variant="outlined"
             margin="normal"
@@ -113,15 +116,33 @@ const Login = () => {
             onChange={onChange}
             autoComplete="current-password"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Entrar
-          </Button>
+          {loading ? 
+              <div>
+                <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                disabled
+              >
+                <CircularProgress className={classes.circularSpace} /> Entrar
+              </Button> 
+            </div>
+            :
+            <div>
+                <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Entrar
+              </Button> 
+            </div>
+           }
+          
           <Grid container>
             <Grid item>
             ¿No tienes cuenta? Regístrate {' '}
