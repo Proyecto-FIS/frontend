@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
-import { registerToaster } from "../../redux/actions/authToaster";
+
+import UsersService from "../../services/UsersService";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -83,7 +85,8 @@ const ToasterRegister = () => {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
 
      } else {
-      dispatch(registerToaster({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password }));
+      const body = JSON.stringify({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password});
+      UsersService.registerToaster(body);
     }
   };
 
@@ -296,7 +299,7 @@ const ToasterRegister = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link component={RouterLink} to="/login" variant="body2">
                 ¿Tienes una cuenta? Identifícate
               </Link>
             </Grid>

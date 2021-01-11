@@ -2,12 +2,14 @@ import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
 
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import StorefrontIcon from '@material-ui/icons/Storefront';
 
 import {Component, Fragment} from "react";
 import { Link } from 'react-router-dom';
+import { withRouter } from "react-router";
 
 import RegisterMenu from './Auth/RegisterMenu';
+import LoggedMenu from './Users/LoggedMenu';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,16 +20,10 @@ import UsersService from "../services/UsersService"
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Avatar from '@material-ui/core/Avatar';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import PaymentIcon from '@material-ui/icons/Payment';
-import HistoryIcon from '@material-ui/icons/History';
-import CartService from "../services/CartService"
+import CartService from "../services/CartService";
+import ProductListItem from "./Common/ProductListItem";
 
 const styles = (theme) => ({
     root: {
@@ -77,10 +73,6 @@ class NavBar extends Component {
     render() {
         const {classes, account} = this.props;
         
-        const logoutHandler = () => {
-            this.usersService.logOut();
-        }
-
         const handleClose= () => {
             this.setState({
                 open: false
@@ -99,10 +91,17 @@ class NavBar extends Component {
             })
             this.cartService.updateCart(products)
         }
+
+        const handlePurchase = () => {
+            this.setState({
+                open: false,
+            });
+            this.props.history.push("/purchase");
+        }
     
         const authLinks = (
             <Fragment>
-                <Button variant="contained" color="primary" onClick={logoutHandler} startIcon={<ExitToAppIcon />}>Cerrar sesión</Button>
+                {account && <LoggedMenu account={account}/> }
             </Fragment>
         );
     
@@ -124,25 +123,13 @@ class NavBar extends Component {
                     <DialogTitle id="simple-dialog-title">Carro de la compra</DialogTitle>
                     <List>
                         {this.props.quantity > 0 ? this.props.productList.map((product) => (
-                            <ListItem button key={`item-${product._id}`}>
-                                <ListItemAvatar>
-                                <Avatar alt={product.name} src={product.imageUrl} />
-                                </ListItemAvatar>
-                                <ListItemText className={classes.listItem} primary={product.name}  secondary={`${product.quantity} uds.`}/>
-                                <ListItemText className={classes.listItem} primary={`${product.unitPriceEuros} €`} />
-                                <ListItemSecondaryAction>
-                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteItem(product)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>
+                            <ProductListItem key={`product-${product._id}`} product={product} handleDeleteItem={handleDeleteItem}/>
                         )) : <Typography variant="h5" color="textSecondary" className={classes.dialogText}>El carro está vacío</Typography>}
                         {this.props.quantity > 0 ? (
                         <Fragment>
                             <Divider />
                             <Typography variant="h6" color="textPrimary" className={classes.dialogText}>Total: {this.props.totalPrice}€</Typography>
-                            <Button type="submit" variant="contained" color="primary" className={classes.submitButton} endIcon={<PaymentIcon />}>Comprar</Button>
-                            <Button variant="contained" className={classes.submitButton} color="secondary" onClick={this.handleISBNOpen} endIcon={<HistoryIcon />}>Suscripción</Button>
+                            <Button type="submit" variant="contained" color="primary" className={classes.submitButton} endIcon={<PaymentIcon />} onClick={handlePurchase}>Comprar</Button>
                         </Fragment>) : null}
                     </List>
                 </Dialog>
@@ -157,6 +144,7 @@ class NavBar extends Component {
                     <Typography variant="h6" className={classes.auth}>
                         <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
                     </Typography>
+                    <Button style={{marginRight: '15px'}} variant="contained" color="primary" startIcon={<StorefrontIcon />} component={ Link } to="/toasters">Toasters</Button>
                     { account && account.isCustomer ? cart : null }
                     { account ? authLinks : guestLinks }
 
@@ -174,4 +162,4 @@ const mapStateToProps = state =>({
 });
 
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(NavBar));
+export default withRouter(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(NavBar)));

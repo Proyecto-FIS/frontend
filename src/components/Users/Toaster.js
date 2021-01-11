@@ -4,8 +4,6 @@ import { useParams } from "react-router-dom";
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
-import {getToasterProfile, updateToasterProfile} from "../../redux/actions/authToaster";
-
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -14,6 +12,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import UsersService from "../../services/UsersService";
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -37,6 +37,13 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  avatar2: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+    width: theme.spacing(9),
+    height: theme.spacing(9),
+  },
+
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -63,7 +70,7 @@ const Toaster = () => {
   const accountLogin = useSelector(state => state.AuthReducer);
 
   const toasterProfile = useSelector(state => state.ProfileReducer);
-  const { loading, error, user } = toasterProfile;
+  const { loading, error, user, toasterProducts } = toasterProfile;
 
   
   const {account: accFromUser} = user;
@@ -72,7 +79,7 @@ const Toaster = () => {
 
   useEffect(() => {
 
-    dispatch(getToasterProfile(params.accountId));
+    UsersService.getToasterProfile(params.accountId);
 
     if(accFromUser) {
         setEmail(user.account.email)
@@ -86,7 +93,8 @@ const Toaster = () => {
         setPictureUrl(user.pictureUrl)
     }
 
-  }, [dispatch, params, user.address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, user.address]);
   
   if(error) {
     dispatch(startSnackBar("error", error));
@@ -112,7 +120,11 @@ const Toaster = () => {
     if(password !== password2) {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
     } else {
-      dispatch(updateToasterProfile({id: params.accountId, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password}));
+      const body = JSON.stringify({ email, name, description, phoneNumber, 
+        address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password });
+        
+      const accountId = params.accountId;
+      UsersService.updateToasterProfile(accountId, body);
     }
   };
 
@@ -125,7 +137,7 @@ const Toaster = () => {
       <div className={classes.paper}>
 
         {user.pictureUrl ?
-        <Avatar alt={user.account.username} src={user.pictureUrl} /> :
+        <Avatar className={classes.avatar2} alt={user.account.username} src={user.pictureUrl} /> :
         <Avatar className={classes.avatar}>
         </Avatar>
         }
@@ -137,7 +149,7 @@ const Toaster = () => {
   if(!account) {
     return (
       <Container component="main" maxWidth="md">
-        <ToasterTemplateLogout user={user}/>
+        <ToasterTemplateLogout loading={loading} user={user} toasterProducts={toasterProducts}/>
       </Container>
     )
   }
@@ -340,7 +352,7 @@ const Toaster = () => {
           </Grid>
 
           <Grid className={classes.gri} item xs={9}>
-              <ToasterTemplate user={user}/>
+              <ToasterTemplate loading={loading} user={user} toasterProducts={toasterProducts}/>
           </Grid>
 
           </Fragment>
@@ -348,7 +360,7 @@ const Toaster = () => {
           : 
           
           <Container component="main" maxWidth="md">
-            <ToasterTemplateLogout user={user}/>
+            <ToasterTemplate loading={loading} user={user} toasterProducts={toasterProducts}/>
           </Container>
         }
           

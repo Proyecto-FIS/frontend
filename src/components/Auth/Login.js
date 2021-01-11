@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
-import { login } from "../../redux/actions/login";
 import UsersService from "../../services/UsersService";
 
 import Avatar from '@material-ui/core/Avatar';
@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  circularSpace: {
+    marginRight: theme.spacing(3)
+  }
 }));
 
 const Login = () => {
@@ -86,7 +89,7 @@ const Login = () => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
-        {loading && <CircularProgress /> }
+        
           <TextField
             variant="outlined"
             margin="normal"
@@ -113,23 +116,41 @@ const Login = () => {
             onChange={onChange}
             autoComplete="current-password"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Entrar
-          </Button>
+          {loading ? 
+              <div>
+                <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                disabled
+              >
+                <CircularProgress className={classes.circularSpace} /> Entrar
+              </Button> 
+            </div>
+            :
+            <div>
+                <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Entrar
+              </Button> 
+            </div>
+           }
+          
           <Grid container>
             <Grid item>
             ¿No tienes cuenta? Regístrate {' '}
-              <Link href="/customer-register" variant="body2">
+              <Link component={RouterLink} to="/customer-register" variant="body2">
                 {"como customer"}
               </Link>
               {' '} o {' '}
-              <Link href="/toaster-register" variant="body2">
+              <Link component={RouterLink} to="/toaster-register" variant="body2">
                 {"como toaster"}
               </Link>
               .

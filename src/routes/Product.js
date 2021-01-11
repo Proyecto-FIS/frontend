@@ -6,37 +6,38 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import ProductDetailSkeleton from "../components/Products/ProductDetailSkeleton";
 
-
 const styles = (theme) => ({
   card: {
-      display: "flex",
-      flexDirection: "column",
-      height: "70vh"
+    display: "flex",
+    flexDirection: "column",
+    height: "70vh",
   },
   cardMedia: {
-      paddingTop: "100%", // Image aspect ratio
+    paddingTop: "100%", // Image aspect ratio
   },
   cardContent: {
-      flexDirection: 'column',
-      padding: 25
+    flexDirection: "column",
+    padding: 25,
   },
 });
 
-
 class Product extends Component {
-  componentDidMount(){
+  componentDidMount() {
     const productId = this.props.match.params.productId;
-    this.ProductsService = new ProductsService();
-    this.ProductsService.requestProduct(productId);
+    ProductsService.requestProduct(productId);
   }
 
   render() {
-    const {product, loading} = this.props;
+    const { product, loading } = this.props;
     return (
       <Grid container>
         <Grid container item sm={2} xs={1}></Grid>
         <Grid item sm={8} xs={10}>
-          {loading === undefined || loading === true ? (<ProductDetailSkeleton />) : (<ProductDetails product={product}/>)}
+          {loading === undefined || loading === true ? (
+            <ProductDetailSkeleton />
+          ) : (
+            <ProductDetails product={product} />
+          )}
         </Grid>
         <Grid container item sm={2} xs={1}></Grid>
       </Grid>
@@ -44,9 +45,9 @@ class Product extends Component {
   }
 }
 
-const mapStateToProps = state =>({
+const mapStateToProps = (state) => ({
   product: state.ProductsReducer.productDetails.product,
-  loading: state.ProductsReducer.productDetails.loading
+  loading: state.ProductsReducer.productDetails.loading,
 });
 
 export default connect(mapStateToProps)(

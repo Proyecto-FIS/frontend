@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 
-import { registerCustomer } from "../../redux/actions/authCustomer";
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
+
+import UsersService from "../../services/UsersService";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -70,7 +72,8 @@ const CustomerRegister = () => {
     if(password !== password2) {
       dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
     } else {
-      dispatch(registerCustomer({ username, email, address, pictureUrl, password }));
+      const body = JSON.stringify({  username, email, address, pictureUrl, password });
+      UsersService.registerCustomer(body);
     }
   };
 
@@ -188,7 +191,7 @@ const CustomerRegister = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link component={RouterLink} to="/login" variant="body2">
                 ¿Tienes ya una cuenta? Identifícate
               </Link>
             </Grid>

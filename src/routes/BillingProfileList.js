@@ -67,7 +67,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => {
     return {
-        profiles: state.LoaderReducer.elements
+        profiles: state.BillingProfileReducer.elements
     };
 };
 
