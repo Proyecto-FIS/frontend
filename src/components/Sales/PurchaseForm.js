@@ -98,6 +98,29 @@ class PurchaseForm extends Component {
     handleSubmitPay(event) {
 
         const { stripe, elements } = this.props;
+        
+        const billingProfileIndex = parseInt(this.state.billingProfile, 10);
+        const billingProfile = this.props.billingProfiles[billingProfileIndex];
+        
+        let products = [];
+        this.props.products.forEach((product, i) => {
+            products.push({ _id: product._id, quantity: product.quantity });
+        });
+        
+        PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
+        .then(() => {
+            // TODO Redireccionar a donde toque
+            console.log("Payment REDIRECCIONAR a Delivery");
+        })
+        .catch(() => {
+            // TODO Gestionar errores
+            console.log("Ha habido un error");
+        });
+    };
+
+    handleSubmitSubscription(event) {
+        
+        const { stripe, elements } = this.props;
 
         const billingProfileIndex = parseInt(this.state.billingProfile, 10);
         const billingProfile = this.props.billingProfiles[billingProfileIndex];
@@ -107,57 +130,18 @@ class PurchaseForm extends Component {
             products.push({ _id: product._id, quantity: product.quantity });
         });
         
-        PaymentService.postPayment(billingProfile, products, stripe, elements)
+        PaymentService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
             .then(() => {
                 // TODO Redireccionar a donde toque
+                console.log("Subscripcion: REDIRECCIONAR a Delivery");
             })
             .catch(() => {
                 // TODO Gestionar errores
-            })
-    };
-
-    handleSubmitSubscription(event) {
-
-        /*const result = await stripe.createPaymentMethod({
-            type: 'card',
-            card: elements.getElement(CardElement),
-            billing_details: {
-                email: email,
-            },
-        });
-
-        if (result.error) {
-            console.log(result.error.message);
-            dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
-        } else {
-            const billing_profile_id = 1;
-            const res = await PaymentService.postSubscription(result.paymentMethod.id, email, billing_profile_id);
-            // eslint-disable-next-line camelcase
-            const { client_secret, status } = res.data;
-
-            if (status === 'requires_action') {
-                stripe.confirmCardPayment(client_secret).then(function (result) {
-                    if (result.error) {
-                        console.log('¡Ha habido un error!');
-                        // Display error message in your UI.
-                        // The card was declined (i.e. insufficient funds, card has expired, etc)
-                        dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
-                    } else {
-                        console.log('You got the money!');
-                        // Show a success message to your customer
-                        dispatch(startSnackBar("success", "La subscripción se ha realizado satisfactoriamente"));
-                    }
-                });
-            } else {
-                console.log('You got the money!');
-                // No additional information was needed
-                // Show a success message to your customer
-                dispatch(startSnackBar("success", "La subscripción se ha realizado satisfactoriamente"));
-            }
-        }*/
-    };
-
-    render() {
+                console.log("Ha habido un error");
+            });
+        };
+        
+        render() {
 
         const { /*products,*/ totalPrice, billingProfiles, classes } = this.props;
 

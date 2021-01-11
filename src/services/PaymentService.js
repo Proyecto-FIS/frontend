@@ -6,7 +6,7 @@ import { CardElement } from "@stripe/react-stripe-js";
 
 export class PaymentService {
 
-    static postPayment(billingProfile, products, stripe, elements) {
+    static postPayment(billingProfile, products, stripe, cardElement) {
         return new Promise((resolve, reject) => {
 
             const userToken = UsersService.getUserToken();
@@ -16,12 +16,14 @@ export class PaymentService {
 
             return axios.post("http://localhost:3001/api/v1/payment", {
                 billingProfile,
-                products
+                payment: {
+                    products
+                }
             }, { params: { userToken } })
                 .then(res => {
                     return stripe.confirmCardPayment(res.data.client_secret, {
                         payment_method: {
-                            card: elements.getElement(CardElement),
+                            card: cardElement,
                             billing_details: {
                                 email: billingProfile.email,
                             },
@@ -40,25 +42,42 @@ export class PaymentService {
         });
     }
 
-    static async postSubscription(payment_method, email, billing_profile_id) {
-        /*const userToken = localStorage.getItem("token");
-        if (!userToken) {
-            sendAuthError();
-            throw ("ERROR no authenticated");
-            return;
-        }
+    static postSubscription(billingProfile, products, stripe, cardElement) {
+        return new Promise((resolve, reject) => {
 
-        return axios.post("http://localhost:3001/api/v1/subscription", {
-            "payment": {
-                email,
-                payment_method,
-                billing_profile_id
+            const userToken = UsersService.getUserToken();
+            if (!userToken) {
+                reject();
             }
-        }, {
-            params: {
-                userToken
-            }
-        });*/
+
+            return axios.post("http://localhost:3001/api/v1/subscription", {
+                billingProfile,
+                subscription: {
+                    products
+                }
+            }, { params: { userToken } })
+                .then(res => {
+                    return stripe.confirmCardPayment(res.data.client_secret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: {
+                                email: billingProfile.email,
+                            },
+                        },
+                    });
+
+                    
+                })
+                .then(result => {
+                    if (result.error || result.data.status !== "requires_action") {// TODO: revisar requires_action
+                        store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
+                        reject();
+                    } else {
+                        store.dispatch(startSnackBar("success", "Subscripción realizada satisfactoriamente"));
+                        resolve();
+                    }
+                });
+        });
     }
 }
 
