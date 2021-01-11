@@ -17,6 +17,8 @@ import { connect } from "react-redux";
 import CartService from "../../services/CartService"
 import ProductsService from "../../services/ProductsService"
 import { Redirect } from "react-router-dom";
+import getProduct from "../../redux/actions/getProduct";
+import { withRouter } from "react-router-dom";
 
 const styles = (theme) => ({
     div: {
@@ -119,6 +121,12 @@ class ProductDetails extends Component {
         ProductsService.deleteProduct(id)
     }
 
+    handleEditProduct() {
+        this.props.getProduct(this.props.product);
+        this.props.history.push("/products/new");
+    }
+
+
     render() {
         const {classes, product:{ _id, name, description, format, grind, imageUrl, providerId }, account} = this.props; 
         if(this.state.redirect){
@@ -199,6 +207,7 @@ class ProductDetails extends Component {
                                 disabled={this.props.productDetails.loading}
                                 className={classes.button}
                                 endIcon={<EditIcon />}
+                                onClick={() => this.handleEditProduct()}
                             >
                                 Editar Producto
                             </Button>
@@ -229,4 +238,8 @@ const mapStateToProps = state =>({
     productDetails: state.ProductsReducer.productDetails,
 });
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(ProductDetails));
+const mapDispatchToProps = {
+    getProduct
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(ProductDetails)));

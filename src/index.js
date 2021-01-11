@@ -41,7 +41,7 @@ ReactDOM.render(
                 <Route exact path="/toasters/:accountId" component={Toaster} />
                 <Route exact path="/" component={Products} />
                 <Route exact path="/products" component={Products} />
-                <Route exact path="/products/new" component={CreateProduct} />
+                <PrivateRoute exact path="/products/new" component={CreateProduct} />
                 <Route exact path="/products/:productId" component={Product} />
                 <PrivateRoute exact path="/billingprofiles/add" component={BillingProfileForm} />
                 <PrivateRoute exact path="/billingprofiles" component={BillingProfileList} />
