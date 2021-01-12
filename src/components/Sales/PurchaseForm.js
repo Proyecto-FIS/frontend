@@ -115,6 +115,14 @@ class PurchaseForm extends Component {
         }
     }
 
+    handlePurchase(billingProfile, products) {
+        this.setState({
+            billingProfile: billingProfile,
+            products: products
+        });
+        this.props.history.push("/deliveries/add");
+    }
+
     handleSubmitPay(event) {
 
         const { stripe, elements } = this.props;
@@ -131,6 +139,7 @@ class PurchaseForm extends Component {
         .then(() => {
             // TODO Redireccionar a donde toque
             console.log("Payment REDIRECCIONAR a Delivery");
+            this.handlePurchase(billingProfile, products);
         })
         .catch(() => {
             // TODO Gestionar errores
@@ -154,6 +163,7 @@ class PurchaseForm extends Component {
             .then(() => {
                 // TODO Redireccionar a donde toque
                 console.log("Subscripcion: REDIRECCIONAR a Delivery");
+                this.handlePurchase(billingProfile, products);
             })
             .catch(() => {
                 // TODO Gestionar errores
