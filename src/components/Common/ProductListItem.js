@@ -10,7 +10,6 @@ import IconButton from '@material-ui/core/IconButton';
 
 class ProductListItem extends Component {
     render(){
-        console.log(this.props)
         const {classes, product, handleDeleteItem} = this.props;
         return (
             <ListItem button key={`item-${product._id}`}>
