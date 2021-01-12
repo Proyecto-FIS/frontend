@@ -3,9 +3,9 @@ import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 import UsersService from "./UsersService";
 import store from "../redux/store";
 
-export class PaymentService {
+export class SubscriptionService {
 
-    static postPayment(billingProfile, products, stripe, cardElement) {
+    static postSubscription(billingProfile, products, stripe, cardElement) {
         return new Promise((resolve, reject) => {
 
             const userToken = UsersService.getUserToken();
@@ -13,11 +13,12 @@ export class PaymentService {
                 reject();
             }
 
-            return axios.post("http://localhost:3001/api/v1/payment", {
+            return axios.post("http://localhost:3001/api/v1/subscription", {
                 billingProfile,
-                payment: {
+                subscription: {
                     products
-                }
+                },
+                cardElement
             }, { params: { userToken } })
                 .then(res => {
                     return stripe.confirmCardPayment(res.data.client_secret, {
@@ -28,13 +29,15 @@ export class PaymentService {
                             },
                         },
                     });
+
+                    
                 })
                 .then(result => {
-                    if (result.error || result.paymentIntent.status !== "succeeded") {
+                    if (result.error || result.data.status !== "requires_action") {// TODO: revisar requires_action
                         store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
                         reject();
                     } else {
-                        store.dispatch(startSnackBar("success", "Pago realizado satisfactoriamente"));
+                        store.dispatch(startSnackBar("success", "Subscripción realizada satisfactoriamente"));
                         resolve();
                     }
                 });
@@ -42,4 +45,4 @@ export class PaymentService {
     }
 }
 
-export default PaymentService;
+export default SubscriptionService;

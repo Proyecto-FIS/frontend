@@ -5,6 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import BillingProfileService from "../../services/BillingProfileService";
+import SubscriptionService from "../../services/SubscriptionService";
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 import MainGrid from "../Common/MainGrid";
 import { CardElement } from "@stripe/react-stripe-js";
@@ -149,7 +150,7 @@ class PurchaseForm extends Component {
             products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
         
-        PaymentService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
+        SubscriptionService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
             .then(() => {
                 // TODO Redireccionar a donde toque
                 console.log("Subscripcion: REDIRECCIONAR a Delivery");

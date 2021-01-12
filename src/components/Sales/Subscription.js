@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 class Subscription extends Component {
-
+// TODO
     edit() {
         this.props.setSubscription(this.props.subscription);
         this.props.history.push("/subscriptions/add");
