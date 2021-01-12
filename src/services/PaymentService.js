@@ -53,7 +53,8 @@ export class PaymentService {
                 billingProfile,
                 subscription: {
                     products
-                }
+                },
+                cardElement
             }, { params: { userToken } })
                 .then(res => {
                     return stripe.confirmCardPayment(res.data.client_secret, {
