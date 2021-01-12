@@ -3,7 +3,7 @@ import axios from "axios";
 import AxiosMock from "axios-mock-adapter";
 import { waitFor } from "@testing-library/react";
 import store from "../../redux/store";
-//import startLoader from "../../redux/actions/Loader/startLoader";
+import startLoader from "../../redux/actions/Products/load";
 import { doLogin, doLogout } from "../../setupTests";
 
 const assertAuthError = () => {
@@ -16,13 +16,11 @@ const assertAuthError = () => {
 
 beforeEach(() => {
   localStorage.clear();
-  //store.dispatch(startLoader());
+  store.dispatch(startLoader());
   doLogout(store);
 });
 
-it("sample", () => {
-});
-/*
+it("sample", () => {});
 
 it("GET all products working", () => {
   const axiosMock = new AxiosMock(axios);
@@ -34,28 +32,33 @@ it("GET all products working", () => {
   waitFor(() => {
     const state = store.getState();
     expect(state.SnackbarReducer.message).toBe("");
-    expect(state.LoaderReducer.elements).toEqual(data);
+    expect(state.ProductsReducer.productList).toEqual(data);
+    expect(state.ProductsReducer.loading).toEqual(false);
   });
 });
 
 it("No token found in POST", () => {
   return ProductsService.postProduct({}).catch(() => {
     assertAuthError();
-    expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
 });
 
 it("POST working", () => {
   const axiosMock = new AxiosMock(axios);
-  axiosMock.onPost("/api/products").reply(201);
+  axiosMock.onPost("/api/products").reply(201, {});
   doLogin(store);
 
   return ProductsService.postProduct({}).then(() => {
     const state = store.getState();
+    console.log(state);
     expect(state.SnackbarReducer.severity).toBe("success");
     expect(state.SnackbarReducer.message).toBe(
       "Producto guardado correctamente"
     );
+
+    expect(state.ProductsReducer.newProduct.loading).toBe(false);
+    expect(state.ProductsReducer.newProduct.created).toBe(true);
+    expect(state.ProductsReducer.newProduct.errors).toBe(null);
   });
 });
 
@@ -76,7 +79,6 @@ it("Error in POST", () => {
 it("No token found in PUT", () => {
   return ProductsService.updateProduct({}).catch(() => {
     assertAuthError();
-    expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
 });
 
@@ -111,7 +113,6 @@ it("Error in PUT", () => {
 it("No token found in DELETE", () => {
   return ProductsService.deleteProduct({}).catch(() => {
     assertAuthError();
-    expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
 });
 
@@ -124,6 +125,7 @@ it("DELETE working", () => {
     const state = store.getState();
     expect(state.SnackbarReducer.severity).toBe("success");
     expect(state.SnackbarReducer.message).toBe("Producto borrado con éxito");
+    expect(state.ProductsReducer.productDetails.deleted).toBe(true);
   });
 });
 
@@ -144,7 +146,6 @@ it("Error in DELETE", () => {
 it("No token found uploading image", () => {
   return ProductsService.uploadImage({}).catch(() => {
     assertAuthError();
-    expect(store.getState().LoaderReducer.elements).toEqual(null);
   });
 });
 
@@ -170,9 +171,10 @@ it("Updloading image succesfully working", () => {
 
   return ProductsService.uploadImage({}).then(() => {
     const state = store.getState();
+    expect(state.ProductsReducer.newProduct.productImage).toMatch(
+      data.data.Location
+    );
     expect(state.SnackbarReducer.severity).toBe("success");
     expect(state.SnackbarReducer.message).toBe("Imagen subida correctamente");
   });
 });
-
-*/

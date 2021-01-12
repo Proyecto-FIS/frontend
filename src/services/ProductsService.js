@@ -1,13 +1,12 @@
 import axios from "axios";
-import getAllProducts from "../redux/actions/getAllProducts";
-import getProduct from "../redux/actions/getProduct";
-import loadingProducts from "../redux/actions/loadingProducts";
-import loadingProduct from "../redux/actions/loadingProduct";
-import creatingProduct from "../redux/actions/creatingProduct";
+import getAllProducts from "../redux/actions/Products/getAllProducts";
+import getProduct from "../redux/actions/Products/getProduct";
+import loadingProducts from "../redux/actions/Products/loadingProducts";
+import loadingProduct from "../redux/actions/Products/loadingProduct";
+import creatingProduct from "../redux/actions/Products/creatingProduct";
 import imageUploaded from "../redux/actions/imageUploaded";
 import loadingError from "../redux/actions/loadingError";
-import clearProductErrors from "../redux/actions/clearProductErrors";
-import createdProduct from "../redux/actions/createdProduct";
+import createdProduct from "../redux/actions/Products/createdProduct";
 import deletingProduct from "../redux/actions/Products/deletingProduct";
 import deletedProduct from "../redux/actions/Products/deletedProduct";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
@@ -87,11 +86,11 @@ export class ProductsService {
         return;
       }
       store.dispatch(creatingProduct());
+      console.log(newProduct);
       axios
         .post("/api/products", { userToken: userToken, product: newProduct })
         .then((res) => {
           store.dispatch(createdProduct(res));
-          store.dispatch(clearProductErrors());
           store.dispatch(
             startSnackBar("success", "Producto guardado correctamente")
           );
@@ -115,15 +114,11 @@ export class ProductsService {
         reject();
         return;
       }
-      //TODO:  que hace esto ?? es necesario en el put ?
-      
       store.dispatch(creatingProduct());
       axios
         .put("/api/products", {userToken: userToken, product: updatedProduct }, {params: { productId: updatedProduct._id }} )
         .then((res) => {
-          //TODO: misma pregunta, supongo que en esta caso si es necesario
           store.dispatch(createdProduct(res));
-          store.dispatch(clearProductErrors());
           store.dispatch(
             startSnackBar("success", "Producto actualizado correctamente")
           );
