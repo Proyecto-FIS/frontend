@@ -1,11 +1,13 @@
-import { type as GET_ALL_DELIVERIES } from "../actions/getAllDeliveries";
-import { type as GET_DELIVERY } from "../actions/getDelivery";
+import { type as GET_ALL_DELIVERIES } from "../actions/Delivery/getAllDeliveries";
+import { type as GET_DELIVERY } from "../actions/Delivery/getDelivery";
+import { type as SET_DELIVERY } from "../actions/Delivery/setDelivery";
 
 
 const defaultState = {
     deliveryList: [],
     deliveryDetails: {},
-    };
+    delivery: null
+};
 
 const reducer = (state = defaultState, { type, payload }) => {
     switch (type) {
@@ -18,6 +20,10 @@ const reducer = (state = defaultState, { type, payload }) => {
             return {
                 ...state,
                 deliveryDetails: payload
+            };
+        case SET_DELIVERY:
+            return {
+                delivery: payload.delivery
             };
         default:
             return state;

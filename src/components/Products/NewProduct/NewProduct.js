@@ -21,13 +21,16 @@ import imageCompression from "browser-image-compression";
 import { connect } from "react-redux";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import styles from "./FormStyles";
 import fields from "./FormFields";
 
 class NewProduct extends Component {
   constructor(props) {
     super(props);
-    this.state = this.getDefaultState(props.product);
+    this.state = { ...this.getDefaultState(props.productDetails.product),
+      isSubmitting: false,
+    };
   }
 
   getDefaultState(product = null) {
@@ -39,11 +42,17 @@ class NewProduct extends Component {
     };
 
     if (product) {
+      state.values._id = product._id;
+      state.values["name"] = product["name"];
+      state.values["description"] = product["description"];
+      state.values["stock"] = product["stock"];
+      state.values.grind = product["grind"];
+      state.values.productImg = product["imageUrl"];
+      state.values.format = product.format;
+      state.formCorrect = true
       Object.values(fields).forEach((field) => {
-        state.values[field.name] = product[field.name];
         state.errors[field.name] = "";
       });
-      state.values._id = product._id;
     } else {
       Object.values(fields).forEach((field) => {
         state.values[field.name] = field.defaultValue;
@@ -51,6 +60,13 @@ class NewProduct extends Component {
       });
     }
     return state;
+  }
+  componentDidMount(){
+    if(this.props.productDetails?.product){
+      document.getElementById(
+        "productImg"
+      ).src = this.props.productDetails.product.imageUrl;
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -202,17 +218,24 @@ class NewProduct extends Component {
       return newState;
     });
   };
+
+  submitDone() {
+    this.setState({ isSubmitting: false });
+    this.props.history.push("/");
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
-    ProductsService.postProduct({
-      providerId: this.props.account._id,
-      name: this.state.values.name,
-      description: this.state.values.description,
-      grind: this.state.values.grind,
-      stock: this.state.values.stock,
-      imageUrl: this.state.values.productImg,
-      format: this.state.values.format,
-    });
+
+    this.setState({ isSubmitting: true });
+
+    const action = this.props.productDetails.product 
+    ? ProductsService.updateProduct
+    : ProductsService.postProduct
+
+    action(this.state.values)
+    .then(() => this.submitDone())
+    .catch(() => this.submitDone());
   };
 
   render() {
@@ -311,6 +334,7 @@ class NewProduct extends Component {
                     multiple
                     options={grindTypes}
                     className={classes.input}
+                    value={this.state.values.grind}
                     onChange={(ev, value) => this.handleGrindChange(value)}
                     renderInput={(params) => (
                       <TextField
@@ -349,17 +373,29 @@ class NewProduct extends Component {
                   <br />
                   <br />
                   <br />
-                  <Button
+                  {!this.props.productDetails.product ?(<Button
                     type="submit"
                     variant="contained"
                     color="primary"
                     size="large"
                     className={classes.button}
-                    disabled={!this.state.formCorrect}
+                    disabled={!this.state.formCorrect || this.state.isSubmitting}
                     endIcon={<CreateIcon />}
                   >
                     Crear
+                  </Button>) : (
+                    <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    className={classes.button}
+                    disabled={!this.state.formCorrect || this.state.isSubmitting}
+                    endIcon={<CreateIcon />}
+                  >
+                    Editar
                   </Button>
+                  )}
                 </Grid>
               </Grid>
             </form>
@@ -372,9 +408,10 @@ class NewProduct extends Component {
 
 const mapStateToProps = (state) => ({
   newProduct: state.ProductsReducer.newProduct,
+  productDetails: state.ProductsReducer.productDetails,
   account: state.AuthReducer.account,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles, { withTheme: true })(NewProduct)
+export default withRouter(connect(mapStateToProps)(
+  withStyles(styles, { withTheme: true })(NewProduct))
 );
