@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import Delivery from "./Delivery";
-import DeliveriesService from "../../services/DeliveriesService";
+import DeliveryService from "../../services/DeliveryService";
 
 const styles = (theme) => ({
     centerColumn: {
@@ -15,8 +15,8 @@ const styles = (theme) => ({
 export class DeliveriesList extends Component {
 
     componentDidMount() {
-        this.DeliveriesService = new DeliveriesService();
-        this.DeliveriesService.requestAllDeliveries();
+        this.DeliveryService = new DeliveryService();
+        this.DeliveryService.requestAllDeliveries();
     }
 
     render() {
