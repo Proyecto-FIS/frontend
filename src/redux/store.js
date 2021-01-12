@@ -8,6 +8,8 @@ import UpdateProfileReducer from "./reducers/UpdateProfileReducer";
 import SnackbarReducer from "./reducers/SnackbarReducer";
 import PurchaseHistoryReducer from "./reducers/PurchaseHistoryReducer";
 import BillingProfileReducer from "./reducers/BillingProfileReducer";
+// import SubscriptionReducer from "./reducers/SubscriptionReducer";
+import PaymentReducer from "./reducers/PaymentReducer";
 import CartReducer from "./reducers/CartReducer";
 import ToastersReducer from "./reducers/ToastersReducer";
 
@@ -22,6 +24,7 @@ const reducers = combineReducers({
     DeliveriesReducer,
     SnackbarReducer,
     BillingProfileReducer,
+    PaymentReducer,
     PurchaseHistoryReducer,
     AuthReducer,
     CartReducer,
