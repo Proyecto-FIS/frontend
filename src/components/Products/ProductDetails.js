@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import CartService from "../../services/CartService"
 import ProductsService from "../../services/ProductsService"
 import { Redirect } from "react-router-dom";
-import getProduct from "../../redux/actions/getProduct";
+import getProduct from "../../redux/actions/Products/getProduct";
 import { withRouter } from "react-router-dom";
 
 const styles = (theme) => ({
