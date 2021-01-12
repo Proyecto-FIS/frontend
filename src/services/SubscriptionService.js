@@ -13,7 +13,7 @@ export class SubscriptionService {
                 reject();
             }
 
-            return axios.post("http://localhost:3001/api/v1/subscription", {
+            return axios.post("/api/subscription", {
                 billingProfile,
                 subscription: {
                     products
