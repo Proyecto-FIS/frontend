@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { TextField, Button, Grid, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Validators from "../utils/Validators";
-import DeliveryService from "../services/DeliveriesService";
+import DeliveryService from "../services/DeliveryService";
 import { withRouter } from "react-router-dom";
 import MainGrid from "../components/Common/MainGrid";
 import { connect } from "react-redux";
