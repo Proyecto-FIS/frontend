@@ -58,7 +58,6 @@ class Delivery extends Component {
         const { classes, delivery: { _id, name, surnames, address, city, comments, statusType, deliveryDate } } = this.props;
 
         return (
-            <Grid key={_id} item sm={4} xs={12}>
                 <Card className={classes.card}>
                     <CardHeader
                         avatar={
@@ -104,7 +103,6 @@ class Delivery extends Component {
                         </IconButton>
                     </CardActions>
                 </Card>
-            </Grid>
         );
     }
 }

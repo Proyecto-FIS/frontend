@@ -14,7 +14,7 @@ import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
 import Product from "./routes/Product";
 import CreateProduct from "./routes/CreateProduct";
-import Deliveries from "./routes/Deliveries";
+import DeliveryList from "./routes/DeliveryList";
 import Customer from "./routes/Customer";
 import Toaster from "./routes/Toaster";
 import BillingProfileList from "./routes/BillingProfileList";
@@ -33,7 +33,7 @@ ReactDOM.render(
                 <PrivateRoute exact path="/purchase" component={PurchaseSummary} />
                 <PrivateRoute exact path="/purchase-history" component={PurchaseHistory} />
                 <Route exact path="/toasters" component={Toasters} />
-                <Route exact path="/deliveries" component={Deliveries} />
+                <PrivateRoute exact path="/deliveries" component={DeliveryList} />
                 <Route exact path="/deliveries/add" component={DeliveryForm} />
                 <Route exact path="/deliveries/:deliveryId" component={DeliveryForm}/>
                 <Route exact path="/login" component={Login} />
