@@ -71,6 +71,7 @@ class NewProduct extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log(this.props.newProduct);
     if (this.props.newProduct?.created) {
       this.setState({ redirect: "/" });
     }
@@ -164,7 +165,9 @@ class NewProduct extends Component {
     return result;
   }
   addClick() {
+    console.log(this.state.values);
     let newFormat = this.state.values.format;
+    console.log(newFormat);
     newFormat.push({
       name: "",
       price: "0",
@@ -256,159 +259,170 @@ class NewProduct extends Component {
       return <Redirect to={this.state.redirect} />;
     }
     return (
-      <Card className={classes.card}>
-        <div className={classes.div}>
-          <CardContent className={classes.content}>
-            <form onSubmit={this.handleSubmit}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <img
-                    id="imageUrl"
-                    alt="Product"
-                    className={classes.image}
-                    src="https://coffaine.s3.eu-west-3.amazonaws.com/no-image.png"
-                  />
-                  <input
-                    type="file"
-                    id="coverInput"
-                    name="cover"
-                    onChange={this.handleImageChange}
-                    hidden="hidden"
-                  />
-                  <Tooltip title={"Upload Image"} placement="bottom">
-                    <IconButton
-                      className="button"
-                      onClick={this.handleUploadImage}
-                    >
-                      <ImageSearchIcon color="primary" />
-                    </IconButton>
-                  </Tooltip>
-                  {errors.imageUrl ? (
-                    <p className={classes.errorText} id="name-helper-text">
-                      Upload an Image
-                    </p>
-                  ) : null}
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    className={classes.input}
-                    id={fields.name.name}
-                    name={fields.name.label}
-                    value={this.state.values.name}
-                    placeholder={fields.name.label}
-                    error={this.state.errors[fields.name.name] !== ""}
-                    helperText={this.state.errors[fields.name.name]}
-                    onChange={this.handleChange.bind(this, fields.name)}
-                    fullWidth
-                  />
-                  <TextField
-                    className={classes.input}
-                    id={fields.description.name}
-                    name={fields.description.label}
-                    value={this.state.values.description}
-                    placeholder={fields.description.label}
-                    error={this.state.errors[fields.description.name] !== ""}
-                    helperText={errors.description}
-                    onChange={this.handleChange.bind(this, fields.description)}
-                    fullWidth
-                  />
-                  <TextField
-                    className={classes.input}
-                    id={fields.stock.name}
-                    name={fields.stock.label}
-                    value={this.state.values.stock}
-                    placeholder={fields.stock.label}
-                    error={this.state.errors[fields.stock.name] !== ""}
-                    helperText={errors.stock}
-                    onChange={this.handleChange.bind(this, fields.stock)}
-                    type="number"
-                    fullWidth
-                  />
-                  <Typography
-                    className={classes.input}
-                    variant="body1"
-                    color="textSecondary"
-                  >
-                    Selecciona los tipos de molido que va a tener el producto:{" "}
-                  </Typography>
-                  <Autocomplete
-                    multiple
-                    options={grindTypes}
-                    className={classes.input}
-                    value={this.state.values.grind}
-                    onChange={(ev, value) => this.handleGrindChange(value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        error={this.state.errors[fields.grind.name] !== ""}
-                        helperText={this.state.errors[fields.grind.name]}
-                        label="Tipos de molido"
-                        placeholder="Tipos de molido"
+      <Grid container>
+        <Grid container item sm={2} xs={1}></Grid>
+        <Grid item sm={8} xs={10}>
+          <Card className={classes.card}>
+            <div className={classes.div}>
+              <CardContent className={classes.content}>
+                <form onSubmit={this.handleSubmit}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <img
+                        id="imageUrl"
+                        alt="Product"
+                        className={classes.image}
+                        src="https://coffaine.s3.eu-west-3.amazonaws.com/no-image.png"
                       />
-                    )}
-                  />
-                  <br />
-                  <Typography
-                    className={classes.input}
-                    variant="body1"
-                    color="textSecondary"
-                  >
-                    Selecciona los distintos envasados que va a tener el
-                    producto:{" "}
-                  </Typography>
-                  {this.createFormatTypes()}
-                  <IconButton
-                    aria-label="addFormat"
-                    className={classes.button}
-                    onClick={this.addClick.bind(this)}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                  {this.state.errors.format !== "" ? (
-                    <p className={classes.errorText} id="name-helper-text">
-                      {this.state.errors.format}
-                    </p>
-                  ) : null}
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  {!this.props.productDetails.product ? (
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      size="large"
-                      className={classes.button}
-                      disabled={
-                        !this.state.formCorrect || this.state.isSubmitting
-                      }
-                      endIcon={<CreateIcon />}
-                    >
-                      Crear
-                    </Button>
-                  ) : (
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      size="large"
-                      className={classes.button}
-                      disabled={
-                        !this.state.formCorrect || this.state.isSubmitting
-                      }
-                      endIcon={<CreateIcon />}
-                    >
-                      Editar
-                    </Button>
-                  )}
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </div>
-      </Card>
+                      <input
+                        type="file"
+                        id="coverInput"
+                        name="cover"
+                        onChange={this.handleImageChange}
+                        hidden="hidden"
+                      />
+                      <Tooltip title={"Upload Image"} placement="bottom">
+                        <IconButton
+                          className="button"
+                          onClick={this.handleUploadImage}
+                        >
+                          <ImageSearchIcon color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                      {errors.imageUrl ? (
+                        <p className={classes.errorText} id="name-helper-text">
+                          Upload an Image
+                        </p>
+                      ) : null}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        className={classes.input}
+                        id={fields.name.name}
+                        name={fields.name.label}
+                        value={this.state.values.name}
+                        placeholder={fields.name.label}
+                        error={this.state.errors[fields.name.name] !== ""}
+                        helperText={this.state.errors[fields.name.name]}
+                        onChange={this.handleChange.bind(this, fields.name)}
+                        fullWidth
+                      />
+                      <TextField
+                        className={classes.input}
+                        id={fields.description.name}
+                        name={fields.description.label}
+                        value={this.state.values.description}
+                        placeholder={fields.description.label}
+                        error={
+                          this.state.errors[fields.description.name] !== ""
+                        }
+                        helperText={errors.description}
+                        onChange={this.handleChange.bind(
+                          this,
+                          fields.description
+                        )}
+                        fullWidth
+                      />
+                      <TextField
+                        className={classes.input}
+                        id={fields.stock.name}
+                        name={fields.stock.label}
+                        value={this.state.values.stock}
+                        placeholder={fields.stock.label}
+                        error={this.state.errors[fields.stock.name] !== ""}
+                        helperText={errors.stock}
+                        onChange={this.handleChange.bind(this, fields.stock)}
+                        type="number"
+                        fullWidth
+                      />
+                      <Typography
+                        className={classes.input}
+                        variant="body1"
+                        color="textSecondary"
+                      >
+                        Selecciona los tipos de molido que va a tener el
+                        producto:{" "}
+                      </Typography>
+                      <Autocomplete
+                        multiple
+                        options={grindTypes}
+                        className={classes.input}
+                        value={this.state.values.grind}
+                        onChange={(ev, value) => this.handleGrindChange(value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            error={this.state.errors[fields.grind.name] !== ""}
+                            helperText={this.state.errors[fields.grind.name]}
+                            label="Tipos de molido"
+                            placeholder="Tipos de molido"
+                          />
+                        )}
+                      />
+                      <br />
+                      <Typography
+                        className={classes.input}
+                        variant="body1"
+                        color="textSecondary"
+                      >
+                        Selecciona los distintos envasados que va a tener el
+                        producto:{" "}
+                      </Typography>
+                      {this.createFormatTypes()}
+                      <IconButton
+                        aria-label="addFormat"
+                        className={classes.button}
+                        onClick={this.addClick.bind(this)}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                      {this.state.errors.format !== "" ? (
+                        <p className={classes.errorText} id="name-helper-text">
+                          {this.state.errors.format}
+                        </p>
+                      ) : null}
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      {!this.props.productDetails.product ? (
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                          disabled={
+                            !this.state.formCorrect || this.state.isSubmitting
+                          }
+                          endIcon={<CreateIcon />}
+                        >
+                          Crear
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                          disabled={
+                            !this.state.formCorrect || this.state.isSubmitting
+                          }
+                          endIcon={<CreateIcon />}
+                        >
+                          Editar
+                        </Button>
+                      )}
+                    </Grid>
+                  </Grid>
+                </form>
+              </CardContent>
+            </div>
+          </Card>
+        </Grid>
+      </Grid>
     );
   }
 }
