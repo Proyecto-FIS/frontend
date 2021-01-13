@@ -41,8 +41,7 @@ class NewProduct extends Component {
       redirect: null,
       formCorrect: false,
     };
-
-    if (product) {
+    if (product && Object.keys(product).length > 0) {
       state.values._id = product._id;
       state.values["name"] = product["name"];
       state.values["description"] = product["description"];
@@ -185,11 +184,12 @@ class NewProduct extends Component {
   removeClick(i) {
     let lastValues = this.state.values.format;
     lastValues.splice(i, 1);
-    this.setState({
+    this.setState((prevState) => ({
       values: {
+        ...prevState.values,
         format: lastValues,
       },
-    });
+    }));
   }
   handleChange = (field, e) => {
     this.setState((prevState) => {
