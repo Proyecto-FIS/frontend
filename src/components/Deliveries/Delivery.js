@@ -54,7 +54,7 @@ class Delivery extends Component {
 
     render() {
 
-        const { classes, delivery: { _id, name, surnames, address, city, comments, statusType, deliveryDate } } = this.props;
+        const { classes, delivery: { _id, name, surname, address, city, comments, statusType, deliveryDate } } = this.props;
 
         return (
                 <Card className={classes.card}>
@@ -86,7 +86,7 @@ class Delivery extends Component {
                         <br/>
                         <Typography variant="h5" spacing={4}>Dirección de entrega</Typography>
                         <hr/>
-                        <Typography paragraph>{name} {surnames}</Typography>
+                        <Typography paragraph>{name} {surname}</Typography>
                         <Typography paragraph>{address}</Typography>
                         <Typography paragraph>{city}</Typography>     
                     </CardContent>
