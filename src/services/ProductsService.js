@@ -99,6 +99,9 @@ export class ProductsService {
         })
         .catch((err) => {
           console.log(err);
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
           store.dispatch(
             startSnackBar("error", "No ha sido posible guardar el producto")
           );

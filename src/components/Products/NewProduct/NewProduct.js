@@ -62,8 +62,9 @@ class NewProduct extends Component {
     }
     return state;
   }
-  componentDidMount() {
-    if (this.props.productDetails?.product) {
+  
+  componentDidMount(){
+    if(this.props.productDetails?.product?.imageUrl){
       document.getElementById(
         "imageUrl"
       ).src = this.props.productDetails.product.imageUrl;
@@ -117,6 +118,7 @@ class NewProduct extends Component {
     fileInput.click();
   };
   createFormatTypes() {
+    console.log(this.state)
     return Array.isArray(this.state.values.format)
       ? this.state.values.format?.map((el, i) => (
           <div key={i} className={this.props.classes.inputInline}>
@@ -172,12 +174,13 @@ class NewProduct extends Component {
       name: "",
       price: "0",
     });
-    this.setState({
+    this.setState((prevState) => ({
       values: {
+        ...prevState.values,
         format: newFormat,
       },
       formCorrect: false,
-    });
+    }));
   }
   removeClick(i) {
     let lastValues = this.state.values.format;
