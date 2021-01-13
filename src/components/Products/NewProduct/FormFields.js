@@ -5,9 +5,7 @@ const fields = {
     label: "Imagen",
     name: "imageUrl",
     defaultValue: "",
-    validators: [
-      Validators.StringLength(1, 100)
-    ],
+    validators: [Validators.StringLength(1, 100)],
   },
   name: {
     label: "Nombre",
