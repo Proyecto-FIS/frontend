@@ -47,7 +47,7 @@ class NewProduct extends Component {
       state.values["description"] = product["description"];
       state.values["stock"] = product["stock"];
       state.values.grind = product["grind"];
-      state.values.productImg = product["imageUrl"];
+      state.values.imageUrl = product["imageUrl"];
       state.values.format = product.format;
       state.formCorrect = true
       Object.values(fields).forEach((field) => {
@@ -62,9 +62,9 @@ class NewProduct extends Component {
     return state;
   }
   componentDidMount(){
-    if(this.props.productDetails?.product){
+    if(this.props.productDetails?.product?.imageUrl){
       document.getElementById(
-        "productImg"
+        "imageUrl"
       ).src = this.props.productDetails.product.imageUrl;
     }
   }
@@ -75,18 +75,18 @@ class NewProduct extends Component {
     }
     if (
       prevProps.newProduct?.loading === true &&
-      this.props.newProduct?.productImage
+      this.props.newProduct?.imageUrl
     ) {
       document.getElementById(
-        "productImg"
-      ).src = this.props.newProduct.productImage;
+        "imageUrl"
+      ).src = this.props.newProduct.imageUrl;
 
       this.setState((prevState) => {
         let newState = prevState;
-        newState.values.productImg = this.props.newProduct.productImage;
-        newState.errors.productImg = Validators.validate(
-          fields.productImg.validators,
-          this.props.newProduct.productImage
+        newState.values.imageUrl = this.props.newProduct.imageUrl;
+        newState.errors.imageUrl = Validators.validate(
+          fields.imageUrl.validators,
+          this.props.newProduct.imageUrl
         );
         newState.formCorrect = this.checkFormCorrect(newState);
         return newState;
@@ -118,6 +118,7 @@ class NewProduct extends Component {
     fileInput.click();
   };
   createFormatTypes() {
+    console.log(this.state)
     return Array.isArray(this.state.values.format)
       ? this.state.values.format?.map((el, i) => (
           <div key={i} className={this.props.classes.inputInline}>
@@ -166,12 +167,13 @@ class NewProduct extends Component {
       name: "",
       price: "0",
     });
-    this.setState({
+    this.setState((prevState) => ({
       values: {
+        ...prevState.values,
         format: newFormat,
       },
       formCorrect: false,
-    });
+    }));
   }
   removeClick(i) {
     let lastValues = this.state.values.format;
@@ -262,7 +264,7 @@ class NewProduct extends Component {
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <img
-                    id="productImg"
+                    id="imageUrl"
                     alt="Product"
                     className={classes.image}
                     src="https://coffaine.s3.eu-west-3.amazonaws.com/no-image.png"
