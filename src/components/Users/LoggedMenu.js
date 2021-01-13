@@ -11,6 +11,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HistoryIcon from '@material-ui/icons/History';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
+import DeliveryIcon from '@material-ui/icons/LocalShipping';
 
 const LoggedMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -47,6 +48,9 @@ const LoggedMenu = (props) => {
           </MenuItem>
           <MenuItem component={Link} to="/purchase-history" onClick={handleClose}> 
             <HistoryIcon/> Historial de compras
+          </MenuItem>
+          <MenuItem component={Link} to="/deliveries" onClick={handleClose}> 
+            <DeliveryIcon/> Lista de entregas
           </MenuItem>
         </div>
           
