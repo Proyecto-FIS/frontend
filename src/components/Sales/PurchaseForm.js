@@ -11,6 +11,7 @@ import MainGrid from "../Common/MainGrid";
 import { CardElement } from "@stripe/react-stripe-js";
 import PaymentService from "../../services/PaymentService";
 import Paper from '@material-ui/core/Paper';
+import { withRouter } from "react-router";
 
 const styles = (theme) => ({
     formControl: {
@@ -115,12 +116,8 @@ class PurchaseForm extends Component {
         }
     }
 
-    handlePurchase(billingProfile, products) {
-        this.setState({
-            billingProfile: billingProfile,
-            products: products
-        });
-        this.props.history.push("/deliveries/add");
+    handlePurchase() {
+        this.props.history.push("/deliveries/");
     }
 
     handleSubmitPay(event) {
@@ -139,7 +136,7 @@ class PurchaseForm extends Component {
         .then(() => {
             // TODO Redireccionar a donde toque
             console.log("Payment REDIRECCIONAR a Delivery");
-            this.handlePurchase(billingProfile, products);
+            this.handlePurchase();
         })
         .catch(() => {
             // TODO Gestionar errores
@@ -255,4 +252,4 @@ const mapDispatchToProps = {
     startSnackBar,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PurchaseForm));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(PurchaseForm)));
