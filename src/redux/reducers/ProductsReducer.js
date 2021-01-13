@@ -20,7 +20,7 @@ const defaultState = {
   },
   newProduct: {
     loading: false,
-    productImage: null,
+    imageUrl: null,
     created: false,
     errors: {},
   },
@@ -78,7 +78,7 @@ const reducer = (state = defaultState, { type, payload }) => {
         ...state,
         newProduct: {
           loading: false,
-          productImage: payload,
+          imageUrl: payload,
         },
       };
     case POST_PRODUCT:

@@ -171,7 +171,7 @@ it("Updloading image succesfully working", () => {
 
   return ProductsService.uploadImage({}).then(() => {
     const state = store.getState();
-    expect(state.ProductsReducer.newProduct.productImage).toMatch(
+    expect(state.ProductsReducer.newProduct.imageUrl).toMatch(
       data.data.Location
     );
     expect(state.SnackbarReducer.severity).toBe("success");

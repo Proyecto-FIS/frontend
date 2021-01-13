@@ -87,6 +87,7 @@ export class ProductsService {
       }
       store.dispatch(creatingProduct());
       console.log(newProduct);
+      console.log(userToken);
       axios
         .post("/api/products", { userToken: userToken, product: newProduct })
         .then((res) => {
@@ -107,7 +108,7 @@ export class ProductsService {
   }
 
   static updateProduct(updatedProduct) {
-    console.log(updatedProduct)
+    console.log(updatedProduct);
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
       if (!userToken) {
@@ -116,7 +117,11 @@ export class ProductsService {
       }
       store.dispatch(creatingProduct());
       axios
-        .put("/api/products", {userToken: userToken, product: updatedProduct }, {params: { productId: updatedProduct._id }} )
+        .put(
+          "/api/products",
+          { userToken: userToken, product: updatedProduct },
+          { params: { productId: updatedProduct._id } }
+        )
         .then((res) => {
           store.dispatch(createdProduct(res));
           store.dispatch(
@@ -125,7 +130,7 @@ export class ProductsService {
           resolve();
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           store.dispatch(
             startSnackBar("error", "No ha sido posible actualizar el producto")
           );
