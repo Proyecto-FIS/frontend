@@ -12,6 +12,8 @@ import { CardElement } from "@stripe/react-stripe-js";
 import PaymentService from "../../services/PaymentService";
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router";
+import { clearCart } from "../../redux/actions/Cart/clearCart";
+import store from "../../redux/store";
 
 const styles = (theme) => ({
     formControl: {
@@ -117,6 +119,7 @@ class PurchaseForm extends Component {
     }
 
     handlePurchase() {
+        store.dispatch(clearCart);
         this.props.history.push("/deliveries/");
     }
 

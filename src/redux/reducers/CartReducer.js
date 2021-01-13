@@ -1,4 +1,5 @@
 import { type as UPDATE_CART } from "../actions/Cart/updateCart";
+import { type as CLEAR_CART } from "../actions/Cart/clearCart";
 
 const defaultState = {
     productList: [],
@@ -15,6 +16,8 @@ const reducer = (state = defaultState, { type, payload }) => {
                 quantity: payload.reduce((totalProducts, product) => totalProducts + product.quantity,0),
                 totalPrice: payload.reduce((totalPrice, product) => totalPrice + product.quantity * product.unitPriceEuros, 0)
             };
+        case CLEAR_CART:
+            return defaultState;
         default:
             return state;
     }
