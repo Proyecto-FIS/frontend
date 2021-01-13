@@ -16,7 +16,7 @@ const fields1 = [
     },
     {
         label: "Apellidos",
-        name: "surnames",
+        name: "surname",
         validators: [Validators.StringLength(1, 100)]
     },
     {
@@ -142,7 +142,7 @@ class DeliveryForm extends Component {
 
     submitDone() {
         this.setState({ isSubmitting: false });
-        this.props.history.push("/delivery");
+        this.props.history.push("/deliveries");
     }
 
     submitForm() {

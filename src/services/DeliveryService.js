@@ -60,11 +60,11 @@ export class DeliveriesService {
     static editDelivery(delivery) {
         return new Promise((resolve, reject) => {
 
-            const userToken = "23424234dfsfsfsdfsdfsdfsfsd";
+            const userToken = localStorage.getItem("token");
             if (!userToken) {
-                //sendAuthError();
-                //reject();
-                //return;
+                sendAuthError();
+                reject();
+                return;
             }
 
             return axios.put("/api/deliveries", { delivery }, { params: { userToken } })
