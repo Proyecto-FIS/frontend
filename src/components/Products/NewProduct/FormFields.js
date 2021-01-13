@@ -1,13 +1,11 @@
 import Validators from "../../../utils/Validators";
 
 const fields = {
-  productImg: {
+  imageUrl: {
     label: "Imagen",
-    name: "productImg",
+    name: "imageUrl",
     defaultValue: "",
-    validators: [
-      Validators.StringLength(1, 100)
-    ],
+    validators: [Validators.StringLength(1, 100)],
   },
   name: {
     label: "Nombre",
