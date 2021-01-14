@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  circularSpace: {
+    marginRight: theme.spacing(1)
+  }
 }));
 
 const CustomerRegister = () => {
@@ -97,7 +100,6 @@ const CustomerRegister = () => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
-        {loading && <CircularProgress /> }
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -180,15 +182,35 @@ const CustomerRegister = () => {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Registrarme
-          </Button>
+
+          {loading ? 
+              <div>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled
+                >
+                 <CircularProgress size="1.5rem" className={classes.circularSpace} />  Registrarme
+                </Button>
+            </div>
+            :
+            <div>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Registrarme
+              </Button> 
+            </div>
+           }
+
+
           <Grid container justify="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/login" variant="body2">

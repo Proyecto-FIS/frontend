@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   circularSpace: {
-    marginRight: theme.spacing(3)
+    marginRight: theme.spacing(1)
   }
 }));
 
@@ -89,7 +89,6 @@ const Login = () => {
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
-        
           <TextField
             variant="outlined"
             margin="normal"
@@ -126,7 +125,7 @@ const Login = () => {
                 className={classes.submit}
                 disabled
               >
-                <CircularProgress className={classes.circularSpace} /> Entrar
+                <CircularProgress size="1.5rem" className={classes.circularSpace} /> Entrar
               </Button> 
             </div>
             :
