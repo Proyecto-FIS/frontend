@@ -12,8 +12,9 @@ import { CardElement } from "@stripe/react-stripe-js";
 import PaymentService from "../../services/PaymentService";
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router";
-import { clearCart } from "../../redux/actions/Cart/clearCart";
+import clearCart from "../../redux/actions/Cart/clearCart";
 import store from "../../redux/store";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = (theme) => ({
     formControl: {
@@ -43,6 +44,10 @@ const styles = (theme) => ({
     titleForm: {
         paddingBottom: theme.spacing(4),
     },
+    circularSpace: {
+        marginRight: theme.spacing(3),
+        size: "1.5rem"
+      }
 });
 
 const CARD_ELEMENT_OPTIONS = {
@@ -72,6 +77,7 @@ class PurchaseForm extends Component {
             billingProfile: "",
             operationType: "",
             creditCardError: true,
+            loading: false,
         };
 
         BillingProfileService.requestProfiles();
@@ -135,15 +141,19 @@ class PurchaseForm extends Component {
             products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
         
-        PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
-        .then(() => {
-            // TODO Redireccionar a donde toque
-            console.log("Payment REDIRECCIONAR a Delivery");
-            this.handlePurchase();
-        })
-        .catch(() => {
-            // TODO Gestionar errores
-            console.log("Ha habido un error");
+        this.setState({
+            loading: true
+        }, ()=> {
+            PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
+            .then(() => {
+                // TODO Redireccionar a donde toque
+                console.log("Payment REDIRECCIONAR a Delivery");
+                this.handlePurchase();
+            })
+            .catch(() => {
+                // TODO Gestionar errores
+                console.log("Ha habido un error");
+            });
         });
     };
 
@@ -159,16 +169,21 @@ class PurchaseForm extends Component {
             products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
         
-        SubscriptionService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
-            .then(() => {
-                // TODO Redireccionar a donde toque
-                console.log("Subscripcion: REDIRECCIONAR a Delivery");
-                this.handlePurchase(billingProfile, products);
-            })
-            .catch(() => {
-                // TODO Gestionar errores
-                console.log("Ha habido un error");
-            });
+        this.setState({
+            loading: true
+        }, ()=> {
+            SubscriptionService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
+                .then(() => {
+                    // TODO Redireccionar a donde toque
+                    console.log("Subscripcion: REDIRECCIONAR a Delivery");
+                    this.handlePurchase(billingProfile, products);
+                    this.setState({loading: false});
+                })
+                .catch(() => {
+                    // TODO Gestionar errores
+                    console.log("Ha habido un error");
+                });
+        });
         };
         
         render() {
@@ -233,8 +248,19 @@ class PurchaseForm extends Component {
                 </Grid>
                 <Grid container item direction="row-reverse">
                     <Grid item>
+                    {this.state.loading ?
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="secondary"
+                            disabled
+                        >
+                            <CircularProgress className={classes.circularSpace} /> Pagar
+                        </Button>
+                        :
                         <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>
-                    </Grid>
+                    }</Grid>
                 </Grid>
             </MainGrid>
             </Paper>
