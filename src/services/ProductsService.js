@@ -1,13 +1,12 @@
 import axios from "axios";
-import getAllProducts from "../redux/actions/getAllProducts";
-import getProduct from "../redux/actions/getProduct";
-import loadingProducts from "../redux/actions/loadingProducts";
-import loadingProduct from "../redux/actions/loadingProduct";
-import creatingProduct from "../redux/actions/creatingProduct";
+import getAllProducts from "../redux/actions/Products/getAllProducts";
+import getProduct from "../redux/actions/Products/getProduct";
+import loadingProducts from "../redux/actions/Products/loadingProducts";
+import loadingProduct from "../redux/actions/Products/loadingProduct";
+import creatingProduct from "../redux/actions/Products/creatingProduct";
 import imageUploaded from "../redux/actions/imageUploaded";
 import loadingError from "../redux/actions/loadingError";
-import clearProductErrors from "../redux/actions/clearProductErrors";
-import createdProduct from "../redux/actions/createdProduct";
+import createdProduct from "../redux/actions/Products/createdProduct";
 import deletingProduct from "../redux/actions/Products/deletingProduct";
 import deletedProduct from "../redux/actions/Products/deletedProduct";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
@@ -80,7 +79,6 @@ export class ProductsService {
   }
 
   static postProduct(newProduct) {
-    console.log(newProduct);
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
       if (!userToken) {
@@ -88,11 +86,12 @@ export class ProductsService {
         return;
       }
       store.dispatch(creatingProduct());
+      console.log(newProduct);
+      console.log(userToken);
       axios
         .post("/api/products", { userToken: userToken, product: newProduct })
         .then((res) => {
           store.dispatch(createdProduct(res));
-          store.dispatch(clearProductErrors());
           store.dispatch(
             startSnackBar("success", "Producto guardado correctamente")
           );
@@ -100,6 +99,9 @@ export class ProductsService {
         })
         .catch((err) => {
           console.log(err);
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
           store.dispatch(
             startSnackBar("error", "No ha sido posible guardar el producto")
           );
@@ -109,28 +111,29 @@ export class ProductsService {
   }
 
   static updateProduct(updatedProduct) {
+    console.log(updatedProduct);
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
       if (!userToken) {
         reject();
         return;
       }
-      //TODO:  que hace esto ?? es necesario en el put ?
       store.dispatch(creatingProduct());
       axios
-        .put("/api/products", {
-          data: { userToken: userToken, product: updatedProduct },
-        })
+        .put(
+          "/api/products",
+          { userToken: userToken, product: updatedProduct },
+          { params: { productId: updatedProduct._id } }
+        )
         .then((res) => {
-          //TODO: misma pregunta, supongo que en esta caso si es necesario
           store.dispatch(createdProduct(res));
-          store.dispatch(clearProductErrors());
           store.dispatch(
             startSnackBar("success", "Producto actualizado correctamente")
           );
           resolve();
         })
         .catch((err) => {
+          console.log(err);
           store.dispatch(
             startSnackBar("error", "No ha sido posible actualizar el producto")
           );
@@ -147,10 +150,6 @@ export class ProductsService {
         return;
       }
       store.dispatch(deletingProduct());
-
-      console.log(userToken)
-      console.log(productId)
-
       axios
         .delete("/api/products", {
           data: { userToken: userToken },
@@ -164,10 +163,6 @@ export class ProductsService {
           resolve();
         })
         .catch((err) => {
-          console.log(err)
-          console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
           store.dispatch(
             startSnackBar("error", "No se ha podido eliminar el producto")
           );
