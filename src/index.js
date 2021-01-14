@@ -26,44 +26,32 @@ import NavBar from "./components/NavBar";
 import SnackbarListener from "./components/Common/SnackBarListener";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router>
-      <NavBar />
-      <Switch>
-        <PrivateRoute exact path="/purchase" component={PurchaseSummary} />
-        <PrivateRoute
-          exact
-          path="/purchase-history"
-          component={PurchaseHistory}
-        />
-        <Route exact path="/toasters" component={Toasters} />
-        <PrivateRoute exact path="/deliveries" component={DeliveryList} />
-        <Route exact path="/deliveries/add" component={DeliveryForm} />
-        <Route exact path="/deliveries/:deliveryId" component={DeliveryForm} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/customer-register" component={RegisterCustomer} />
-        <Route exact path="/toaster-register" component={RegisterToaster} />
-        <Route exact path="/customers/:accountId" component={Customer} />
-        <Route exact path="/toasters/:accountId" component={Toaster} />
-        <Route exact path="/" component={Catalog} />
-        <Route exact path="/products" component={Catalog} />
-        <PrivateRoute exact path="/products/new" component={CreateProduct} />
-        <Route exact path="/products/:productId" component={Product} />
-        <PrivateRoute
-          exact
-          path="/billingprofiles/add"
-          component={BillingProfileForm}
-        />
-        <PrivateRoute
-          exact
-          path="/billingprofiles"
-          component={BillingProfileList}
-        />
-      </Switch>
-    </Router>
-    <SnackbarListener />
-  </Provider>,
-  document.getElementById("root")
+    <Provider store={store}>
+        <Router>
+            <NavBar />
+            <Switch>
+                <PrivateRoute exact path="/purchase" component={PurchaseSummary} />
+                <PrivateRoute exact path="/purchase-history" component={PurchaseHistory} />
+                <Route exact path="/toasters" component={Toasters} />
+                <PrivateRoute exact path="/deliveries" component={DeliveryList} />
+                <Route exact path="/deliveries/add" component={DeliveryForm} />
+                <Route exact path="/deliveries/:deliveryId" component={DeliveryForm} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/customer-register" component={RegisterCustomer} />
+                <Route exact path="/toaster-register" component={RegisterToaster} />
+                <Route exact path="/customers/:accountId" component={Customer} />
+                <Route exact path="/toasters/:accountId" component={Toaster} />
+                <Route exact path="/" component={Catalog} />
+                <Route exact path="/products" component={Catalog} />
+                <PrivateRoute exact path="/products/new" component={CreateProduct} />
+                <Route exact path="/products/:productId" component={Product} />
+                <PrivateRoute exact path="/billingprofiles/add" component={BillingProfileForm} />
+                <PrivateRoute exact path="/billingprofiles" component={BillingProfileList} />
+            </Switch>
+        </Router>
+        <SnackbarListener />
+    </Provider>,
+    document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
