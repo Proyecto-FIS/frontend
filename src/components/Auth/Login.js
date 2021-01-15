@@ -146,11 +146,11 @@ const Login = () => {
             <Grid item>
             ¿No tienes cuenta? Regístrate {' '}
               <Link component={RouterLink} to="/customer-register" variant="body2">
-                {"como customer"}
+                {"como cliente"}
               </Link>
               {' '} o {' '}
               <Link component={RouterLink} to="/toaster-register" variant="body2">
-                {"como toaster"}
+                {"como tostador"}
               </Link>
               .
             </Grid>

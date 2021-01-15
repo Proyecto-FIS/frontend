@@ -109,7 +109,7 @@ const ToasterRegister = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Registrarse como toaster
+          Registrarse como tostador
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>

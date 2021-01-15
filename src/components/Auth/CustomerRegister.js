@@ -96,7 +96,7 @@ const CustomerRegister = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Registrarse como customer
+          Registrarse como cliente
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit} noValidate>
