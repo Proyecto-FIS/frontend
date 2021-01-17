@@ -35,12 +35,9 @@ export class UsersService {
                     resolve()
             })
                 .catch(err =>{ 
-                    const errors = err.response.data.errors;
-                    if (errors) {
-                        errors.forEach(error => store.dispatch(startSnackBar("error", error.msg)));
-                    }
-                
                     store.dispatch({type: LOGIN_ERROR});
+                    store.dispatch(startSnackBar("error", "Credenciales incorrectas"));
+                    
                     reject()
                 })
         })
@@ -66,13 +63,14 @@ export class UsersService {
 
                         resolve()
                     })
-                    .catch(err => { 
+                    .catch(err => {
+                        console.log(err.response)
                         store.dispatch(startSnackBar("error", err.response.data.message))
                         store.dispatch({type: REGISTER_ERROR})
 
                         reject()
                     })
-                })
+        })
     };
 
     static getCustomerProfile = (accountId) => { 
@@ -99,13 +97,14 @@ export class UsersService {
               return;
             }
 
-            //Adding userToken to body
-            var objBody = JSON.parse(body);
-            objBody.userToken = userToken;
-            var newBody = JSON.stringify(objBody);
+            // console.log(body)
+            // //Adding userToken to body
+            // var objBody = JSON.parse(body);
+            // objBody.userToken = userToken;
+            // var newBody = JSON.stringify(objBody);
 
 
-            axios.get(`/api/auth/${userToken}`, config)
+            return axios.get(`/api/auth/${userToken}`, config)
             .then(response => {
                 const { account_id: loggedAccountId } = response.data;
 
@@ -115,7 +114,8 @@ export class UsersService {
                 } else {
                     store.dispatch({type: UPDATE_PROFILE_REQUEST})
 
-                    axios.put(`/api/customers/${accountId}`, newBody, config)
+                    axios.put(`/api/customers/${accountId}`, 
+                            { userToken: userToken, body: body }, config)
                     .then(response => {
                         store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
                         store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
@@ -160,7 +160,7 @@ export class UsersService {
                     store.dispatch({type: REGISTER_ERROR})
                     reject()
                 })
-            });
+        });
     }
 
     static getToasterProfile = (accountId) => {
@@ -235,7 +235,7 @@ export class UsersService {
                     reject()
                     
                 })
-            })
+        });
           
     }
 
