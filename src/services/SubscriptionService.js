@@ -13,7 +13,7 @@ export class SubscriptionService {
                 reject();
             }
 
-            return axios.post("/api/subscription", {
+            return axios.post("http://localhost:3001/api/v1/subscription", {
                 billingProfile,
                 subscription: {
                     products,
@@ -21,17 +21,10 @@ export class SubscriptionService {
                 },
             }, { params: { userToken } })
                 .then(res => {
-                    return stripe.confirmCardPayment(res.data.client_secret, {
-                        payment_method: {
-                            card: cardElement,
-                            billing_details: {
-                                email: billingProfile.email,
-                            },
-                        },
-                    });
+                    return stripe.confirmCardPayment(res.data.client_secret);
                 })
                 .then(result => {
-                    if (result.error || result.data.status !== "requires_action") {// TODO: revisar requires_action
+                    if (result.error) {// TODO: revisar requires_action
                         store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
                         reject();
                     } else {
