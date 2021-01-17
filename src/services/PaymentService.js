@@ -13,7 +13,7 @@ export class PaymentService {
                 reject();
             }
 
-            return axios.post("http:localhost:3001/api/v1/payment", {
+            return axios.post("/api/payment", {
                 billingProfile,
                 payment: {
                     products
