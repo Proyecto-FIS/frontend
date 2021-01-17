@@ -153,14 +153,11 @@ class PurchaseForm extends Component {
         }, ()=> {
             PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
             .then(() => {
-                // TODO Redireccionar a donde toque
-                console.log("Payment REDIRECCIONAR a Delivery");
                 this.handlePurchase();
                 this.setState({loading: false});
             })
-            .catch(() => {
-                // TODO Gestionar errores
-                console.log("Ha habido un error");
+            .catch(err => {
+                console.log("Ha habido un error" + err);
                 this.setState({loading: false});
             });
         });
@@ -199,14 +196,11 @@ class PurchaseForm extends Component {
                     const payment_method_id = doc.paymentMethod.id;
                     SubscriptionService.postSubscription(billingProfile, products, stripe, payment_method_id, cardElement)
                     .then(() => {
-                        // TODO Redireccionar a donde toque
-                        console.log("Subscripcion: REDIRECCIONAR a Delivery");
                         this.handlePurchase();
                         this.setState({loading: false});
                     })
-                    .catch(() => {
-                        // TODO Gestionar errores
-                        console.log("Ha habido un error");
+                    .catch(err => {
+                        console.log("Ha habido un error" + err);
                         this.setState({loading: false});
                     })
             });
