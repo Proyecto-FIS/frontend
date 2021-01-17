@@ -81,6 +81,7 @@ class PurchaseEntry extends Component {
                             </Grid>
                         </AccordionDetails>
                     </Accordion>
+                    {operationType === "subscription" &&
                     <Grid container justify="flex-end" alignItems="flex-end">
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary">Desactivar
@@ -90,6 +91,7 @@ class PurchaseEntry extends Component {
                                 </Typography>
                             </Grid>
                     </Grid>
+                    }
                 </CardContent>
             </Card>
         );
