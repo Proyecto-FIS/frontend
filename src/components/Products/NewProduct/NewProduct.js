@@ -20,7 +20,6 @@ import ProductsService from "../../../services/ProductsService";
 import imageCompression from "browser-image-compression";
 import { connect } from "react-redux";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
-import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import styles from "./FormStyles";
 import fields from "./FormFields";
@@ -38,7 +37,6 @@ class NewProduct extends Component {
     let state = {
       values: {},
       errors: {},
-      redirect: null,
       formCorrect: false,
     };
     if (product && Object.keys(product).length > 0) {
@@ -55,7 +53,12 @@ class NewProduct extends Component {
       });
     } else {
       Object.values(fields).forEach((field) => {
-        state.values[field.name] = field.defaultValue;
+        state.values["name"] = "";
+        state.values["description"] = "";
+        state.values["stock"] = 0;
+        state.values.grind = [];
+        state.values.imageUrl = "";
+        state.values.format = [{ name: "Peso", price: "0" }];
         state.errors[field.name] = "";
       });
     }
@@ -71,10 +74,6 @@ class NewProduct extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.props.newProduct);
-    if (this.props.newProduct?.created) {
-      this.setState({ redirect: "/" });
-    }
     if (
       prevProps.newProduct?.loading === true &&
       this.props.newProduct?.imageUrl
@@ -117,7 +116,6 @@ class NewProduct extends Component {
     fileInput.click();
   };
   createFormatTypes() {
-    console.log(this.state)
     return Array.isArray(this.state.values.format)
       ? this.state.values.format?.map((el, i) => (
           <div key={i} className={this.props.classes.inputInline}>
@@ -166,9 +164,7 @@ class NewProduct extends Component {
     return result;
   }
   addClick() {
-    console.log(this.state.values);
     let newFormat = this.state.values.format;
-    console.log(newFormat);
     newFormat.push({
       name: "",
       price: "0",
@@ -258,9 +254,6 @@ class NewProduct extends Component {
       "Fino",
       "Extra fino espresso",
     ];
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
-    }
     return (
       <Grid container>
         <Grid container item sm={2} xs={1}></Grid>
