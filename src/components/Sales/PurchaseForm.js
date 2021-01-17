@@ -16,6 +16,7 @@ import clearCart from "../../redux/actions/Cart/clearCart";
 import store from "../../redux/store";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ProductListItem from "../Common/ProductListItem";
+import Alert from '@material-ui/lab/Alert';
 
 const styles = (theme) => ({
     formControl: {
@@ -232,7 +233,6 @@ class PurchaseForm extends Component {
         return (
             <div className={classes.root}>
             <Paper className={classes.paper}>
-              
             <MainGrid container className={classes.form}>
                 <Grid item className={classes.titleForm}>
                     <Typography variant="h4" align="center">Resumen del pedido</Typography>
@@ -280,6 +280,9 @@ class PurchaseForm extends Component {
                         </CardContent>
                     </Card>
                 </Grid>
+                <Grid item className={classes.titleForm}>
+                    <Alert severity="info">Use la tarjeta de prueba: <em>Nº:</em> <strong>4242 4242 4242 4242</strong>   <em>MM/AA:</em> <strong>04/24</strong>  <em>CVC:</em><strong> 424</strong>  <em>CP:</em><strong> 42424</strong></Alert>
+                </Grid>
                 <Grid container item direction="row-reverse">
                     <Grid item>
                     {this.state.loading ?
@@ -296,6 +299,7 @@ class PurchaseForm extends Component {
                         <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>
                     }</Grid>
                 </Grid>
+
             </MainGrid>
             </Paper>
     </div>
