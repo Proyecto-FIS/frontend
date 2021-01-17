@@ -17,7 +17,11 @@ const reducer = (state = defaultState, { type, payload }) => {
                 totalPrice: payload.reduce((totalPrice, product) => totalPrice + product.quantity * product.unitPriceEuros, 0)
             };
         case CLEAR_CART:
-            return defaultState;
+            return {
+                productList: [],
+                quantity: 0,
+                totalPrice: 0
+            };
         default:
             return state;
     }
