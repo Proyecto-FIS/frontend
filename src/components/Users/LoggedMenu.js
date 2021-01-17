@@ -12,6 +12,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HistoryIcon from '@material-ui/icons/History';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import DeliveryIcon from '@material-ui/icons/LocalShipping';
+import store from "../../redux/store";
+import clearCart from "../../redux/actions/Cart/clearCart";
+
 
 const LoggedMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,6 +28,7 @@ const LoggedMenu = (props) => {
   };
 
   const logoutHandler = () => {
+    store.dispatch(clearCart());
     UsersService.logOut();
 }
   return (

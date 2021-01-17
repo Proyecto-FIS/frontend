@@ -8,6 +8,12 @@ import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 
+const styles = (theme) => ({
+    listItem: {
+        width: "50%"
+    }
+});
+
 class ProductListItem extends Component {
     render() {
         const { classes, product, handleDeleteItem } = this.props;
@@ -33,5 +39,5 @@ class ProductListItem extends Component {
 }
 
 
-export default (withStyles({ withTheme: true })(ProductListItem));
+export default (withStyles(styles,{ withTheme: true })(ProductListItem));
 
