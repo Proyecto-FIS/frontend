@@ -20,11 +20,8 @@ export class SubscriptionService {
                     payment_method_id
                 },
             }, { params: { userToken } })
-                .then(res => {
-                    return stripe.confirmCardPayment(res.data.client_secret);
-                })
                 .then(result => {
-                    if (result.error) {// TODO: revisar requires_action
+                    if (result.error) {
                         store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
                         reject();
                     } else {
@@ -37,7 +34,7 @@ export class SubscriptionService {
         });
     }
 
-    static deleteSubscription(profile) {
+    static deleteSubscription(transaction_id) {
 
         return new Promise((resolve, reject) => {
             const userToken = UsersService.getUserToken();
@@ -46,13 +43,13 @@ export class SubscriptionService {
                 return;
             }
 
-            axios.delete("/api/subscription", { params: { userToken, profileID: profile._id } })
+            axios.delete("/api/subscription", { params: { userToken, subscriptionID: transaction_id } })
                 .then(response => {
-                    store.dispatch(startSnackBar("success", "Subscripcion eliminado sin problemas"));
+                    store.dispatch(startSnackBar("success", "Subscripción eliminada correctamente"));
                     resolve();
                 })
                 .catch(err => {
-                    store.dispatch(startSnackBar("error", "No se ha podido eliminar la subscripcion"));
+                    store.dispatch(startSnackBar("error", "No se ha podido eliminar la subscripción"));
                     reject();
                 });
         });

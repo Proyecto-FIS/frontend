@@ -47,8 +47,7 @@ const styles = (theme) => ({
         paddingBottom: theme.spacing(4),
     },
     circularSpace: {
-        marginRight: theme.spacing(3),
-        size: "1.5rem"
+        marginRight: theme.spacing(3)
       }
 });
 
@@ -133,7 +132,7 @@ class PurchaseForm extends Component {
     }
 
     handlePurchase() {
-        store.dispatch(clearCart);
+        store.dispatch(clearCart());
         this.props.history.push("/deliveries/");
     }
 
@@ -154,14 +153,11 @@ class PurchaseForm extends Component {
         }, ()=> {
             PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
             .then(() => {
-                // TODO Redireccionar a donde toque
-                console.log("Payment REDIRECCIONAR a Delivery");
                 this.handlePurchase();
                 this.setState({loading: false});
             })
-            .catch(() => {
-                // TODO Gestionar errores
-                console.log("Ha habido un error");
+            .catch(err => {
+                console.log("Ha habido un error" + err);
                 this.setState({loading: false});
             });
         });
@@ -200,14 +196,11 @@ class PurchaseForm extends Component {
                     const payment_method_id = doc.paymentMethod.id;
                     SubscriptionService.postSubscription(billingProfile, products, stripe, payment_method_id, cardElement)
                     .then(() => {
-                        // TODO Redireccionar a donde toque
-                        console.log("Subscripcion: REDIRECCIONAR a Delivery");
                         this.handlePurchase();
                         this.setState({loading: false});
                     })
-                    .catch(() => {
-                        // TODO Gestionar errores
-                        console.log("Ha habido un error");
+                    .catch(err => {
+                        console.log("Ha habido un error" + err);
                         this.setState({loading: false});
                     })
             });
@@ -293,7 +286,7 @@ class PurchaseForm extends Component {
                             color="secondary"
                             disabled
                         >
-                            <CircularProgress className={classes.circularSpace} /> Pagar
+                            <CircularProgress className={classes.circularSpace} size="1.5rem" /> Pagar
                         </Button>
                         :
                         <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>
