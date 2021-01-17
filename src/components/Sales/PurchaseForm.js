@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Select, MenuItem, InputLabel, FormControl, Grid, Typography } from "@material-ui/core";
+import { Button, Select, MenuItem, InputLabel, FormControl, Grid, Typography, List } from "@material-ui/core";
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { connect } from "react-redux";
@@ -15,6 +15,7 @@ import { withRouter } from "react-router";
 import clearCart from "../../redux/actions/Cart/clearCart";
 import store from "../../redux/store";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ProductListItem from "../Common/ProductListItem";
 
 const styles = (theme) => ({
     formControl: {
@@ -102,6 +103,12 @@ class PurchaseForm extends Component {
     }
 
     pay(event) {
+
+        if(this.props.products.length === 0) {
+            this.props.startSnackBar("warning", "El carrito está vacío");
+            return;
+        }
+
         if (this.state.billingProfile === "" || this.state.operationType === "") {
             this.props.startSnackBar("warning", "Hay campos sin rellenar");
             return;
@@ -188,7 +195,11 @@ class PurchaseForm extends Component {
         
         render() {
 
-        const { /*products,*/ totalPrice, billingProfiles, classes } = this.props;
+        const { products, totalPrice, billingProfiles, classes } = this.props;
+
+        const productList = products.map((product, i) => (
+            <ProductListItem key={i} product={product} />
+        ));
 
         const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
             <MenuItem key={i} value={i}>
@@ -205,6 +216,9 @@ class PurchaseForm extends Component {
             <MainGrid container className={classes.form}>
                 <Grid item className={classes.titleForm}>
                     <Typography variant="h4" align="center">Resumen del pedido</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <List>{productList}</List>
                 </Grid>
                 <Grid item xs={8}>
                     <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>

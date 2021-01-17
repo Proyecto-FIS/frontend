@@ -7,13 +7,13 @@ import { Provider } from "react-redux";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import store from "./redux/store";
 
-import Products from "./routes/Products";
+import Catalog from "./components/Products/Catalog";
 import Toasters from "./routes/Toasters";
 import Login from "./routes/Login";
 import RegisterCustomer from "./routes/RegisterCustomer";
 import RegisterToaster from "./routes/RegisterToaster";
 import Product from "./routes/Product";
-import CreateProduct from "./routes/CreateProduct";
+import CreateProduct from "./components/Products/NewProduct/NewProduct";
 import DeliveryList from "./routes/DeliveryList";
 import Customer from "./routes/Customer";
 import Toaster from "./routes/Toaster";
@@ -35,14 +35,14 @@ ReactDOM.render(
                 <Route exact path="/toasters" component={Toasters} />
                 <PrivateRoute exact path="/deliveries" component={DeliveryList} />
                 <Route exact path="/deliveries/add" component={DeliveryForm} />
-                <Route exact path="/deliveries/:deliveryId" component={DeliveryForm}/>
+                <Route exact path="/deliveries/:deliveryId" component={DeliveryForm} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/customer-register" component={RegisterCustomer} />
                 <Route exact path="/toaster-register" component={RegisterToaster} />
                 <Route exact path="/customers/:accountId" component={Customer} />
                 <Route exact path="/toasters/:accountId" component={Toaster} />
-                <Route exact path="/" component={Products} />
-                <Route exact path="/products" component={Products} />
+                <Route exact path="/" component={Catalog} />
+                <Route exact path="/products" component={Catalog} />
                 <PrivateRoute exact path="/products/new" component={CreateProduct} />
                 <Route exact path="/products/:productId" component={Product} />
                 <PrivateRoute exact path="/billingprofiles/add" component={BillingProfileForm} />
