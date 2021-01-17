@@ -13,7 +13,7 @@ export class SubscriptionService {
                 reject();
             }
 
-            return axios.post("http://localhost:3001/api/v1/subscription", {
+            return axios.post("/api/subscription", {
                 billingProfile,
                 subscription: {
                     products,
@@ -36,6 +36,28 @@ export class SubscriptionService {
                 });
         });
     }
+
+    static deleteSubscription(profile) {
+
+        return new Promise((resolve, reject) => {
+            const userToken = UsersService.getUserToken();
+            if (!userToken) {
+                reject();
+                return;
+            }
+
+            axios.delete("/api/subscription", { params: { userToken, profileID: profile._id } })
+                .then(response => {
+                    store.dispatch(startSnackBar("success", "Subscripcion eliminado sin problemas"));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(startSnackBar("error", "No se ha podido eliminar la subscripcion"));
+                    reject();
+                });
+        });
+    }
+
 }
 
 
