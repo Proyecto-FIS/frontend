@@ -47,8 +47,7 @@ const styles = (theme) => ({
         paddingBottom: theme.spacing(4),
     },
     circularSpace: {
-        marginRight: theme.spacing(3),
-        size: "1.5rem"
+        marginRight: theme.spacing(3)
       }
 });
 
@@ -133,7 +132,7 @@ class PurchaseForm extends Component {
     }
 
     handlePurchase() {
-        store.dispatch(clearCart);
+        store.dispatch(clearCart());
         this.props.history.push("/deliveries/");
     }
 
@@ -293,7 +292,7 @@ class PurchaseForm extends Component {
                             color="secondary"
                             disabled
                         >
-                            <CircularProgress className={classes.circularSpace} /> Pagar
+                            <CircularProgress className={classes.circularSpace} size="1.5rem" /> Pagar
                         </Button>
                         :
                         <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>

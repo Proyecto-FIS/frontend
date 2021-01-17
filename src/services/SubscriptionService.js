@@ -13,7 +13,7 @@ export class SubscriptionService {
                 reject();
             }
 
-            return axios.post("/api/subscription", {
+            return axios.post("http://localhost:3001/api/v1/subscription", {
                 billingProfile,
                 subscription: {
                     products,
@@ -46,7 +46,7 @@ export class SubscriptionService {
                 return;
             }
 
-            axios.delete("/api/subscription", { params: { userToken, profileID: profile._id } })
+            axios.delete("http://localhost:3001/api/v1/subscription", { params: { userToken, profileID: profile._id } })
                 .then(response => {
                     store.dispatch(startSnackBar("success", "Subscripcion eliminado sin problemas"));
                     resolve();
