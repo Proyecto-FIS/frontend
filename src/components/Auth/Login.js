@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React, { Component } from 'react';
 import { Redirect } from "react-router-dom";
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, withRouter } from 'react-router-dom';
+import { connect } from "react-redux";
 
-import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 import UsersService from "../../services/UsersService";
 
+import Validators from "../../utils/Validators";
+
+import { withStyles } from "@material-ui/core/styles";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,13 +16,24 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+const fields = {
+  username: {
+    label: "Nombre de usuario",
+    name: "username",
+    validators: [Validators.StringLength(3, 100)],
+  },
+  password: {
+    label: "Contraseña",
+    name: "password",
+    validators: [Validators.StringLength(6, 100)],
+  }
+};
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -41,124 +54,166 @@ const useStyles = makeStyles((theme) => ({
   circularSpace: {
     marginRight: theme.spacing(1)
   }
-}));
+});
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
 
-  const {username, password} = formData;
-
-  const dispatch = useDispatch();
-
-  const classes = useStyles();
-
-  const accountLogin = useSelector(state => state.AuthReducer);
-  const { loading, error, account } = accountLogin;
-
-  if(account) {
-    return <Redirect to="/"/>
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.getDefaultState(),
+      isSubmitting: false,
+    };
   }
 
-  if(error) {
-    dispatch(startSnackBar("error", error));
+  getDefaultState() {
+    let state = {
+      values: {},
+      errors: {},
+      formCorrect: false,
+    };
+
+    Object.values(fields).forEach((field) => {
+      state.values[field.name] = "";
+      state.errors[field.name] = "";
+    });
+
+    return state;
   }
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  submitDone() {
+    this.setState({ isSubmitting: false });
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    
-    const body = JSON.stringify({ username, password });
-    UsersService.login(body);
-  };
-
-  return (
-    <Container component="main" maxWidth="xs">
-
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Iniciar sesión
-        </Typography>
-
-        <form className={classes.form} onSubmit={onSubmit} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            value={username}
-            onChange={onChange}
-            label="Nombre de usuario"
-            name="username"
-            autoComplete="username"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Contraseña"
-            type="password"
-            id="password"
-            value={password}
-            onChange={onChange}
-            autoComplete="current-password"
-          />
-          {loading ? 
-              <div>
-                <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                disabled
-              >
-                <CircularProgress size="1.5rem" className={classes.circularSpace} /> Entrar
-              </Button> 
-            </div>
-            :
-            <div>
-                <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Entrar
-              </Button> 
-            </div>
-           }
-          
-          <Grid container>
-            <Grid item>
-            ¿No tienes cuenta? Regístrate {' '}
-              <Link component={RouterLink} to="/customer-register" variant="body2">
-                {"como cliente"}
-              </Link>
-              {' '} o {' '}
-              <Link component={RouterLink} to="/toaster-register" variant="body2">
-                {"como tostador"}
-              </Link>
-              .
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-    </Container>
-  );
+    this.props.history.push("/login");
 }
 
-export default Login;
+  submitForm = (e) => {
+      e.preventDefault();
+
+      this.setState({ isSubmitting: true });
+      const action = UsersService.login;
+
+      action(this.state.values)
+          .then(() => this.submitDone())
+          .catch(() => this.submitDone());
+  }
+
+  setField(field, e) {
+      this.setState(prevState => {
+          let newState = prevState;
+          newState.values[field.name] = e.target.value;
+          newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
+          newState.formCorrect = Object.values(fields).reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
+          return newState;
+      });
+  }
+
+
+  render() {
+
+    const { classes, account } = this.props;
+
+    if(account) {
+      return <Redirect to="/"/>
+    }
+
+    return (
+      <Container component="main" maxWidth="xs">
+
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Iniciar sesión
+          </Typography>
+
+          <form className={classes.form} onSubmit={this.submitForm} noValidate>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id={fields.username.name}
+              label={fields.username.label}
+              name={fields.username.label}
+              value={this.state.values.name}
+              placeholder={fields.username.label}
+              error={this.state.errors[fields.username.name] !== ""}
+              helperText={this.state.errors[fields.username.name]}
+              onChange={this.setField.bind(this, fields.username)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name={fields.password.label}
+              label={fields.password.label}
+              type="password"
+              id={fields.password.name}
+              value={this.state.values.name}
+              error={this.state.errors[fields.password.name] !== ""}
+              helperText={this.state.errors[fields.password.name]}
+              onChange={this.setField.bind(this, fields.password)}
+              autoComplete="current-password"
+            />
+            {this.props.loading ? 
+                <div>
+                  <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled
+                >
+                  <CircularProgress size="1.5rem" className={classes.circularSpace} /> Entrar
+                </Button> 
+              </div>
+              :
+              <div>
+                  <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled={!this.state.formCorrect}
+                >
+                  Entrar
+                </Button> 
+              </div>
+            }
+            
+            <Grid container>
+              <Grid item>
+              ¿No tienes cuenta? Regístrate {' '}
+                <Link component={RouterLink} to="/customer-register" variant="body2">
+                  {"como cliente"}
+                </Link>
+                {' '} o {' '}
+                <Link component={RouterLink} to="/toaster-register" variant="body2">
+                  {"como tostador"}
+                </Link>
+                .
+              </Grid>
+            </Grid>
+          </form>
+        </div>
+      </Container>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+  account: state.AuthReducer.account,
+  loading: state.AuthReducer.loading,
+  accError: state.AuthReducer.error
+  }
+};
+
+
+export default withRouter(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Login)));
