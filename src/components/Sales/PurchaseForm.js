@@ -156,13 +156,25 @@ class PurchaseForm extends Component {
                 // TODO Redireccionar a donde toque
                 console.log("Payment REDIRECCIONAR a Delivery");
                 this.handlePurchase();
+                this.setState({loading: false});
             })
             .catch(() => {
                 // TODO Gestionar errores
                 console.log("Ha habido un error");
+                this.setState({loading: false});
             });
         });
     };
+
+    async createPaymentMethod(stripe, cardElement, billingProfile){
+        return await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+                email: billingProfile.email,
+            },
+        });
+    }
 
     handleSubmitSubscription(event) {
         
@@ -173,36 +185,44 @@ class PurchaseForm extends Component {
 
         let products = [];
         this.props.products.forEach((product, i) => {
-            products.push({ _id: product._id, quantity: product.quantity, format: product.format });
+            products.push({ _id: product._id, quantity: product.quantity, format: product.format, stripe_id: product.stripe_id });
         });
+
+        const cardElement = elements.getElement(CardElement);
+        
         
         this.setState({
             loading: true
         }, ()=> {
-            SubscriptionService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
-                .then(() => {
-                    // TODO Redireccionar a donde toque
-                    console.log("Subscripcion: REDIRECCIONAR a Delivery");
-                    this.handlePurchase(billingProfile, products);
-                    this.setState({loading: false});
-                })
-                .catch(() => {
-                    // TODO Gestionar errores
-                    console.log("Ha habido un error");
-                });
+            this.createPaymentMethod(stripe, cardElement, billingProfile)
+                .then(doc => {
+                    const payment_method_id = doc.paymentMethod.id;
+                    SubscriptionService.postSubscription(billingProfile, products, stripe, payment_method_id, cardElement)
+                    .then(() => {
+                        // TODO Redireccionar a donde toque
+                        console.log("Subscripcion: REDIRECCIONAR a Delivery");
+                        this.handlePurchase();
+                        this.setState({loading: false});
+                    })
+                    .catch(() => {
+                        // TODO Gestionar errores
+                        console.log("Ha habido un error");
+                        this.setState({loading: false});
+                    })
+            });
         });
-        };
+    };
+    
+    render() {
         
-        render() {
-
         const { products, totalPrice, billingProfiles, classes } = this.props;
-
+        
         const productList = products.map((product, i) => (
             <ProductListItem key={i} product={product} />
-        ));
-
-        const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
-            <MenuItem key={i} value={i}>
+            ));
+            
+            const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
+                <MenuItem key={i} value={i}>
                 {`${profile.name}, ${profile.address}, ${profile.city}, ${profile.province}, ${profile.country}`}
             </MenuItem>
         ));

@@ -13,7 +13,7 @@ export class PaymentService {
                 reject();
             }
 
-            return axios.post("/api/payment", {
+            return axios.post("http:localhost:3001/api/v1/payment", {
                 billingProfile,
                 payment: {
                     products
@@ -37,6 +37,8 @@ export class PaymentService {
                         store.dispatch(startSnackBar("success", "Pago realizado satisfactoriamente"));
                         resolve();
                     }
+                }).catch(err =>{
+                    store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + err));
                 });
         });
     }
