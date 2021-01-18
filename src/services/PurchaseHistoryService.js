@@ -7,24 +7,30 @@ import UsersService from "./UsersService";
 
 const addProductsData = (purchases) => {
 
+    // Check for no purchases
+    if(purchases.length === 0) {
+        store.dispatch(startSnackBar("info", "No tiene más entradas en el historial de compras"));
+        return purchases;
+    }
+
     // Get all product identifiers
-    let productIDs = {};
+    let productIDs = new Set();
     purchases.forEach(purchase => {
         purchase.products.forEach(product => {
-            productIDs[product._id] = {};
+            productIDs.add(product._id);
         });
     });
 
     // Get every needed product only once
-    const promises = Object.keys(productIDs).map(productId => {
-        return axios.get("/api/products", { params: { productId } })
-            .then(response => response.data)
-            .then(data => ({ _id: productId, name: data.name, imageUrl: data.imageUrl }));
-    });
-
-    // Map every product to its purchase
-    return Promise.all(promises)
+    const identifiers = Array.from(productIDs).join();
+    return axios.get("/api/products-several", { params: { identifiers } })
+        .then(response => response.data)
         .then(products => {
+            return products.map(product => ({ _id: product._id, name: product.name, imageUrl: product.imageUrl }));
+        })
+        .then(products => {
+
+            // Map every product to its purchases
             for (let i = 0; i < purchases.length; i++) {
                 purchases[i].timestamp = new Date(purchases[i].timestamp);
                 for (let j = 0; j < purchases[i].products.length; j++) {

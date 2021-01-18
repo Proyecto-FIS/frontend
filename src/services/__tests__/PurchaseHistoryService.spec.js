@@ -50,7 +50,7 @@ it("No token found", () => {
 it("GET working", () => {
     const axiosMock = new AxiosMock(axios);
     axiosMock.onGet("/api/history").reply(200, sampleData);
-    axiosMock.onGet("/api/products").reply(200, { name: "productname", imageUrl: "testimage" });
+    axiosMock.onGet("/api/products-several").reply(200, [{ _id: "1", name: "productname1", imageUrl: "testimage1" }, { _id: "2", name: "productname2", imageUrl: "testimage2" }]);
     doLogin(store);
 
     return PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
@@ -64,8 +64,8 @@ it("GET working", () => {
                 expect(product._id).toBe((i + 1).toString());
                 expect(product.quantity).toBe(sampleData[0].products[i].quantity);
                 expect(product.unitPriceEuros).toBe(sampleData[0].products[i].unitPriceEuros);
-                expect(product.name).toBe("productname");
-                expect(product.imageUrl).toBe("testimage");
+                expect(product.name).toBe(`productname${i + 1}`);
+                expect(product.imageUrl).toBe(`testimage${i + 1}`);
             });
         });
 });
@@ -94,5 +94,20 @@ it("Error during product loading", () => {
             const state = store.getState();
             expect(state.SnackbarReducer.severity).toBe("error");
             expect(state.SnackbarReducer.message).toBe("Ha ocurrido un error cargando el historial de compras");
+        });
+});
+
+it("Empty history", () => {
+    const axiosMock = new AxiosMock(axios);
+    axiosMock.onGet("/api/history").reply(200, []);
+    axiosMock.onGet("/api/products-several").reply(500);
+    doLogin(store);
+
+    return PurchaseHistoryService.getHistory(pageSize, beforeTimestamp)
+        .then(() => {
+            const state = store.getState();
+            expect(state.PurchaseHistoryReducer.elements.length).toBe(0);
+            expect(state.SnackbarReducer.severity).toBe("info");
+            expect(state.SnackbarReducer.message).toBe("No tiene más entradas en el historial de compras");
         });
 });
