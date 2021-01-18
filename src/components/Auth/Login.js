@@ -139,7 +139,6 @@ class Login extends Component {
               label={fields.username.label}
               name={fields.username.label}
               value={this.state.values.name}
-              placeholder={fields.username.label}
               error={this.state.errors[fields.username.name] !== ""}
               helperText={this.state.errors[fields.username.name]}
               onChange={this.setField.bind(this, fields.username)}

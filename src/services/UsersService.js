@@ -65,7 +65,7 @@ export class UsersService {
                     })
                     .catch(err => {
                         console.log(err.response)
-                        store.dispatch(startSnackBar("error", err.response.data.message))
+                        store.dispatch(startSnackBar("error", "Error al registrar un cliente"))
                         store.dispatch({type: REGISTER_ERROR})
 
                         reject()

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import { Redirect, withRouter } from "react-router-dom";
 import { Link as RouterLink } from 'react-router-dom';
-
+import { connect } from "react-redux";
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
 
 import UsersService from "../../services/UsersService";
+
+import Validators from "../../utils/Validators";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,13 +16,81 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { withStyles } from "@material-ui/core/styles";
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+const fields = {
+  username: {
+    label: "Nombre de usuario",
+    name: "username",
+    validators: [Validators.StringLength(3, 100)],
+  },
+  address: {
+    label: "Dirección postal",
+    name: "address",
+    validators: [Validators.TestRegex(/[\s\S]*/)]
+  },
+  email: {
+    label: "Correo electrónico",
+    name: "email",
+    validators: [Validators.NotEmptyString(), 
+                Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
+  },
 
-const useStyles = makeStyles((theme) => ({
+  pictureUrl: {
+    label: "Imagen",
+    name: "pictureUrl",
+    validators: [Validators.TestRegex(/^$|(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)$/)],
+  },
+  password: {
+    label: "Contraseña",
+    name: "password",
+    validators: [Validators.StringLength(6, 100)],
+  },
+  password2: {
+    label: "Repita la contraseña",
+    name: "password2",
+    validators: [Validators.StringLength(6, 100)],
+  }
+};
+
+// const fields = {
+//   username: {
+//     label: "Nombre de usuario",
+//     name: "username",
+//     validators: [Validators.StringLength(3, 100)],
+//   },
+//   email: {
+//     label: "Correo electrónico",
+//     name: "email",
+//     validators: [Validators.NotEmptyString(), 
+//                 Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
+//   },
+//   address: {
+//     label: "Dirección postal",
+//     name: "address",
+//     validators: [Validators.TestRegex(/.*/)]
+//   },
+//   pictureUrl: {
+//     label: "Imagen",
+//     name: "pictureUrl",
+//     validators: [Validators.TestRegex(/^$|(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)$/)],
+//   },
+//   password: {
+//     label: "Contraseña",
+//     name: "password",
+//     validators: [Validators.StringLength(6, 100)],
+//   },
+//   password2: {
+//     label: "Repita la contraseña",
+//     name: "password2",
+//     validators: [Validators.StringLength(6, 100)],
+//   }
+// };
+
+const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     marginBottom: theme.spacing(6),
@@ -43,49 +112,68 @@ const useStyles = makeStyles((theme) => ({
   circularSpace: {
     marginRight: theme.spacing(1)
   }
-}));
+});
 
-const CustomerRegister = () => {
+class CustomerRegister extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.getDefaultState(),
+      isSubmitting: false,
+    };
+  }
 
-  const classes = useStyles();
+  getDefaultState() {
+    let state = {
+      values: {},
+      errors: {},
+      formCorrect: false,
+    };
 
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    address: '',
-    pictureUrl: '',
-    password: '',
-    password2: ''
-  });
+    Object.values(fields).forEach((field) => {
+      state.values[field.name] = "";
+      state.errors[field.name] = "";
+    });
 
-  const dispatch = useDispatch();
+    return state;
+  }
 
-  const accountLogin = useSelector(state => state.AuthReducer);
+  submitDone() {
+    this.setState({ isSubmitting: false });
 
-  const { loading, error, account } = accountLogin;
+    this.props.history.push("/");
+}
 
-  const { username, email, address, pictureUrl, password, password2 } = formData;
+  submitForm = (e) => {
+      e.preventDefault();
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+      // if(this.props.state.values[password] !== this.props.state.values[password2]) {
+      //   dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
+      // }
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+      this.setState({ isSubmitting: true });
+      const action = UsersService.registerCustomer;
 
-    if(password !== password2) {
-      dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
-    } else {
-      const body = JSON.stringify({  username, email, address, pictureUrl, password });
-      UsersService.registerCustomer(body);
-    }
-  };
+      action(this.state.values)
+          .then(() => this.submitDone())
+          .catch(() => this.submitDone());
+  }
+
+  setField(field, e) {
+    this.setState(prevState => {
+        let newState = prevState;
+        newState.values[field.name] = e.target.value;
+        newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
+        newState.formCorrect = Object.values(fields).reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
+        return newState;
+    });
+}
+
+render() {
+  const { classes, account } = this.props;
 
   if(account) {
     return <Redirect to="/"/>
-  }
-
-  if(error) {
-    dispatch(startSnackBar("error", error));
   }
 
   return (
@@ -99,58 +187,49 @@ const CustomerRegister = () => {
           Registrarse como cliente
         </Typography>
 
-        <form className={classes.form} onSubmit={onSubmit} noValidate>
+        <form className={classes.form} onSubmit={this.submitForm} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                autoComplete="username"
-                name="username"
                 variant="outlined"
+                margin="normal"
                 required
                 fullWidth
-                value={username}
-                onChange={onChange}
-                id="username"
-                label="Nombre de usuario"
+                id={fields.username.name}
+                label={fields.username.label}
+                name={fields.username.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.username.name] !== ""}
+                helperText={this.state.errors[fields.username.name]}
+                onChange={this.setField.bind(this, fields.username)}
                 autoFocus
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="address"
-                name="address"
                 variant="outlined"
+                autoComplete={fields.address.name}
                 fullWidth
-                value={address}
-                onChange={onChange}
-                id="address"
-                label="Dirección postal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="fname"
-                name="pictureUrl"
-                variant="outlined"
-                fullWidth
-                value={pictureUrl}
-                onChange={onChange}
-                id="pictureUrl"
-                label="URL de una imagen"
+                id={fields.address.name}
+                label={fields.address.label}
+                name={fields.address.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.address.name] !== ""}
+                helperText={this.state.errors[fields.address.name]}
+                onChange={this.setField.bind(this, fields.address)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
-                id="email"
-                value={email}
-                onChange={onChange}
-                label="Correo electrónico"
-                type="email"
-                name="email"
-                autoComplete="email"
+                id={fields.pictureUrl.name}
+                label={fields.pictureUrl.label}
+                name={fields.pictureUrl.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.pictureUrl.name] !== ""}
+                helperText={this.state.errors[fields.pictureUrl.name]}
+                onChange={this.setField.bind(this, fields.pictureUrl)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -158,32 +237,49 @@ const CustomerRegister = () => {
                 variant="outlined"
                 required
                 fullWidth
-                name="password"
-                label="Contraseña"
+                id={fields.email.name}
+                label={fields.email.label}
+                name={fields.email.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.email.name] !== ""}
+                helperText={this.state.errors[fields.email.name]}
+                onChange={this.setField.bind(this, fields.email)}
+                autoComplete={fields.email.name}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name={fields.password.label}
+                label={fields.password.label}
                 type="password"
-                id="password"
-                value={password}
-                onChange={onChange}
-                autoComplete="current-password"
+                id={fields.password.name}
+                value={this.state.values.name}
+                error={this.state.errors[fields.password.name] !== ""}
                 helperText="6 caracteres como mínimo"
+                onChange={this.setField.bind(this, fields.password)}
+                autoComplete="current-password"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <TextField
                 variant="outlined"
                 required
                 fullWidth
-                name="password2"
-                label="Repita la contraseña"
+                name={fields.password2.label}
+                label={fields.password2.label}
                 type="password"
-                id="password2"
-                value={password2}
-                onChange={onChange}
+                id={fields.password2.name}
+                value={this.state.values.name}
+                error={this.state.errors[fields.password2.name] !== ""}
+                onChange={this.setField.bind(this, fields.password2)}
               />
             </Grid>
           </Grid>
 
-          {loading ? 
+          {this.props.loading ? 
               <div>
                 <Button
                   type="submit"
@@ -204,6 +300,7 @@ const CustomerRegister = () => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                disabled={!this.state.formCorrect}
               >
                 Registrarme
               </Button> 
@@ -222,6 +319,18 @@ const CustomerRegister = () => {
       </div>
     </Container>
   );
+
+}
+
+}
+
+const mapStateToProps = state => {
+  return {
+  account: state.AuthReducer.account,
+  loading: state.AuthReducer.loading,
+  accError: state.AuthReducer.error
+  }
 };
 
-export default CustomerRegister;
+
+export default withRouter(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(CustomerRegister)));
