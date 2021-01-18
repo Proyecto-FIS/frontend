@@ -1,16 +1,13 @@
 import "@testing-library/jest-dom/extend-expect";
-import { cleanup, screen, render } from "@testing-library/react";
+import { cleanup, screen } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../setupTests";
 import ProductsReducer from "../../redux/reducers/ProductsReducer";
 import AuthReducer from "../../redux/reducers/AuthReducer";
 import CartReducer from "../../redux/reducers/CartReducer";
 import getProduct from "../../redux/actions/Products/getProduct";
 import loadingProduct from "../../redux/actions/Products/loadingProduct";
-import ProductsService from "../../services/ProductsService";
 import Product from "../Product";
 import { MemoryRouter } from "react-router-dom";
-
-jest.mock("../../services/ProductsService");
 
 let store = null;
 const mock_id = { params: { productId: "test_id" } };

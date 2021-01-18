@@ -39,6 +39,7 @@ class Product extends Component {
             component="img"
             className={classes.cardMedia}
             image={imageUrl}
+            aria-label={imageUrl}
             title={name}
             alt={imageUrl}
           />

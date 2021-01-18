@@ -13,7 +13,7 @@ const styles = (theme) => ({
     height: "70vh",
   },
   cardMedia: {
-    paddingTop: "100%", // Image aspect ratio
+    paddingTop: "100%", //Image aspect ratio
   },
   cardContent: {
     flexDirection: "column",
