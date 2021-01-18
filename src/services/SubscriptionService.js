@@ -4,8 +4,8 @@ import UsersService from "./UsersService";
 import store from "../redux/store";
 
 export class SubscriptionService {
-
-    static postSubscription(billingProfile, products, stripe, cardElement) {
+    
+    static postSubscription(billingProfile, products, stripe, payment_method_id, cardElement) {
         return new Promise((resolve, reject) => {
 
             const userToken = UsersService.getUserToken();
@@ -16,33 +16,46 @@ export class SubscriptionService {
             return axios.post("/api/subscription", {
                 billingProfile,
                 subscription: {
-                    products
+                    products,
+                    payment_method_id
                 },
-                cardElement
             }, { params: { userToken } })
-                .then(res => {
-                    return stripe.confirmCardPayment(res.data.client_secret, {
-                        payment_method: {
-                            card: cardElement,
-                            billing_details: {
-                                email: billingProfile.email,
-                            },
-                        },
-                    });
-
-                    
-                })
                 .then(result => {
-                    if (result.error || result.data.status !== "requires_action") {// TODO: revisar requires_action
+                    if (result.error) {
                         store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
                         reject();
                     } else {
                         store.dispatch(startSnackBar("success", "Subscripción realizada satisfactoriamente"));
                         resolve();
                     }
+                }).catch(err =>{
+                    store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + err));
                 });
         });
     }
+
+    static deleteSubscription(transaction_id) {
+
+        return new Promise((resolve, reject) => {
+            const userToken = UsersService.getUserToken();
+            if (!userToken) {
+                reject();
+                return;
+            }
+
+            axios.delete("/api/subscription", { params: { userToken, subscriptionID: transaction_id } })
+                .then(response => {
+                    store.dispatch(startSnackBar("success", "Subscripción eliminada correctamente"));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(startSnackBar("error", "No se ha podido eliminar la subscripción"));
+                    reject();
+                });
+        });
+    }
+
 }
+
 
 export default SubscriptionService;

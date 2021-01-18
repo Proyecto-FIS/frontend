@@ -37,6 +37,8 @@ export class PaymentService {
                         store.dispatch(startSnackBar("success", "Pago realizado satisfactoriamente"));
                         resolve();
                     }
+                }).catch(err =>{
+                    store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + err));
                 });
         });
     }
