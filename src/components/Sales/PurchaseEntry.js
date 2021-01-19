@@ -85,7 +85,7 @@ class PurchaseEntry extends Component {
                     <Grid container justify="flex-end" alignItems="flex-end">
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary">Desactivar
-                                <IconButton aria-label="Borrar" onClick={() => this.delete({transaction_id})}>
+                                <IconButton aria-label="Borrar" onClick={() => this.delete(transaction_id)}>
                                      <DeleteIcon />
                                 </IconButton>
                                 </Typography>
