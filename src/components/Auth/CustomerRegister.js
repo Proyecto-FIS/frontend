@@ -80,11 +80,6 @@ const styles = (theme) => ({
     width: theme.spacing(8),
     height: theme.spacing(8),
   },
-  preview2: {
-    margin: theme.spacing(1),
-    width: theme.spacing(8),
-    height: theme.spacing(8),
-  },
   inputFile: {
     width: "0.1px",
     height: "0.1px",
@@ -102,13 +97,7 @@ const styles = (theme) => ({
   },
   circularSpace: {
     marginRight: theme.spacing(1)
-  },
-  preview:{
-    margin: 'auto',
-    maxHeight: '300px',
-    display: 'block',
-    maxWidth: '100%',
-  },
+  }
 });
 
 class CustomerRegister extends Component {
@@ -117,7 +106,6 @@ class CustomerRegister extends Component {
     this.state = {
       ...this.getDefaultState(),
       isSubmitting: false,
-      img: null
     };
   }
 
@@ -138,18 +126,21 @@ class CustomerRegister extends Component {
 
   handleImageChange = (event) => {
     const image = event.target.files[0];
+
+    // eslint-disable-next-line
+    this.state.values["picture"] = image;
+
     let reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = function() {
         let preview = document.getElementById('preview'),
           image = document.createElement('img');
           image.className = 'MuiAvatar-img';
-          image.setAttribute("id", "imagen");
           image.src = reader.result;
           preview.innerHTML = '';
           preview.append(image);
     };
-    // this.setState({img: imgsrc});
+    
   };
 
   submitDone() {
@@ -166,12 +157,7 @@ class CustomerRegister extends Component {
       } else {
         this.setState({ isSubmitting: true });
         const action = UsersService.registerCustomer;
-        
-        var picture = document.getElementById('imagen');
-        if(picture) {
-          // eslint-disable-next-line
-          this.state.values["picture"] = picture.src;
-        }
+    
         
         action(this.state.values)
           .then(() => this.submitDone())

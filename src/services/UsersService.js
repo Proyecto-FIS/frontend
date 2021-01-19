@@ -66,7 +66,7 @@ export class UsersService {
                 for (const property in body) {
                     formData.append(property, body[property]);
                 }
-                console.log(formData)
+                
             axios.post('/api/customers', formData, config_img)
                     .then(response => {
                         store.dispatch({type: REGISTER_SUCCESS, payload: response.data})
@@ -163,8 +163,8 @@ export class UsersService {
                 for (const property in body) {
                     formData.append(property, body[property]);
                 }
-                console.log(formData)
-            axios.post('/api/toasters', body, config_img)
+                
+            axios.post('/api/toasters', formData, config_img)
                 .then(response => {
                     store.dispatch({type: REGISTER_SUCCESS, payload: response.data})
                     store.dispatch({type: LOGIN_SUCCESS, payload: response.data})

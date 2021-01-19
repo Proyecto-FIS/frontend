@@ -78,10 +78,10 @@ const fields = {
     //eslint-disable-next-line
     validators: [Validators.TestRegex(/^$|^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)],
   },
-  pictureUrl: {
+  picture: {
     label: "Imagen",
-    fieldName: "pictureUrl",
-    validators: [Validators.TestRegex(/^$|(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)$/)],
+    fieldName: "picture",
+    validators: [Validators.TestRegex(/^$|[\S\s]$/)],
   },
   password: {
     label: "Contraseña",
@@ -103,6 +103,26 @@ const styles = (theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  paper2: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar2: {
+    margin: theme.spacing(1),
+    width: theme.spacing(8),
+    height: theme.spacing(8),
+  },
+  inputFile: {
+    width: "0.1px",
+    height: "0.1px",
+    opacity: 0,
+    overflow: "hidden",
+    position: "absolute",
+    zIndex: "-1",
+},
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
@@ -142,6 +162,25 @@ class ToasterRegister extends Component {
 
     return state;
   }
+
+  handleImageChange = (event) => {
+    const image = event.target.files[0];
+
+    // eslint-disable-next-line
+    this.state.values["picture"] = image;
+
+    let reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = function() {
+        let preview = document.getElementById('preview'),
+          image = document.createElement('img');
+          image.className = 'MuiAvatar-img';
+          image.src = reader.result;
+          preview.innerHTML = '';
+          preview.append(image);
+    };
+    
+  };
 
   submitDone() {
     this.setState({ isSubmitting: false });
@@ -202,7 +241,7 @@ render() {
           Registrarse como tostador
         </Typography>
 
-        <form className={classes.form} onSubmit={this.submitForm}>
+        <form className={classes.form} onSubmit={this.submitForm} encType="multipart/form-data">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -250,6 +289,22 @@ render() {
                 helperText={this.state.errors[fields.description.fieldName] ? this.state.errors[fields.description.fieldName] : "20 caracteres como mínimo"}
                 onChange={this.setField.bind(this, fields.description)}
               />
+            </Grid>
+            <Grid item xs={12} className={classes.paper2}>
+              <Avatar alt="avatar" src="" id="preview" className={classes.avatar2}/> 
+              <input
+                className={classes.inputFile}
+                accept="image/*"
+                id="picture"
+                name="picture"
+                type="file"
+                onChange={ this.handleImageChange }
+              />
+              <label htmlFor="picture">
+                <Button variant="contained" color="primary" component="span">
+                  Elegir imagen
+                </Button>
+              </label>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -335,19 +390,6 @@ render() {
                     </InputAdornment>
                   ),
                 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                id={fields.pictureUrl.fieldName}
-                label={fields.pictureUrl.label}
-                name={fields.pictureUrl.label}
-                value={this.state.values.fieldName}
-                error={this.state.errors[fields.pictureUrl.fieldName] !== ""}
-                helperText={this.state.errors[fields.pictureUrl.fieldName]}
-                onChange={this.setField.bind(this, fields.pictureUrl)}
               />
             </Grid>
             <Grid item xs={12}>
