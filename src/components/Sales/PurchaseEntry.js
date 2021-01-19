@@ -81,7 +81,7 @@ class PurchaseEntry extends Component {
                             </Grid>
                         </AccordionDetails>
                     </Accordion>
-                    {operationType === "subscription" &&
+                    {operationType === "Suscripción" &&
                     <Grid container justify="flex-end" alignItems="flex-end">
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary">Desactivar
