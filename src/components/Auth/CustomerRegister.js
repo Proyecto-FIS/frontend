@@ -38,10 +38,10 @@ const fields = {
     validators: [Validators.NotEmptyString(), 
                 Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
   },
-  pictureUrl: {
+  picture: {
     label: "Imagen",
-    name: "pictureUrl",
-    validators: [Validators.TestRegex(/^$|(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)$/)],
+    name: "picture",
+    validators: [Validators.TestRegex(/^$|[\S\s]$/)],
   },
   password: {
     label: "Contraseña",
@@ -64,10 +64,35 @@ const styles = (theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  paper2: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  avatar2: {
+    margin: theme.spacing(1),
+    width: theme.spacing(8),
+    height: theme.spacing(8),
+  },
+  preview2: {
+    margin: theme.spacing(1),
+    width: theme.spacing(8),
+    height: theme.spacing(8),
+  },
+  inputFile: {
+    width: "0.1px",
+    height: "0.1px",
+    opacity: 0,
+    overflow: "hidden",
+    position: "absolute",
+    zIndex: "-1",
+},
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -77,7 +102,13 @@ const styles = (theme) => ({
   },
   circularSpace: {
     marginRight: theme.spacing(1)
-  }
+  },
+  preview:{
+    margin: 'auto',
+    maxHeight: '300px',
+    display: 'block',
+    maxWidth: '100%',
+  },
 });
 
 class CustomerRegister extends Component {
@@ -86,6 +117,7 @@ class CustomerRegister extends Component {
     this.state = {
       ...this.getDefaultState(),
       isSubmitting: false,
+      img: null
     };
   }
 
@@ -104,6 +136,22 @@ class CustomerRegister extends Component {
     return state;
   }
 
+  handleImageChange = (event) => {
+    const image = event.target.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = function() {
+        let preview = document.getElementById('preview'),
+          image = document.createElement('img');
+          image.className = 'MuiAvatar-img';
+          image.setAttribute("id", "imagen");
+          image.src = reader.result;
+          preview.innerHTML = '';
+          preview.append(image);
+    };
+    // this.setState({img: imgsrc});
+  };
+
   submitDone() {
     this.setState({ isSubmitting: false });
 
@@ -118,7 +166,13 @@ class CustomerRegister extends Component {
       } else {
         this.setState({ isSubmitting: true });
         const action = UsersService.registerCustomer;
-
+        
+        var picture = document.getElementById('imagen');
+        if(picture) {
+          // eslint-disable-next-line
+          this.state.values["picture"] = picture.src;
+        }
+        
         action(this.state.values)
           .then(() => this.submitDone())
           .catch(() => this.submitDone());
@@ -161,7 +215,7 @@ render() {
           Registrarse como cliente
         </Typography>
 
-        <form className={classes.form} onSubmit={this.submitForm} noValidate>
+        <form className={classes.form} onSubmit={this.submitForm} encType="multipart/form-data" noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -193,18 +247,21 @@ render() {
                 onChange={this.setField.bind(this, fields.address)}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                id={fields.pictureUrl.name}
-                label={fields.pictureUrl.label}
-                name={fields.pictureUrl.label}
-                value={this.state.values.name}
-                error={this.state.errors[fields.pictureUrl.name] !== ""}
-                helperText={this.state.errors[fields.pictureUrl.name]}
-                onChange={this.setField.bind(this, fields.pictureUrl)}
+            <Grid item xs={12} className={classes.paper2}>
+              <Avatar alt="avatar" src="" id="preview" className={classes.avatar2}/> 
+              <input
+                className={classes.inputFile}
+                accept="image/*"
+                id="picture"
+                name="picture"
+                type="file"
+                onChange={ this.handleImageChange }
               />
+              <label htmlFor="picture">
+                <Button variant="contained" color="primary" component="span">
+                  Elegir imagen
+                </Button>
+              </label>
             </Grid>
             <Grid item xs={12}>
               <TextField

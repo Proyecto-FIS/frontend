@@ -9,6 +9,13 @@ const config = {
     }
   };
 
+const config_img = {
+headers: {
+    'Accept': 'application/json',
+    'Content-Type':'multipart/form-data'
+}
+};
+
 
 export class UsersService {
 
@@ -55,7 +62,12 @@ export class UsersService {
 
             store.dispatch({type: REGISTER_REQUEST});
 
-            axios.post('/api/customers', body, config)
+            var formData = new FormData()
+                for (const property in body) {
+                    formData.append(property, body[property]);
+                }
+                console.log(formData)
+            axios.post('/api/customers', formData, config_img)
                     .then(response => {
                         store.dispatch({type: REGISTER_SUCCESS, payload: response.data})
                         store.dispatch({type: LOGIN_SUCCESS, payload: response.data})
@@ -146,8 +158,13 @@ export class UsersService {
     static registerToaster = (body) => {
         return new Promise((resolve, reject) => {
             store.dispatch({type: REGISTER_REQUEST});
-            console.log(body);
-            axios.post('/api/toasters', body, config)
+            
+            var formData = new FormData()
+                for (const property in body) {
+                    formData.append(property, body[property]);
+                }
+                console.log(formData)
+            axios.post('/api/toasters', body, config_img)
                 .then(response => {
                     store.dispatch({type: REGISTER_SUCCESS, payload: response.data})
                     store.dispatch({type: LOGIN_SUCCESS, payload: response.data})
