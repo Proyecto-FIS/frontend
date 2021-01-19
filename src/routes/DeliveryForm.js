@@ -170,10 +170,10 @@ class DeliveryForm extends Component {
         const { classes, delivery } = this.props;
 
         const formFields1 = fields1.map((field, index) => (
-            <Grid key={index} item xs={12}>
+            <Grid key={index} item xs={12} >
                 <FormTextField label={field.label} error={this.state.errors[field.name]}
                     value={this.state.values[field.name]}
-                    onChange={this.setField.bind(this, field)} />
+                    onChange={this.setField.bind(this, field)} spacing={6} />
             </Grid>
         ));
 
@@ -191,24 +191,27 @@ class DeliveryForm extends Component {
             <MainGrid>
                 <Box border={1} borderRadius={10} boxShadow={3} padding={3}>
                     <h2 className={classes.titleText}>{actionText} ENTREGA</h2>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={10}>
                         <Grid item xs={6} className={classes.form}>
                             <h3 className={classes.titleText}>DIRECCIÓN DE ENVÍO</h3>
-                            {formFields1}
+                            <Grid container spacing={2}>
+                                {formFields1}
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6} className={classes.form}>
+                        <Grid item xs={5} className={classes.form}>
                             <h3 className={classes.titleText}>ESTADO DE ENTREGA</h3>
                             {formFields2}
+                            <Grid container spacing={6} direction="row-reverse" justify="center">
+                                <Grid item>
+                                    <Button variant="contained" color="primary" onClick={e => this.clearForm()}>Limpiar</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="contained" color="primary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>{actionText}</Button>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
-                    <Grid container item spacing={6} direction="row-reverse" justify="center">
-                        <Grid item>
-                            <Button variant="contained" color="primary" onClick={e => this.clearForm()}>Limpiar</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button variant="contained" color="primary" disabled={!this.state.formCorrect || this.state.isSubmitting} onClick={e => this.submitForm()}>{actionText}</Button>
-                        </Grid>
-                    </Grid>
+
                 </Box>
             </MainGrid>
         );
