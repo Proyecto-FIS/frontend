@@ -4,7 +4,7 @@ import UsersService from "./UsersService";
 import store from "../redux/store";
 
 export class SubscriptionService {
-    
+
     static postSubscription(billingProfile, products, stripe, payment_method_id, cardElement) {
         return new Promise((resolve, reject) => {
 
@@ -14,12 +14,16 @@ export class SubscriptionService {
             }
 
             return axios.post("/api/subscription", {
-                billingProfile,
-                subscription: {
-                    products,
-                    payment_method_id
-                },
-            }, { params: { userToken } })
+                    billingProfile,
+                    subscription: {
+                        products,
+                        payment_method_id
+                    },
+                }, {
+                    params: {
+                        userToken
+                    }
+                })
                 .then(result => {
                     if (result.error) {
                         store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + result.error.message));
@@ -28,7 +32,7 @@ export class SubscriptionService {
                         store.dispatch(startSnackBar("success", "Subscripción realizada satisfactoriamente"));
                         resolve();
                     }
-                }).catch(err =>{
+                }).catch(err => {
                     store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + err));
                 });
         });
@@ -43,9 +47,18 @@ export class SubscriptionService {
                 return;
             }
 
-            axios.delete("/api/subscription", { params: { userToken, subscriptionID: transaction_id } })
+            axios.delete("/api/subscription", {
+                    params: {
+                        userToken,
+                        subscriptionID: transaction_id
+                    }
+                })
                 .then(response => {
-                    store.dispatch(startSnackBar("success", "Subscripción eliminada correctamente"));
+                    if (response.data.reason || response.data.reason === "Subscription already deactivated") {
+                        store.dispatch(startSnackBar("error", "La subscripción ya se encuentra desactivada"));
+                    } else {
+                        store.dispatch(startSnackBar("success", "Subscripción eliminada correctamente"));
+                    }
                     resolve();
                 })
                 .catch(err => {

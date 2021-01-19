@@ -81,15 +81,17 @@ class PurchaseEntry extends Component {
                             </Grid>
                         </AccordionDetails>
                     </Accordion>
+                    {operationType === "Suscripción" &&
                     <Grid container justify="flex-end" alignItems="flex-end">
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary">Desactivar
-                                <IconButton aria-label="Borrar" onClick={() => this.delete({transaction_id})}>
+                                <IconButton aria-label="Borrar" onClick={() => this.delete(transaction_id)}>
                                      <DeleteIcon />
                                 </IconButton>
                                 </Typography>
                             </Grid>
                     </Grid>
+                    }
                 </CardContent>
             </Card>
         );
