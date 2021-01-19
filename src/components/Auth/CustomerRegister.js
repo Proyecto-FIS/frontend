@@ -3,7 +3,7 @@ import { Redirect, withRouter } from "react-router-dom";
 import { Link as RouterLink } from 'react-router-dom';
 import { connect } from "react-redux";
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
-
+import store from "../../redux/store";
 import UsersService from "../../services/UsersService";
 
 import Validators from "../../utils/Validators";
@@ -38,7 +38,6 @@ const fields = {
     validators: [Validators.NotEmptyString(), 
                 Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
   },
-
   pictureUrl: {
     label: "Imagen",
     name: "pictureUrl",
@@ -56,39 +55,6 @@ const fields = {
   }
 };
 
-// const fields = {
-//   username: {
-//     label: "Nombre de usuario",
-//     name: "username",
-//     validators: [Validators.StringLength(3, 100)],
-//   },
-//   email: {
-//     label: "Correo electrónico",
-//     name: "email",
-//     validators: [Validators.NotEmptyString(), 
-//                 Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
-//   },
-//   address: {
-//     label: "Dirección postal",
-//     name: "address",
-//     validators: [Validators.TestRegex(/.*/)]
-//   },
-//   pictureUrl: {
-//     label: "Imagen",
-//     name: "pictureUrl",
-//     validators: [Validators.TestRegex(/^$|(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)$/)],
-//   },
-//   password: {
-//     label: "Contraseña",
-//     name: "password",
-//     validators: [Validators.StringLength(6, 100)],
-//   },
-//   password2: {
-//     label: "Repita la contraseña",
-//     name: "password2",
-//     validators: [Validators.StringLength(6, 100)],
-//   }
-// };
 
 const styles = (theme) => ({
   paper: {
@@ -147,16 +113,17 @@ class CustomerRegister extends Component {
   submitForm = (e) => {
       e.preventDefault();
 
-      // if(this.props.state.values[password] !== this.props.state.values[password2]) {
-      //   dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
-      // }
+      if(this.state.values["password"] !== this.state.values["password2"]) {
+        store.dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
+      } else {
+        this.setState({ isSubmitting: true });
+        const action = UsersService.registerCustomer;
 
-      this.setState({ isSubmitting: true });
-      const action = UsersService.registerCustomer;
-
-      action(this.state.values)
+        action(this.state.values)
           .then(() => this.submitDone())
           .catch(() => this.submitDone());
+      }
+
   }
 
   setField(field, e) {
@@ -164,7 +131,13 @@ class CustomerRegister extends Component {
         let newState = prevState;
         newState.values[field.name] = e.target.value;
         newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
-        newState.formCorrect = Object.values(fields).reduce((ac, v) => (newState.errors[v.name] !== "" || newState.values[v.name] === "") ? false : ac, true);
+        newState.formCorrect = Object.values(fields).reduce(
+                                                        (ac, v) => (newState.errors[v.name] !== "" 
+                                                        || newState.values["username"] === ""
+                                                        || newState.values["email"] === ""
+                                                        || newState.values["password"] === ""
+                                                        || newState.values["password2"] === ""
+                                                        ) ? false : ac, true);
         return newState;
     });
 }
@@ -175,6 +148,7 @@ render() {
   if(account) {
     return <Redirect to="/"/>
   }
+
 
   return (
     <Container component="main" maxWidth="xs">

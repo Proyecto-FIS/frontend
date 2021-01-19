@@ -65,7 +65,7 @@ export class UsersService {
                     })
                     .catch(err => {
                         console.log(err.response)
-                        store.dispatch(startSnackBar("error", "Error al registrar un cliente"))
+                        store.dispatch(startSnackBar("error", "Error al registrar un cliente. Puede que el nick o email ya estén en uso."))
                         store.dispatch({type: REGISTER_ERROR})
 
                         reject()
@@ -146,7 +146,7 @@ export class UsersService {
     static registerToaster = (body) => {
         return new Promise((resolve, reject) => {
             store.dispatch({type: REGISTER_REQUEST});
-
+            console.log(body);
             axios.post('/api/toasters', body, config)
                 .then(response => {
                     store.dispatch({type: REGISTER_SUCCESS, payload: response.data})
@@ -155,8 +155,11 @@ export class UsersService {
                     resolve()
                 })
                 .catch(err => { 
-                    store.dispatch(startSnackBar("error", err.response.data.message))
-                
+                    store.dispatch(startSnackBar("error", "Error al registrar un tostador. Puede que el nick, nombre o email ya estén en uso."))
+                    console.log(err)
+                    console.log(err.response)
+                    console.log(err.response.data)
+                    console.log(err.response.data.message)
                     store.dispatch({type: REGISTER_ERROR})
                     reject()
                 })
