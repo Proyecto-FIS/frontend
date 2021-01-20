@@ -38,7 +38,7 @@ export class DeliveriesService {
     static newDelivery(delivery) {
         return new Promise((resolve, reject) => {
 
-            const userToken = localStorage.getItem("token");
+            const userToken = UsersService.getUserToken();
             if (!userToken) {
                 sendAuthError();
                 reject();
@@ -60,7 +60,7 @@ export class DeliveriesService {
     static editDelivery(delivery) {
         return new Promise((resolve, reject) => {
 
-            const userToken = localStorage.getItem("token");
+            const userToken = UsersService.getUserToken();
             if (!userToken) {
                 sendAuthError();
                 reject();

@@ -30,7 +30,7 @@ const LoggedMenu = (props) => {
   const logoutHandler = () => {
     store.dispatch(clearCart());
     UsersService.logOut();
-}
+  }
   return (
     <div>
       <Button variant="contained" color="primary" endIcon={<MenuIcon />} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
@@ -44,27 +44,31 @@ const LoggedMenu = (props) => {
         onClose={handleClose}
       >
         {props.account.isCustomer ?
-        <div>
-          <MenuItem component={Link} to={`/customers/${props.account._id}`} onClick={handleClose}>
-            <PersonIcon /> Mi perfil</MenuItem> 
-          <MenuItem component={Link} to="/billingprofiles" onClick={handleClose}>
-            <HomeWorkIcon/> Perfiles de entrega
+          <div>
+            <MenuItem component={Link} to={`/customers/${props.account._id}`} onClick={handleClose}>
+              <PersonIcon /> Mi perfil</MenuItem>
+            <MenuItem component={Link} to="/billingprofiles" onClick={handleClose}>
+              <HomeWorkIcon /> Perfiles de entrega
           </MenuItem>
-          <MenuItem component={Link} to="/purchase-history" onClick={handleClose}> 
-            <HistoryIcon/> Historial de compras
+            <MenuItem component={Link} to="/purchase-history" onClick={handleClose}>
+              <HistoryIcon /> Historial de compras
           </MenuItem>
-          <MenuItem component={Link} to="/deliveries" onClick={handleClose}> 
-            <DeliveryIcon/> Lista de entregas
+            <MenuItem component={Link} to="/deliveries" onClick={handleClose}>
+              <DeliveryIcon /> Lista de entregas
           </MenuItem>
-        </div>
-          
+          </div>
+
           :
           
-        <MenuItem component={Link} to={`/toasters/${props.account._id}`} onClick={handleClose}>
-          <PersonIcon /> Mi perfil</MenuItem>
-      }
+          <div>
+            <MenuItem component={Link} to={`/toasters/${props.account._id}`} onClick={handleClose}>
+              <PersonIcon /> Mi perfil</MenuItem>
+            <MenuItem component={Link} to="/deliveries" onClick={handleClose}>
+              <DeliveryIcon /> Lista de entregas </MenuItem>
+          </div>
+        }
 
-        <MenuItem onClick={logoutHandler}> 
+        <MenuItem onClick={logoutHandler}>
           <ExitToAppIcon /> Cerrar sesión
         </MenuItem>
       </Menu>
