@@ -86,8 +86,6 @@ export class ProductsService {
         return;
       }
       store.dispatch(creatingProduct());
-      console.log(newProduct);
-      console.log(userToken);
       axios
         .post("/api/products", { userToken: userToken, product: newProduct })
         .then((res) => {
@@ -111,7 +109,6 @@ export class ProductsService {
   }
 
   static updateProduct(updatedProduct) {
-    console.log(updatedProduct);
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
       if (!userToken) {
