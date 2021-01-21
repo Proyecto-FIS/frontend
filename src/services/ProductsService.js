@@ -50,7 +50,6 @@ export class ProductsService {
       });
   }
 
-  //TODO: requestProductByToasterId
   static uploadImage(formData) {
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
