@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom/extend-expect';
-import { cleanup, screen, fireEvent, within } from "@testing-library/react";
+import { cleanup, screen, fireEvent, within, waitFor } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../../setupTests";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import PurchaseSummary from "../../../routes/PurchaseSummary";  // PurchaseForm needs it to work
 import BillingProfileReducer from "../../../redux/reducers/BillingProfileReducer";
 import CartReducer from "../../../redux/reducers/CartReducer";
+import SnackbarReducer from "../../../redux/reducers/SnackbarReducer";
 import updateCart from "../../../redux/actions/Cart/updateCart";
 import bpLoad from "../../../redux/actions/BillingProfile/done";
 import PaymentService from "../../../services/PaymentService";
@@ -64,7 +65,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    store = createReduxStore({ BillingProfileReducer, CartReducer });
+    store = createReduxStore({ BillingProfileReducer, CartReducer, SnackbarReducer });
 });
 
 afterEach(cleanup);
@@ -92,7 +93,7 @@ it("selects billing profile", () => {
     store.dispatch(bpLoad(sampleBillingProfiles));
 
     renderComponent();
-    
+
     fireEvent.mouseDown(screen.getAllByRole("button")[0]);
     expect(screen.queryByText(bpText)).not.toBeNull();
     expect(screen.queryByText(bpText2)).not.toBeNull();
@@ -124,8 +125,43 @@ it("selects payment type", () => {
 
 it("form errors", () => {
 
-});
+    renderComponent();
 
-it("correct purchase", () => {
+    fireEvent.mouseDown(screen.getAllByRole("button")[2]);
 
+    waitFor(() => {
+        expect(store.getState().SnackbarReducer.severity).toBe("warning");
+        expect(store.getState().SnackbarReducer.message).toBe("El carrito está vacío");
+    });
+
+    store.dispatch(updateCart(sampleCart));
+    store.dispatch(bpLoad(sampleBillingProfiles));
+    fireEvent.mouseDown(screen.getAllByRole("button")[4]);
+
+    waitFor(() => {
+        expect(store.getState().SnackbarReducer.severity).toBe("warning");
+        expect(store.getState().SnackbarReducer.message).toBe("Hay campos sin rellenar");
+    });
+
+    fireEvent.mouseDown(screen.getAllByRole("button")[2]);
+    let listBox = within(screen.getAllByRole("listbox")[0]);
+    fireEvent.click(listBox.getByText("someName, someAddress, someCity, someProvince, someCountry"));
+
+    fireEvent.mouseDown(screen.getAllByRole("button")[4]);
+
+    waitFor(() => {
+        expect(store.getState().SnackbarReducer.severity).toBe("warning");
+        expect(store.getState().SnackbarReducer.message).toBe("Hay campos sin rellenar");
+    });
+
+    fireEvent.mouseDown(screen.getAllByRole("button")[3]);
+    listBox = within(screen.getAllByRole("listbox")[0]);
+    fireEvent.click(listBox.getByText("Pago normal (100 €)"));
+
+    fireEvent.mouseDown(screen.getAllByRole("button")[4]);
+
+    waitFor(() => {
+        expect(store.getState().SnackbarReducer.severity).toBe("error");
+        expect(store.getState().SnackbarReducer.message).toBe("La información de la tarjeta no es válida");
+    });
 });
