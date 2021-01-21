@@ -132,3 +132,12 @@ it("fire edit button", async () => {
     ).toMatchObject(productSample)
   );
 });
+
+it("has format form fields", () => {
+  renderComponent();
+
+  const fields = ["Tipo de molido", "Formato"];
+  fields.forEach((field, i) =>
+    expect(screen.queryAllByText(field).length).toBe(1)
+  );
+});

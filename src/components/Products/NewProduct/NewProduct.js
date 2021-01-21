@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import {
   Card,
   CardContent,
@@ -64,9 +64,9 @@ class NewProduct extends Component {
     }
     return state;
   }
-  
-  componentDidMount(){
-    if(this.props.productDetails?.product?.imageUrl){
+
+  componentDidMount() {
+    if (this.props.productDetails?.product?.imageUrl) {
       document.getElementById(
         "imageUrl"
       ).src = this.props.productDetails.product.imageUrl;
@@ -122,6 +122,7 @@ class NewProduct extends Component {
             <TextField
               className={this.props.classes.input}
               id={fields.format.name}
+              aria-label={fields.format.label}
               name="name"
               value={this.state.values.format[i].name}
               placeholder={fields.format.label}
@@ -132,6 +133,7 @@ class NewProduct extends Component {
               name="price"
               value={this.state.values.format[i].price}
               placeholder="Price"
+              aria-label="Precio formato"
               variant="standard"
               currencySymbol="€"
               outputFormat="number"
@@ -274,6 +276,7 @@ class NewProduct extends Component {
                         type="file"
                         id="coverInput"
                         name="cover"
+                        aria-label={fields.imageUrl.label}
                         onChange={this.handleImageChange}
                         hidden="hidden"
                       />
@@ -296,6 +299,7 @@ class NewProduct extends Component {
                         className={classes.input}
                         id={fields.name.name}
                         name={fields.name.label}
+                        aria-label={fields.name.label}
                         value={this.state.values.name}
                         placeholder={fields.name.label}
                         error={this.state.errors[fields.name.name] !== ""}
@@ -307,6 +311,7 @@ class NewProduct extends Component {
                         className={classes.input}
                         id={fields.description.name}
                         name={fields.description.label}
+                        aria-label="description"
                         value={this.state.values.description}
                         placeholder={fields.description.label}
                         error={
@@ -360,6 +365,7 @@ class NewProduct extends Component {
                       <Typography
                         className={classes.input}
                         variant="body1"
+                        aria-label="Formato"
                         color="textSecondary"
                       >
                         Selecciona los distintos envasados que va a tener el
