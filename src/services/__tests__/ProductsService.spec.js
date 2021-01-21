@@ -50,7 +50,6 @@ it("POST working", () => {
 
   return ProductsService.postProduct({}).then(() => {
     const state = store.getState();
-    console.log(state);
     expect(state.SnackbarReducer.severity).toBe("success");
     expect(state.SnackbarReducer.message).toBe(
       "Producto guardado correctamente"

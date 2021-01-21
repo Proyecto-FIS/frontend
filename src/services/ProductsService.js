@@ -86,8 +86,6 @@ export class ProductsService {
         return;
       }
       store.dispatch(creatingProduct());
-      console.log(newProduct);
-      console.log(userToken);
       axios
         .post("/api/products", { userToken: userToken, product: newProduct })
         .then((res) => {
@@ -98,10 +96,6 @@ export class ProductsService {
           resolve();
         })
         .catch((err) => {
-          console.log(err);
-          console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
           store.dispatch(
             startSnackBar("error", "No ha sido posible guardar el producto")
           );
@@ -111,7 +105,6 @@ export class ProductsService {
   }
 
   static updateProduct(updatedProduct) {
-    console.log(updatedProduct);
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
       if (!userToken) {
@@ -133,7 +126,6 @@ export class ProductsService {
           resolve();
         })
         .catch((err) => {
-          console.log(err);
           store.dispatch(
             startSnackBar("error", "No ha sido posible actualizar el producto")
           );

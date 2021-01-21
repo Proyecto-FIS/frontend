@@ -40,7 +40,6 @@ export class SubscriptionService {
     }
 
     static deleteSubscription(transaction_id) {
-
         return new Promise((resolve, reject) => {
             const userToken = UsersService.getUserToken();
             if (!userToken) {
@@ -55,10 +54,10 @@ export class SubscriptionService {
                     }
                 })
                 .then(response => {
-                    if (response.data.reason || response.data.reason === "Subscription already deactivated") {
-                        store.dispatch(startSnackBar("error", "La subscripción ya se encuentra desactivada"));
+                    if (response.data.hasOwnProperty("reason") && response.data.reason === "Subscription already deactivated") {
+                        store.dispatch(startSnackBar("error", "La suscripción ya se encuentra desactivada"));
                     } else {
-                        store.dispatch(startSnackBar("success", "Subscripción eliminada correctamente"));
+                        store.dispatch(startSnackBar("success", "Suscripción eliminada correctamente"));
                     }
 
                     resolve();
@@ -69,7 +68,6 @@ export class SubscriptionService {
                 });
         });
     }
-
 }
 
 export default SubscriptionService;
