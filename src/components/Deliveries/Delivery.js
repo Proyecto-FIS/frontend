@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom';
 import setDelivery from "../../redux/actions/Delivery/setDelivery";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import DeliveryService from "../../services/DeliveryService";
 
 const styles = makeStyles((theme) => ({
     root: {
@@ -50,6 +51,12 @@ class Delivery extends Component {
     edit() {
         this.props.setDelivery(this.props.delivery);
         this.props.history.push("/deliveries/add");
+    }
+
+    delete() {
+        DeliveryService.deleteDelivery(this.props.delivery)
+            .then(() => DeliveryService.requestDeliveries())
+            .catch(() => { });
     }
 
     render() {
@@ -94,7 +101,7 @@ class Delivery extends Component {
                         <IconButton aria-label="cancel">
                             <CancelIcon />
                         </IconButton>
-                        <IconButton aria-label="delete">
+                        <IconButton aria-label="Borrar" onClick={() => this.delete()}>
                             <DeleteIcon />
                         </IconButton>
                         <IconButton aria-label="Editar" onClick={() => this.edit()}>
