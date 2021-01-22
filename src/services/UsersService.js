@@ -164,7 +164,7 @@ export class UsersService {
               reject();
               return;
             }
-
+            
             store.dispatch({type: DELETE_CUSTOMER_REQUEST})
 
             axios.delete(`/api/customers/${accountId}`, { params: { userToken } })
