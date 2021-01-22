@@ -1,15 +1,20 @@
-import { type as SET_SUBSCRIPTION } from "../actions/Payment/setSubscription";
+import { type as SUBSCRIPTION_LOAD } from "../actions/Subscription/load";
+import { type as SUBSCRIPTION_DONE } from "../actions/Subscription/done";
 
 const defaultState = {
-    subscription: null
+    elements: null
 };
 
 const reducer = (state = defaultState, { type, payload }) => {
 
     switch (type) {
-        case SET_SUBSCRIPTION:
+        case SUBSCRIPTION_LOAD:
             return { 
-                subscription: payload.subscription
+                elements: null
+            };
+        case SUBSCRIPTION_DONE:
+            return {
+                elements: payload.elements
             };
         default:
             return state;

@@ -1,8 +1,10 @@
 import { Component } from "react";
-import { Card, CardContent, CardMedia, Accordion, AccordionSummary, AccordionDetails, Typography, Grid } from "@material-ui/core";
+import { Card, CardContent, CardMedia, Accordion, AccordionSummary, AccordionDetails, Typography, Grid, IconButton } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SubscriptionService from "../../services/SubscriptionService";
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const styles = (theme) => ({
     card: {
@@ -27,11 +29,21 @@ const styles = (theme) => ({
 
 class PurchaseEntry extends Component {
 
+
+    delete(transaction_id) {
+        SubscriptionService.deleteSubscription(transaction_id)
+            .then(() => this.props.history.push("/purchase-history"))
+            .catch(err => {
+                console.log("Ha habido un error" + err);
+            });
+    }
+
     render() {
         const { purchase, classes } = this.props;
 
         const timestamp = new Intl.DateTimeFormat('es', { dateStyle: 'full', timeStyle: 'long' }).format(purchase.timestamp);
         const operationType = purchase.operationType === "payment" ? "Pago" : "Suscripción";
+        const transaction_id = purchase.transaction_id;
 
         const productList = purchase.products.map((product, i) => (
             <Grid key={i} container margin={2} item xs={11} alignItems="center">
@@ -69,6 +81,17 @@ class PurchaseEntry extends Component {
                             </Grid>
                         </AccordionDetails>
                     </Accordion>
+                    {operationType === "Suscripción" &&
+                    <Grid container justify="flex-end" alignItems="flex-end">
+                            <Grid item>
+                                <Typography variant="subtitle2" color="textSecondary">Desactivar
+                                <IconButton aria-label="Borrar" onClick={() => this.delete(transaction_id)}>
+                                     <DeleteIcon />
+                                </IconButton>
+                                </Typography>
+                            </Grid>
+                    </Grid>
+                    }
                 </CardContent>
             </Card>
         );

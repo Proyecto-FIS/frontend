@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Select, MenuItem, InputLabel, FormControl, Grid, Typography } from "@material-ui/core";
+import { Button, Select, MenuItem, InputLabel, FormControl, Grid, Typography, List } from "@material-ui/core";
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { connect } from "react-redux";
@@ -12,6 +12,11 @@ import { CardElement } from "@stripe/react-stripe-js";
 import PaymentService from "../../services/PaymentService";
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router";
+import clearCart from "../../redux/actions/Cart/clearCart";
+import store from "../../redux/store";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ProductListItem from "../Common/ProductListItem";
+import Alert from '@material-ui/lab/Alert';
 
 const styles = (theme) => ({
     formControl: {
@@ -41,6 +46,9 @@ const styles = (theme) => ({
     titleForm: {
         paddingBottom: theme.spacing(4),
     },
+    circularSpace: {
+        marginRight: theme.spacing(3)
+      }
 });
 
 const CARD_ELEMENT_OPTIONS = {
@@ -70,6 +78,7 @@ class PurchaseForm extends Component {
             billingProfile: "",
             operationType: "",
             creditCardError: true,
+            loading: false,
         };
 
         BillingProfileService.requestProfiles();
@@ -94,6 +103,12 @@ class PurchaseForm extends Component {
     }
 
     pay(event) {
+
+        if(this.props.products.length === 0) {
+            this.props.startSnackBar("warning", "El carrito está vacío");
+            return;
+        }
+
         if (this.state.billingProfile === "" || this.state.operationType === "") {
             this.props.startSnackBar("warning", "Hay campos sin rellenar");
             return;
@@ -117,6 +132,7 @@ class PurchaseForm extends Component {
     }
 
     handlePurchase() {
+        store.dispatch(clearCart());
         this.props.history.push("/deliveries/");
     }
 
@@ -132,17 +148,30 @@ class PurchaseForm extends Component {
             products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
         
-        PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
-        .then(() => {
-            // TODO Redireccionar a donde toque
-            console.log("Payment REDIRECCIONAR a Delivery");
-            this.handlePurchase();
-        })
-        .catch(() => {
-            // TODO Gestionar errores
-            console.log("Ha habido un error");
+        this.setState({
+            loading: true
+        }, ()=> {
+            PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
+            .then(() => {
+                this.handlePurchase();
+                this.setState({loading: false});
+            })
+            .catch(err => {
+                console.log("Ha habido un error" + err);
+                this.setState({loading: false});
+            });
         });
     };
+
+    async createPaymentMethod(stripe, cardElement, billingProfile){
+        return await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+                email: billingProfile.email,
+            },
+        });
+    }
 
     handleSubmitSubscription(event) {
         
@@ -153,27 +182,41 @@ class PurchaseForm extends Component {
 
         let products = [];
         this.props.products.forEach((product, i) => {
-            products.push({ _id: product._id, quantity: product.quantity, format: product.format });
+            products.push({ _id: product._id, quantity: product.quantity, format: product.format, stripe_id: product.stripe_id });
         });
+
+        const cardElement = elements.getElement(CardElement);
         
-        SubscriptionService.postSubscription(billingProfile, products, stripe, elements.getElement(CardElement))
-            .then(() => {
-                // TODO Redireccionar a donde toque
-                console.log("Subscripcion: REDIRECCIONAR a Delivery");
-                this.handlePurchase(billingProfile, products);
-            })
-            .catch(() => {
-                // TODO Gestionar errores
-                console.log("Ha habido un error");
+        
+        this.setState({
+            loading: true
+        }, ()=> {
+            this.createPaymentMethod(stripe, cardElement, billingProfile)
+                .then(doc => {
+                    const payment_method_id = doc.paymentMethod.id;
+                    SubscriptionService.postSubscription(billingProfile, products, stripe, payment_method_id, cardElement)
+                    .then(() => {
+                        this.handlePurchase();
+                        this.setState({loading: false});
+                    })
+                    .catch(err => {
+                        console.log("Ha habido un error" + err);
+                        this.setState({loading: false});
+                    })
             });
-        };
+        });
+    };
+    
+    render() {
         
-        render() {
-
-        const { /*products,*/ totalPrice, billingProfiles, classes } = this.props;
-
-        const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
-            <MenuItem key={i} value={i}>
+        const { products, totalPrice, billingProfiles, classes } = this.props;
+        
+        const productList = products.map((product, i) => (
+            <ProductListItem key={i} product={product} />
+            ));
+            
+            const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
+                <MenuItem key={i} value={i}>
                 {`${profile.name}, ${profile.address}, ${profile.city}, ${profile.province}, ${profile.country}`}
             </MenuItem>
         ));
@@ -183,10 +226,12 @@ class PurchaseForm extends Component {
         return (
             <div className={classes.root}>
             <Paper className={classes.paper}>
-              
             <MainGrid container className={classes.form}>
                 <Grid item className={classes.titleForm}>
                     <Typography variant="h4" align="center">Resumen del pedido</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <List>{productList}</List>
                 </Grid>
                 <Grid item xs={8}>
                     <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
@@ -228,11 +273,26 @@ class PurchaseForm extends Component {
                         </CardContent>
                     </Card>
                 </Grid>
+                <Grid item className={classes.titleForm}>
+                    <Alert severity="info">Use la tarjeta de prueba: <em>Nº:</em> <strong>4242 4242 4242 4242</strong>   <em>MM/AA:</em> <strong>04/24</strong>  <em>CVC:</em><strong> 424</strong>  <em>CP:</em><strong> 42424</strong></Alert>
+                </Grid>
                 <Grid container item direction="row-reverse">
                     <Grid item>
+                    {this.state.loading ?
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="secondary"
+                            disabled
+                        >
+                            <CircularProgress className={classes.circularSpace} size="1.5rem" /> Pagar
+                        </Button>
+                        :
                         <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>
-                    </Grid>
+                    }</Grid>
                 </Grid>
+
             </MainGrid>
             </Paper>
     </div>
