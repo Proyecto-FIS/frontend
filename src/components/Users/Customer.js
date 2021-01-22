@@ -147,6 +147,22 @@ class Customer extends Component {
 
   }
 
+  componentDidUpdate() {
+    if(this.state.user) {
+      if(this.state.user.account._id !== this.props.match.params.accountId) {
+        this.setState({ user:null, accountId:null })
+        UsersService.getCustomerProfile(this.props.match.params.accountId).then((response) => {
+          
+          this.setState({
+          ...this.getDefaultState(response.data),
+          user: response.data,
+          accountId: response.data.account._id
+      })
+      })
+    }
+  }
+  }
+
   getDefaultState(user) {
     let state = {
         values: {},

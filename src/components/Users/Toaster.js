@@ -192,6 +192,26 @@ class Toaster extends Component {
     })
 
   }
+  componentDidUpdate() {
+    if(this.state.user) {
+      if(this.state.user.account._id !== this.props.match.params.accountId) {
+        this.setState({user:null, toasterProducts:null})
+        UsersService.getToasterProfile(this.props.match.params.accountId).then((response) => {
+          this.setState({
+          ...this.getDefaultState(response.data),
+          user: response.data,
+        })
+        })
+    
+        UsersService.getToasterProducts(this.props.match.params.accountId).then((response) => {
+          this.setState({
+          toasterProducts: response.data,
+        })
+        })
+      }
+    }
+  }
+
   getDefaultState(user) {
     let state = {
         values: {},
