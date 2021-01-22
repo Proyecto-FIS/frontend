@@ -9,15 +9,20 @@ import UsersService from "../../services/UsersService";
 
 import Validators from "../../utils/Validators";
 
+import Skeleton from '@material-ui/lab/Skeleton';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from "@material-ui/core/styles";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -106,7 +111,9 @@ class Customer extends Component {
     this.state = {
       user: null,
       accountId: this.props.match.params.accountId,
-      isSubmitting: false
+      isSubmitting: false,
+      isSubmittingDelete: false,
+      open: false
     }
   }
 
@@ -175,12 +182,16 @@ submitDone() {
     this.props.history.push(`/customers/${this.state.accountId}`);
 }
 deleteDone() {
+  this.setState({open:false, isSubmittingDelete:false});
+  UsersService.logOut();
   this.props.history.push("/");
+
 }
 
 handleDelete = () => {
   const accountId = this.state.accountId;
   const action = UsersService.deleteCustomer;
+  this.setState({ isSubmittingDelete: true });
           
         action(accountId)
           .then(() => this.deleteDone())
@@ -239,6 +250,13 @@ setField(field, e) {
     });
 }
 
+handleClickOpen = () => {
+  this.setState({open:true});
+};
+
+handleClose = () => {
+  this.setState({open:false});
+};
 
 
 render() {
@@ -247,7 +265,6 @@ render() {
 
   return (
     <Container component="main" maxWidth="md">
-      <CssBaseline />
 
       {this.state.user ?
         <div>
@@ -259,15 +276,16 @@ render() {
           </Typography>
 
           {loading && <CircularProgress /> }
-          <Grid container spacing={2}>
+          
 
-              <Grid item xs={4}>
+              <Grid item xs={6}>
 
               {(this.state.user.account._id === account._id) &&
                 
                 <form className={classes.form} onSubmit={this.submitForm} encType="multipart/form-data" noValidate>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
+                    <br/><br/>
                       <Typography component="h1" variant="h6">
                         Tu información
                       </Typography> <br/>
@@ -357,7 +375,7 @@ render() {
                       className={classes.submit}
                       disabled
                       >
-                      <CircularProgress size="1.5rem" className={classes.circularSpace} /> <EditIcon/> Editar perfil
+                      <CircularProgress size="1.5rem" className={classes.circularSpace} /> <EditIcon/> Actualizando perfil
                       </Button> <br/>
                     </div>
                     :
@@ -369,7 +387,7 @@ render() {
                       className={classes.submit}
                       disabled={!this.state.formCorrect}
                       >
-                      <EditIcon/> Editar perfil
+                      <EditIcon/> Actualizar perfil
                       </Button> <br/>
                     </div>
                   }
@@ -383,26 +401,52 @@ render() {
                     variant="contained"
                     color="secondary"
                     className={classes.delete}
-                    onClick={this.handleDelete}
+                    onClick={this.handleClickOpen}
                     >
                      <DeleteIcon/> Borrar cuenta
                     </Button>
+                    <Dialog
+                      open={this.state.open}
+                      onClose={this.handleClose}
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <DialogTitle id="alert-dialog-title">{"¿Seguro que quieres eliminar tu cuenta?"}</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          Al eliminar tu cuenta se borrarán todos tus datos asociados y no podrás recuperarlos.
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                          Cancelar
+                        </Button>
+                        <Button onClick={this.handleDelete} color="primary" disabled={this.state.isSubmittingDelete} autoFocus>
+                          {this.state.isSubmittingDelete && 
+                          <CircularProgress size="1.5rem" className={classes.circularSpace} />}
+                            Sí, eliminar mi cuenta
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </div>
                 </form>
               }
                 
               </Grid>
               
-            </Grid>
+            
             </div>
         </div>
 
         :
 
         <Container component="main" maxWidth="md">
-          <CssBaseline />
           <div className={classes.paper}>
-            <Avatar className={classes.avatar}/>
+            <Skeleton variant="circle" width={40} height={40} />
+
+            <Typography component="h1" variant="h5">
+              <Skeleton variant="text" width="20vh" />
+            </Typography>
           </div>
         </Container>
     }

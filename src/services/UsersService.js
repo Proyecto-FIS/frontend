@@ -130,7 +130,7 @@ export class UsersService {
                 } else {
                     store.dispatch({type: UPDATE_PROFILE_REQUEST})
                     
-                    return axios.put(`/api/customers/${accountId}`, formData, config_img)
+                    return axios.put(`/api/customers/${accountId}`, formData, { params: { userToken } }, config_img)
                     .then(response => {
                         store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
                         store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
@@ -167,7 +167,7 @@ export class UsersService {
 
             store.dispatch({type: DELETE_CUSTOMER_REQUEST})
 
-            axios.delete(`/api/customers/${accountId}`, { body: userToken, params:userToken })
+            axios.delete(`/api/customers/${accountId}`, { params: { userToken } })
             .then(() => {
                 store.dispatch({type: DELETE_CUSTOMER_SUCCESS})
                 store.dispatch(startSnackBar("success", "La cuenta ha sido eliminada correctamente"))
@@ -176,9 +176,6 @@ export class UsersService {
             })
             .catch(err => { 
                 console.log(err)
-                console.log(err.response)
-                console.log(err.response.data)
-                console.log(err.response.data.message)
                 store.dispatch(startSnackBar("error", err.response.data.message))
                 store.dispatch({type: DELETE_CUSTOMER_ERROR})
 
@@ -219,80 +216,93 @@ export class UsersService {
     }
 
     static getToasterProfile = (accountId) => {
-        store.dispatch({type: PROFILE_REQUEST});
+        return new Promise((resolve, reject) => {
+            store.dispatch({type: PROFILE_REQUEST});
 
-        axios.get(`/api/toasters/${accountId}`, config)
+            return axios.get(`/api/toasters/${accountId}`, config)
+                .then(response => {
+                    store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
+                    store.dispatch({type: TOASTER_PRODUCTS_REQUEST});
+
+                    resolve(response)
+                })
+
+                .catch(err => { 
+                    store.dispatch(startSnackBar("error", err))
+                
+                    store.dispatch({type: PROFILE_ERROR})
+                    reject()
+                })
+        })
+    }
+
+    static getToasterProducts = (accountId) => {
+        return new Promise((resolve, reject) => {
+        axios.get(`/api/products?providerId=${accountId}`, config)
             .then(response => {
-                store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
-                store.dispatch({type: TOASTER_PRODUCTS_REQUEST});
-
-                axios.get(`/api/products?providerId=${accountId}`, config)
-                    .then(response => {
-                        store.dispatch({type: TOASTER_PRODUCTS_SUCCESS, payload: response.data})
-                    })
-                    .catch(err => {
-                        store.dispatch(startSnackBar("error", err))
-            
-                        store.dispatch({type: TOASTER_PRODUCTS_ERROR})
-                    })
+                store.dispatch({type: TOASTER_PRODUCTS_SUCCESS, payload: response.data})
+                resolve(response);
             })
-            .catch(err => { 
+            .catch(err => {
                 store.dispatch(startSnackBar("error", err))
-            
-                store.dispatch({type: PROFILE_ERROR})
+    
+                store.dispatch({type: TOASTER_PRODUCTS_ERROR})
+                reject()
             })
+        })
     }
 
     static updateToasterProfile = (accountId, body) => {
+        
         return new Promise((resolve, reject) => {
+            
             const userToken = UsersService.getUserToken();
             if (!userToken) {
-            reject();
-            return;
+              reject();
+              return;
             }
 
-            //Adding userToken to body
-            var objBody = JSON.parse(body);
-            objBody.userToken = userToken;
-            var newBody = JSON.stringify(objBody);
+            var formData = new FormData()
+                for (const property in body) {
+                    formData.append(property, body[property]);
+                }
 
             axios.get(`/api/auth/${userToken}`, config)
-                .then(response => {
-                    const { account_id: loggedAccountId } = response.data;
+            .then(response => {
+                const { account_id: loggedAccountId } = response.data;
 
-                    if (accountId !== loggedAccountId) {
-                        store.dispatch(startSnackBar("error", "Operación no autorizada"))
-                        reject()
-                    } else {
-                        store.dispatch({type: UPDATE_PROFILE_REQUEST})
-
-                        axios.put(`/api/toasters/${accountId}`, newBody, config)
-                        .then(response => {
-                            store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
-                            store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
-
-                            resolve()
-                        })
-                        .catch(err => { 
-                            store.dispatch(startSnackBar("error", err.response.data.message))
-                            store.dispatch({type: UPDATE_PROFILE_ERROR})
-
-                            reject()
-                        })
-                        
-                    }
-                })
-                .catch(err => { 
-                    store.dispatch(startSnackBar("error", "Token inválido, vuelve a iniciar sesión"))
-                    store.dispatch({type: UPDATE_PROFILE_ERROR})
-                    store.dispatch({type: LOGOUT})
-
-                    reject()
+                if (accountId !== loggedAccountId) {
+                    store.dispatch(startSnackBar("error", "Operación no autorizada"))
+                    reject();
+                } else {
+                    store.dispatch({type: UPDATE_PROFILE_REQUEST})
                     
-                })
-        });
-          
+                    return axios.put(`/api/toasters/${accountId}`, formData, { params: { userToken } }, config_img)
+                    .then(response => {
+                        store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
+                        store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
+
+                        resolve();
+                    })
+                    .catch(err => { 
+                        store.dispatch(startSnackBar("error", err.response.data.message))
+                        store.dispatch({type: UPDATE_PROFILE_ERROR})
+
+                        reject();
+                    })  
+                }
+            })
+            .catch(err => { 
+                store.dispatch(startSnackBar("error", "Token inválido, vuelve a iniciar sesión"))
+                store.dispatch({type: UPDATE_PROFILE_ERROR})
+                store.dispatch({type: LOGOUT})
+
+                reject()
+            })
+
+        });     
     }
+
 
     static getAllToasters = () => {
         store.dispatch({type: REQUEST_TOASTERS});
