@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../redux/store";
-import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST, GET_TOASTERS_SUCCESS, REQUEST_TOASTERS, TOASTER_PRODUCTS_ERROR, TOASTER_PRODUCTS_SUCCESS, TOASTER_PRODUCTS_REQUEST } from "../redux/actions/types";
+import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGOUT, REGISTER_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_PROFILE_REQUEST, GET_TOASTERS_SUCCESS, REQUEST_TOASTERS, TOASTER_PRODUCTS_ERROR, TOASTER_PRODUCTS_SUCCESS, TOASTER_PRODUCTS_REQUEST, DELETE_CUSTOMER_REQUEST, DELETE_CUSTOMER_SUCCESS, DELETE_CUSTOMER_ERROR } from "../redux/actions/types";
 import startSnackBar from "../redux/actions/SnackBar/startSnackBar";
 
 const config = {
@@ -86,21 +86,27 @@ export class UsersService {
     };
 
     static getCustomerProfile = (accountId) => { 
-        store.dispatch({type: PROFILE_REQUEST});
-        axios.get(`/api/customers/${accountId}`, config)
-        
-            .then(response => {
-                store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
-
-            })
-            .catch(err => { 
-                store.dispatch(startSnackBar("error", err.message))
+        return new Promise((resolve, reject) => {
+            store.dispatch({type: PROFILE_REQUEST});
             
-                store.dispatch({type: PROFILE_ERROR})
+            return axios.get(`/api/customers/${accountId}`, config)
+            
+                .then(response => {
+                    store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
+                    resolve(response);
+
+                })
+                .catch(err => { 
+                    store.dispatch(startSnackBar("error", err.message))
+                    store.dispatch({type: PROFILE_ERROR})
+
+                    reject()
+                })
             })
     };
 
     static updateCustomerProfile = (accountId, body) => {
+        
         return new Promise((resolve, reject) => {
             
             const userToken = UsersService.getUserToken();
@@ -109,14 +115,12 @@ export class UsersService {
               return;
             }
 
-            // console.log(body)
-            // //Adding userToken to body
-            // var objBody = JSON.parse(body);
-            // objBody.userToken = userToken;
-            // var newBody = JSON.stringify(objBody);
+            var formData = new FormData()
+                for (const property in body) {
+                    formData.append(property, body[property]);
+                }
 
-
-            return axios.get(`/api/auth/${userToken}`, config)
+            axios.get(`/api/auth/${userToken}`, config)
             .then(response => {
                 const { account_id: loggedAccountId } = response.data;
 
@@ -125,9 +129,8 @@ export class UsersService {
                     reject();
                 } else {
                     store.dispatch({type: UPDATE_PROFILE_REQUEST})
-
-                    axios.put(`/api/customers/${accountId}`, 
-                            { userToken: userToken, body: body }, config)
+                    
+                    return axios.put(`/api/customers/${accountId}`, formData, config_img)
                     .then(response => {
                         store.dispatch({type: UPDATE_PROFILE_SUCCESS, payload: response.data})
                         store.dispatch(startSnackBar("success", "Perfil actualizado correctamente"))
@@ -148,6 +151,38 @@ export class UsersService {
                 store.dispatch({type: LOGOUT})
 
                 reject()
+            })
+
+        });     
+    }
+
+    static deleteCustomer = (accountId) => {
+        return new Promise((resolve, reject) => {
+            
+            const userToken = UsersService.getUserToken();
+            if (!userToken) {
+              reject();
+              return;
+            }
+
+            store.dispatch({type: DELETE_CUSTOMER_REQUEST})
+
+            axios.delete(`/api/customers/${accountId}`, { body: userToken, params:userToken })
+            .then(() => {
+                store.dispatch({type: DELETE_CUSTOMER_SUCCESS})
+                store.dispatch(startSnackBar("success", "La cuenta ha sido eliminada correctamente"))
+
+                resolve();
+            })
+            .catch(err => { 
+                console.log(err)
+                console.log(err.response)
+                console.log(err.response.data)
+                console.log(err.response.data.message)
+                store.dispatch(startSnackBar("error", err.response.data.message))
+                store.dispatch({type: DELETE_CUSTOMER_ERROR})
+
+                reject();
             })
 
         });     
