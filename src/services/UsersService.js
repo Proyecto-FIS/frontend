@@ -164,10 +164,10 @@ export class UsersService {
               reject();
               return;
             }
-
+            
             store.dispatch({type: DELETE_CUSTOMER_REQUEST})
 
-            axios.delete(`/api/customers/${accountId}`, { body: userToken, params:userToken })
+            axios.delete(`/api/customers/${accountId}`, { params: { userToken } })
             .then(() => {
                 store.dispatch({type: DELETE_CUSTOMER_SUCCESS})
                 store.dispatch(startSnackBar("success", "La cuenta ha sido eliminada correctamente"))
