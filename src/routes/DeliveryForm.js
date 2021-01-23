@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TextField, Button, Grid, Box } from "@material-ui/core";
+import { TextField, Button, Grid, Box, FormControl } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Validators from "../utils/Validators";
 import DeliveryService from "../services/DeliveryService";
@@ -7,6 +7,10 @@ import { withRouter } from "react-router-dom";
 import MainGrid from "../components/Common/MainGrid";
 import { connect } from "react-redux";
 import setDelivery from "../redux/actions/Delivery/setDelivery";
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+
 
 const fields1 = [
     {
@@ -87,14 +91,18 @@ const styles = (theme) => ({
     form: {
         display: "flex",
         flexDirection: "column"
-    }
+    },
+    margin: {
+        margin: theme.spacing(8),
+    },
 });
 
 const FormTextField = (props) => (
     <TextField label={props.label} error={props.error !== ""}
-        variant="outlined" value={props.value}
+        variant={props.variant} InputProps={props.InputProps} value={props.value}
         onChange={props.onChange} helperText={props.error} fullWidth={true} />
 );
+
 
 class DeliveryForm extends Component {
 
@@ -167,13 +175,15 @@ class DeliveryForm extends Component {
     }
 
     render() {
-        const { classes, delivery } = this.props;
+        const { classes, delivery, account } = this.props;
 
         const formFields1 = fields1.map((field, index) => (
             <Grid key={index} item xs={12} >
                 <FormTextField label={field.label} error={this.state.errors[field.name]}
                     value={this.state.values[field.name]}
-                    onChange={this.setField.bind(this, field)} spacing={6} />
+                    onChange={this.setField.bind(this, field)} spacing={6}
+                    variant="outlined"
+                />
             </Grid>
         ));
 
@@ -181,7 +191,10 @@ class DeliveryForm extends Component {
             <Grid key={index} item xs={12}>
                 <FormTextField label={field.label} error={this.state.errors[field.name]}
                     value={this.state.values[field.name]}
-                    onChange={this.setField.bind(this, field)} />
+                    onChange={this.setField.bind(this, field)}
+                    InputProps={{ readOnly: true, }}
+                    variant="filled"
+                />
             </Grid>
         ));
 
@@ -200,7 +213,28 @@ class DeliveryForm extends Component {
                         </Grid>
                         <Grid item xs={5} className={classes.form}>
                             <h3 className={classes.titleText}>ESTADO DE ENTREGA</h3>
+                            {account && !account.isCustomer ?
+                                <FormControl className={classes.margin}>
+                                    <InputLabel id="select-statusType">Seleccionar nuevo estado</InputLabel>
+                                    <Select
+                                        labelId="select-statusType"
+                                        value={this.state.values.statusType}
+                                        onChange={this.setField.bind(this, fields2[0])}
+                                    >
+                                        <MenuItem value="">
+                                            <em>Seleccionar nuevo estado</em>
+                                        </MenuItem>
+                                        <MenuItem value="INICIADO">INICIADO</MenuItem>
+                                        <MenuItem value="PREPARADO">PREPARADO</MenuItem>
+                                        <MenuItem value="EN CAMINO">EN CAMINO</MenuItem>
+                                        <MenuItem value="RETRASADO">RETRASADO</MenuItem>
+                                        <MenuItem value="CANCELADO">CANCELADO</MenuItem>
+                                        <MenuItem value="COMPLETADO">COMPLETADO</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                : null}
                             {formFields2}
+
                             <Grid container spacing={6} direction="row-reverse" justify="center">
                                 <Grid item>
                                     <Button variant="contained" color="primary" onClick={e => this.clearForm()}>Limpiar</Button>
@@ -213,7 +247,7 @@ class DeliveryForm extends Component {
                     </Grid>
 
                 </Box>
-            </MainGrid>
+            </MainGrid >
         );
     }
 }
@@ -224,7 +258,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => {
     return {
-        delivery: state.DeliveriesReducer.delivery
+        delivery: state.DeliveriesReducer.delivery,
+        account: state.AuthReducer.account
     };
 };
 
