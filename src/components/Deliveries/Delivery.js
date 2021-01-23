@@ -25,26 +25,26 @@ import DeliveryService from "../../services/DeliveryService";
 
 const styles = makeStyles((theme) => ({
     root: {
-      maxWidth: 345,
+        maxWidth: 345,
     },
     media: {
-      height: 0,
-      paddingTop: '56.25%', // 16:9
+        height: 0,
+        paddingTop: '56.25%', // 16:9
     },
     expand: {
-      transform: 'rotate(0deg)',
-      marginLeft: 'auto',
-      transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-      }),
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
     },
     expandOpen: {
-      transform: 'rotate(180deg)',
+        transform: 'rotate(180deg)',
     },
     avatar: {
-      backgroundColor: red,
+        backgroundColor: red,
     },
-  }));
+}));
 
 class Delivery extends Component {
 
@@ -61,54 +61,54 @@ class Delivery extends Component {
 
     render() {
 
-        const { classes, delivery: { _id, name, surname, address, city, comments, statusType, deliveryDate } } = this.props;
+        const { classes, delivery: { _id, name, surname, address, city, comments, statusType, deliveryDate, zipCode, country, phoneNumber, products } } = this.props;
 
         return (
-                <Card className={classes.card}>
-                    <CardHeader
-                        avatar={
-                            <Avatar aria-label="delivery" className={classes.avatar}  >
-                                D
+            <Card className={classes.card}>
+                <CardHeader
+                    avatar={
+                        <Avatar aria-label="delivery" className={classes.avatar}  >
+                            D
                             </Avatar>
-                        }
-                        action={
-                            <IconButton aria-label="settings">
-                                <MoreVertIcon />
-                            </IconButton>
-                        }
-                        title={statusType}
-                        subheader={`Entrega estimada: ${deliveryDate}`}
-                    />
-                    <CardMedia
-                        component="img"
-                        className={classes.cardMedia}
-                        image="https://www.monumentalmarkets.com/wp-content/uploads/Depositphotos_184271090_m-2015-300x200.jpg"
-                        title={name}
-                    />
-                    <CardContent className={classes.cardContent}>
-                        <Typography variant="h5">Resumen del pedido</Typography>
-                        <hr/>
-                        <Typography variant="body1">{comments}</Typography>
-                        <Typography variant="body1" component={Link} to={`/deliveries/${_id}`}>{_id}</Typography>
-                        <br/>
-                        <Typography variant="h5" spacing={4}>Dirección de entrega</Typography>
-                        <hr/>
-                        <Typography paragraph>{name} {surname}</Typography>
-                        <Typography paragraph>{address}</Typography>
-                        <Typography paragraph>{city}</Typography>     
-                    </CardContent>
-                    <CardActions disableSpacing>
-                        <IconButton aria-label="cancel">
-                            <CancelIcon />
+                    }
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVertIcon />
                         </IconButton>
-                        <IconButton aria-label="Borrar" onClick={() => this.delete()}>
-                            <DeleteIcon />
-                        </IconButton>
-                        <IconButton aria-label="Editar" onClick={() => this.edit()}>
-                            <UpdateIcon />
-                        </IconButton>
-                    </CardActions>
-                </Card>
+                    }
+                    title={statusType}
+                    subheader={`Entrega estimada: ${deliveryDate}`}
+                />
+                <CardMedia
+                    component="img"
+                    className={classes.cardMedia}
+                    image="https://www.monumentalmarkets.com/wp-content/uploads/Depositphotos_184271090_m-2015-300x200.jpg"
+                    title={name}
+                />
+                <CardContent className={classes.cardContent}>
+                    <Typography variant="h6">RESUMEN DEL PEDIDO</Typography>
+                    <hr />
+                    <Typography variant="body1">{comments}</Typography>
+                    <br />
+                    <Typography variant="h6" >DIRECCIÓN DE ENTREGA</Typography>
+                    <hr />
+                    <Typography variant="h6" align='center'>{name} {surname}</Typography>
+                    <Typography paragraph align='center'>{address}</Typography>
+                    <Typography paragraph align='center'>{zipCode}, {city} [{country}]</Typography>
+                    <Typography paragraph align='center' color='textSecondary'>TLF contacto: {phoneNumber}</Typography>
+                </CardContent>
+                <CardActions disableSpacing>
+                    <IconButton aria-label="cancel">
+                        <CancelIcon />
+                    </IconButton>
+                    <IconButton aria-label="Borrar" onClick={() => this.delete()}>
+                        <DeleteIcon />
+                    </IconButton>
+                    <IconButton aria-label="Editar" onClick={() => this.edit()}>
+                        <UpdateIcon />
+                    </IconButton>
+                </CardActions>
+            </Card>
         );
     }
 }
