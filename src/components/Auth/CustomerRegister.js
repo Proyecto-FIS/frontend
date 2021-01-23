@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import { Redirect, withRouter } from "react-router-dom";
 import { Link as RouterLink } from 'react-router-dom';
-
+import { connect } from "react-redux";
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
-
+import store from "../../redux/store";
 import UsersService from "../../services/UsersService";
+
+import Validators from "../../utils/Validators";
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,16 +16,57 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { withStyles } from "@material-ui/core/styles";
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+const fields = {
+  username: {
+    label: "Nombre de usuario",
+    name: "username",
+    validators: [Validators.StringLength(3, 100)],
+  },
+  address: {
+    label: "Dirección postal",
+    name: "address",
+    validators: [Validators.TestRegex(/[\s\S]*/)]
+  },
+  email: {
+    label: "Correo electrónico",
+    name: "email",
+    validators: [Validators.NotEmptyString(), 
+                Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
+  },
+  picture: {
+    label: "Imagen",
+    name: "picture",
+    validators: [Validators.TestRegex(/^$|[\S\s]$/)],
+  },
+  password: {
+    label: "Contraseña",
+    name: "password",
+    validators: [Validators.StringLength(6, 100)],
+  },
+  password2: {
+    label: "Repita la contraseña",
+    name: "password2",
+    validators: [Validators.StringLength(6, 100)],
+  }
+};
 
-const useStyles = makeStyles((theme) => ({
+
+const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     marginBottom: theme.spacing(6),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  paper2: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -33,6 +75,19 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  avatar2: {
+    margin: theme.spacing(1),
+    width: theme.spacing(8),
+    height: theme.spacing(8),
+  },
+  inputFile: {
+    width: "0.1px",
+    height: "0.1px",
+    opacity: 0,
+    overflow: "hidden",
+    position: "absolute",
+    zIndex: "-1",
+},
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -40,50 +95,100 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+  circularSpace: {
+    marginRight: theme.spacing(1)
+  }
+});
 
-const CustomerRegister = () => {
+class CustomerRegister extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.getDefaultState(),
+      isSubmitting: false,
+    };
+  }
 
-  const classes = useStyles();
+  getDefaultState() {
+    let state = {
+      values: {},
+      errors: {},
+      formCorrect: false,
+    };
 
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    address: '',
-    pictureUrl: '',
-    password: '',
-    password2: ''
-  });
+    Object.values(fields).forEach((field) => {
+      state.values[field.name] = "";
+      state.errors[field.name] = "";
+    });
 
-  const dispatch = useDispatch();
+    return state;
+  }
 
-  const accountLogin = useSelector(state => state.AuthReducer);
+  handleImageChange = (event) => {
+    const image = event.target.files[0];
 
-  const { loading, error, account } = accountLogin;
+    // eslint-disable-next-line
+    this.state.values["picture"] = image;
 
-  const { username, email, address, pictureUrl, password, password2 } = formData;
-
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-
-    if(password !== password2) {
-      dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
-    } else {
-      const body = JSON.stringify({  username, email, address, pictureUrl, password });
-      UsersService.registerCustomer(body);
-    }
+    let reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = function() {
+        let preview = document.getElementById('preview'),
+          image = document.createElement('img');
+          image.className = 'MuiAvatar-img';
+          image.src = reader.result;
+          preview.innerHTML = '';
+          preview.append(image);
+    };
+    
   };
+
+  submitDone() {
+    this.setState({ isSubmitting: false });
+
+    this.props.history.push("/");
+}
+
+  submitForm = (e) => {
+      e.preventDefault();
+
+      if(this.state.values["password"] !== this.state.values["password2"]) {
+        store.dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
+      } else {
+        this.setState({ isSubmitting: true });
+        const action = UsersService.registerCustomer;
+    
+        
+        action(this.state.values)
+          .then(() => this.submitDone())
+          .catch(() => this.submitDone());
+      }
+
+  }
+
+  setField(field, e) {
+    this.setState(prevState => {
+        let newState = prevState;
+        newState.values[field.name] = e.target.value;
+        newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
+        newState.formCorrect = Object.values(fields).reduce(
+                                                        (ac, v) => (newState.errors[v.name] !== "" 
+                                                        || newState.values["username"] === ""
+                                                        || newState.values["email"] === ""
+                                                        || newState.values["password"] === ""
+                                                        || newState.values["password2"] === ""
+                                                        ) ? false : ac, true);
+        return newState;
+    });
+}
+
+render() {
+  const { classes, account } = this.props;
 
   if(account) {
     return <Redirect to="/"/>
   }
 
-  if(error) {
-    dispatch(startSnackBar("error", error));
-  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -93,48 +198,70 @@ const CustomerRegister = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Registrarse como customer
+          Registrarse como cliente
         </Typography>
 
-        <form className={classes.form} onSubmit={onSubmit} noValidate>
-        {loading && <CircularProgress /> }
+        <form className={classes.form} onSubmit={this.submitForm} encType="multipart/form-data" noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                autoComplete="username"
-                name="username"
                 variant="outlined"
+                margin="normal"
                 required
                 fullWidth
-                value={username}
-                onChange={onChange}
-                id="username"
-                label="Nombre de usuario"
+                id={fields.username.name}
+                label={fields.username.label}
+                name={fields.username.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.username.name] !== ""}
+                helperText={this.state.errors[fields.username.name]}
+                onChange={this.setField.bind(this, fields.username)}
                 autoFocus
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="address"
-                name="address"
                 variant="outlined"
+                autoComplete={fields.address.name}
                 fullWidth
-                value={address}
-                onChange={onChange}
-                id="address"
-                label="Dirección postal"
+                id={fields.address.name}
+                label={fields.address.label}
+                name={fields.address.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.address.name] !== ""}
+                helperText={this.state.errors[fields.address.name]}
+                onChange={this.setField.bind(this, fields.address)}
               />
+            </Grid>
+            <Grid item xs={12} className={classes.paper2}>
+              <Avatar alt="avatar" src="" id="preview" className={classes.avatar2}/> 
+              <input
+                className={classes.inputFile}
+                accept="image/*"
+                id="picture"
+                name="picture"
+                type="file"
+                onChange={ this.handleImageChange }
+              />
+              <label htmlFor="picture">
+                <Button variant="contained" color="primary" component="span">
+                  Elegir imagen
+                </Button>
+              </label>
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="fname"
-                name="pictureUrl"
                 variant="outlined"
+                required
                 fullWidth
-                value={pictureUrl}
-                onChange={onChange}
-                id="pictureUrl"
-                label="URL de una imagen"
+                id={fields.email.name}
+                label={fields.email.label}
+                name={fields.email.label}
+                value={this.state.values.name}
+                error={this.state.errors[fields.email.name] !== ""}
+                helperText={this.state.errors[fields.email.name]}
+                onChange={this.setField.bind(this, fields.email)}
+                autoComplete={fields.email.name}
               />
             </Grid>
             <Grid item xs={12}>
@@ -142,53 +269,62 @@ const CustomerRegister = () => {
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                value={email}
-                onChange={onChange}
-                label="Correo electrónico"
-                type="email"
-                name="email"
-                autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Contraseña"
+                name={fields.password.label}
+                label={fields.password.label}
                 type="password"
-                id="password"
-                value={password}
-                onChange={onChange}
-                autoComplete="current-password"
+                id={fields.password.name}
+                value={this.state.values.name}
+                error={this.state.errors[fields.password.name] !== ""}
                 helperText="6 caracteres como mínimo"
+                onChange={this.setField.bind(this, fields.password)}
+                autoComplete="current-password"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <TextField
                 variant="outlined"
                 required
                 fullWidth
-                name="password2"
-                label="Repita la contraseña"
+                name={fields.password2.label}
+                label={fields.password2.label}
                 type="password"
-                id="password2"
-                value={password2}
-                onChange={onChange}
+                id={fields.password2.name}
+                value={this.state.values.name}
+                error={this.state.errors[fields.password2.name] !== ""}
+                onChange={this.setField.bind(this, fields.password2)}
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Registrarme
-          </Button>
+
+          {this.props.loading ? 
+              <div>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled
+                >
+                 <CircularProgress size="1.5rem" className={classes.circularSpace} />  Registrarme
+                </Button>
+            </div>
+            :
+            <div>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                disabled={!this.state.formCorrect}
+              >
+                Registrarme
+              </Button> 
+            </div>
+           }
+
+
           <Grid container justify="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/login" variant="body2">
@@ -200,6 +336,18 @@ const CustomerRegister = () => {
       </div>
     </Container>
   );
+
+}
+
+}
+
+const mapStateToProps = state => {
+  return {
+  account: state.AuthReducer.account,
+  loading: state.AuthReducer.loading,
+  accError: state.AuthReducer.error
+  }
 };
 
-export default CustomerRegister;
+
+export default withRouter(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(CustomerRegister)));

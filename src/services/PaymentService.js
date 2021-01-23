@@ -39,6 +39,7 @@ export class PaymentService {
                     }
                 }).catch(err =>{
                     store.dispatch(startSnackBar("error", '¡Ha habido un error! ' + err));
+                    reject();
                 });
         });
     }

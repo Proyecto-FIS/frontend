@@ -48,7 +48,7 @@ const styles = (theme) => ({
     },
     circularSpace: {
         marginRight: theme.spacing(3)
-      }
+    }
 });
 
 const CARD_ELEMENT_OPTIONS = {
@@ -104,7 +104,7 @@ class PurchaseForm extends Component {
 
     pay(event) {
 
-        if(this.props.products.length === 0) {
+        if (this.props.products.length === 0) {
             this.props.startSnackBar("warning", "El carrito está vacío");
             return;
         }
@@ -114,7 +114,7 @@ class PurchaseForm extends Component {
             return;
         }
 
-        if(this.state.creditCardError) {
+        if (this.state.creditCardError) {
             this.props.startSnackBar("error", "La información de la tarjeta no es válida");
             return;
         }
@@ -136,34 +136,33 @@ class PurchaseForm extends Component {
         this.props.history.push("/deliveries/");
     }
 
-    handleSubmitPay(event) {
+    handleSubmitPay() {
 
         const { stripe, elements } = this.props;
-        
+
         const billingProfileIndex = parseInt(this.state.billingProfile, 10);
         const billingProfile = this.props.billingProfiles[billingProfileIndex];
-        
+
         let products = [];
         this.props.products.forEach((product, i) => {
             products.push({ _id: product._id, quantity: product.quantity, format: product.format });
         });
-        
+
         this.setState({
             loading: true
-        }, ()=> {
+        }, () => {
             PaymentService.postPayment(billingProfile, products, stripe, elements.getElement(CardElement))
-            .then(() => {
-                this.handlePurchase();
-                this.setState({loading: false});
-            })
-            .catch(err => {
-                console.log("Ha habido un error" + err);
-                this.setState({loading: false});
-            });
+                .then(() => {
+                    this.handlePurchase();
+                    this.setState({ loading: false });
+                })
+                .catch(err => {
+                    this.setState({ loading: false });
+                });
         });
     };
 
-    async createPaymentMethod(stripe, cardElement, billingProfile){
+    async createPaymentMethod(stripe, cardElement, billingProfile) {
         return await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
@@ -174,7 +173,7 @@ class PurchaseForm extends Component {
     }
 
     handleSubmitSubscription(event) {
-        
+
         const { stripe, elements } = this.props;
 
         const billingProfileIndex = parseInt(this.state.billingProfile, 10);
@@ -186,37 +185,35 @@ class PurchaseForm extends Component {
         });
 
         const cardElement = elements.getElement(CardElement);
-        
-        
+
         this.setState({
             loading: true
-        }, ()=> {
+        }, () => {
             this.createPaymentMethod(stripe, cardElement, billingProfile)
                 .then(doc => {
                     const payment_method_id = doc.paymentMethod.id;
-                    SubscriptionService.postSubscription(billingProfile, products, stripe, payment_method_id, cardElement)
-                    .then(() => {
-                        this.handlePurchase();
-                        this.setState({loading: false});
-                    })
-                    .catch(err => {
-                        console.log("Ha habido un error" + err);
-                        this.setState({loading: false});
-                    })
-            });
+                    SubscriptionService.postSubscription(billingProfile, products, payment_method_id)
+                        .then(() => {
+                            this.handlePurchase();
+                            this.setState({ loading: false });
+                        })
+                        .catch(err => {
+                            this.setState({ loading: false });
+                        })
+                });
         });
     };
-    
+
     render() {
-        
+
         const { products, totalPrice, billingProfiles, classes } = this.props;
-        
+
         const productList = products.map((product, i) => (
             <ProductListItem key={i} product={product} />
-            ));
-            
-            const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
-                <MenuItem key={i} value={i}>
+        ));
+
+        const profileList = billingProfiles === null ? null : billingProfiles.map((profile, i) => (
+            <MenuItem key={i} value={i}>
                 {`${profile.name}, ${profile.address}, ${profile.city}, ${profile.province}, ${profile.country}`}
             </MenuItem>
         ));
@@ -225,77 +222,76 @@ class PurchaseForm extends Component {
 
         return (
             <div className={classes.root}>
-            <Paper className={classes.paper}>
-            <MainGrid container className={classes.form}>
-                <Grid item className={classes.titleForm}>
-                    <Typography variant="h4" align="center">Resumen del pedido</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                    <List>{productList}</List>
-                </Grid>
-                <Grid item xs={8}>
-                    <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
-                        <InputLabel id="billing-profile-label">Perfil de entrega</InputLabel>
-                        <Select
-                            className={classes.selectEmpty}
-                            labelId="billing-profile-label"
-                            value={this.state.billingProfile}
-                            onChange={ev => this.changeBillingProfile(ev)}>
-                            {defaultProfile}
-                            {profileList}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={8}>
-                    <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
-                        <InputLabel id="operation-type-label">Tipo de operación</InputLabel>
-                        <Select
-                            className={classes.selectEmpty}
-                            labelId="operation-type-label"
-                            value={this.state.operationType}
-                            onChange={ev => this.changeOperationType(ev)}>
-                            <MenuItem value={""}>
-                                <em>No seleccionado</em>
-                            </MenuItem>
-                            <MenuItem value={"payment"}>
-                                Pago normal ({totalPrice} €)
-                        </MenuItem>
-                            <MenuItem value={"subscription"}>
-                                Suscripción mensual ({totalPrice} €/mes)
-                        </MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs className={classes.cardpay}>
-                    <Card>
-                        <CardContent>
-                            <CardElement options={CARD_ELEMENT_OPTIONS} onChange={(ev) => this.checkCreditCard(ev)} />
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item className={classes.titleForm}>
-                    <Alert severity="info">Use la tarjeta de prueba: <em>Nº:</em> <strong>4242 4242 4242 4242</strong>   <em>MM/AA:</em> <strong>04/24</strong>  <em>CVC:</em><strong> 424</strong>  <em>CP:</em><strong> 42424</strong></Alert>
-                </Grid>
-                <Grid container item direction="row-reverse">
-                    <Grid item>
-                    {this.state.loading ?
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="secondary"
-                            disabled
-                        >
-                            <CircularProgress className={classes.circularSpace} size="1.5rem" /> Pagar
-                        </Button>
-                        :
-                        <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>
-                    }</Grid>
-                </Grid>
-
-            </MainGrid>
-            </Paper>
-    </div>
+                <Paper className={classes.paper}>
+                    <MainGrid container className={classes.form}>
+                        <Grid item className={classes.titleForm}>
+                            <Typography variant="h4" align="center">Resumen del pedido</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <List>{productList}</List>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
+                                <InputLabel id="billing-profile-label">Perfil de entrega</InputLabel>
+                                <Select
+                                    className={classes.selectEmpty}
+                                    labelId="billing-profile-label"
+                                    value={this.state.billingProfile}
+                                    onChange={ev => this.changeBillingProfile(ev)}>
+                                    {defaultProfile}
+                                    {profileList}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
+                                <InputLabel id="operation-type-label">Tipo de operación</InputLabel>
+                                <Select
+                                    className={classes.selectEmpty}
+                                    labelId="operation-type-label"
+                                    value={this.state.operationType}
+                                    onChange={ev => this.changeOperationType(ev)}>
+                                    <MenuItem value={""}>
+                                        <em>No seleccionado</em>
+                                    </MenuItem>
+                                    <MenuItem value={"payment"}>
+                                        Pago normal ({totalPrice} €)
+                                    </MenuItem>
+                                    <MenuItem value={"subscription"}>
+                                        Suscripción mensual ({totalPrice} €/mes)
+                                    </MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs className={classes.cardpay}>
+                            <Card>
+                                <CardContent>
+                                    <CardElement options={CARD_ELEMENT_OPTIONS} onChange={(ev) => this.checkCreditCard(ev)} />
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item className={classes.titleForm}>
+                            <Alert severity="info">Use la tarjeta de prueba: <em>Nº:</em> <strong>4242 4242 4242 4242</strong>   <em>MM/AA:</em> <strong>04/24</strong>  <em>CVC:</em><strong> 424</strong>  <em>CP:</em><strong> 42424</strong></Alert>
+                        </Grid>
+                        <Grid container item direction="row-reverse">
+                            <Grid item>
+                                {this.state.loading ?
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="secondary"
+                                        disabled
+                                    >
+                                        <CircularProgress className={classes.circularSpace} size="1.5rem" /> Pagar
+                                    </Button>
+                                    :
+                                    <Button variant="contained" color="secondary" onClick={ev => this.pay(ev)}>Pagar</Button>
+                                }</Grid>
+                        </Grid>
+                    </MainGrid>
+                </Paper>
+            </div>
         );
     }
 }
