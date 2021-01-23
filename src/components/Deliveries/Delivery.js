@@ -22,6 +22,12 @@ import setDelivery from "../../redux/actions/Delivery/setDelivery";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import DeliveryService from "../../services/DeliveryService";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import LocalCafeSharpIcon from '@material-ui/icons/LocalCafeSharp';
+
 
 const styles = makeStyles((theme) => ({
     root: {
@@ -42,7 +48,8 @@ const styles = makeStyles((theme) => ({
         transform: 'rotate(180deg)',
     },
     avatar: {
-        backgroundColor: red,
+        color: '#fff',
+        backgroundColor: red
     },
 }));
 
@@ -61,7 +68,7 @@ class Delivery extends Component {
 
     render() {
 
-        const { classes, delivery: { _id, name, surname, address, city, comments, statusType, deliveryDate, zipCode, country, phoneNumber, products } } = this.props;
+        const { classes, delivery: { paymentId, name, surname, address, city, comments, statusType, deliveryDate, zipCode, country, phoneNumber, products } } = this.props;
 
         return (
             <Card className={classes.card}>
@@ -86,8 +93,25 @@ class Delivery extends Component {
                     title={name}
                 />
                 <CardContent className={classes.cardContent}>
+                
                     <Typography variant="h6">RESUMEN DEL PEDIDO</Typography>
+                    <Typography variant="body1" component={Link} to={`/purchase-history/${paymentId}`}>[ historial de compra ]</Typography>
                     <hr />
+                    
+                    {products.map((product) => (
+                        <div>
+                            <List className={classes.root}>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <LocalCafeSharpIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary={product.name} secondary={`${product.unitPriceEuros * product.quantity}€ [${product.quantity} unid.]`} />
+                                </ListItem>
+                            </List>
+                        </div>
+                    ))}
                     <Typography variant="body1">{comments}</Typography>
                     <br />
                     <Typography variant="h6" >DIRECCIÓN DE ENTREGA</Typography>
