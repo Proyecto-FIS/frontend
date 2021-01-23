@@ -29,13 +29,10 @@ const styles = (theme) => ({
 
 class PurchaseEntry extends Component {
 
-
     delete(transaction_id) {
         SubscriptionService.deleteSubscription(transaction_id)
             .then(() => this.props.history.push("/purchase-history"))
-            .catch(err => {
-                console.log("Ha habido un error" + err);
-            });
+            .catch(() => { });
     }
 
     render() {
@@ -59,7 +56,7 @@ class PurchaseEntry extends Component {
                             </Typography>
                         </CardContent>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={2} >
                         <CardMedia className={classes.cardMedia} component="img" image={product.imageUrl} alt={product.name} />
                     </Grid>
                 </Card>
