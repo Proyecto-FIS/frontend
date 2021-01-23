@@ -108,7 +108,7 @@ class ProductDetails extends Component {
             imageUrl: this.props.product.imageUrl
         }
         let productList = this.props.productList
-        let found = productList.find(p => p._id === product._id)
+        let found = productList.find(p => p._id === product._id && p.format === product.format)
         if(found){
             found.quantity = found.quantity + 1   
         }else{
