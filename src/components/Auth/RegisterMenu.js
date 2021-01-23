@@ -29,8 +29,8 @@ export default function RegisterMenu() {
         onClose={handleClose}
       >
         
-        <MenuItem component={Link} to="/customer-register" onClick={handleClose}> Como customer</MenuItem>
-        <MenuItem component={Link} to="/toaster-register" onClick={handleClose}>Como toaster</MenuItem>
+        <MenuItem component={Link} to="/customer-register" onClick={handleClose}> Como cliente</MenuItem>
+        <MenuItem component={Link} to="/toaster-register" onClick={handleClose}>Como tostador</MenuItem>
       </Menu>
     </div>
   );
