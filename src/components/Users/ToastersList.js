@@ -29,7 +29,7 @@ class ToastersList extends React.Component {
                 <Container maxWidth="md">
                   <Typography component="h1" variant="h4" style={{ textAlign: 'center', marginTop: "24px",
                 marginBottom: "8px"}}>
-                    Toasters
+                    Tostadores
                   </Typography> 
                   <Divider variant="fullWidth" /><br/>
                 </Container>

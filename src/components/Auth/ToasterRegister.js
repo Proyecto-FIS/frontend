@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React, {Component } from 'react';
+import { Redirect, withRouter } from "react-router-dom";
 import { Link as RouterLink } from 'react-router-dom';
+import { connect } from "react-redux";
 
 import startSnackBar from "../../redux/actions/SnackBar/startSnackBar";
-
+import store from "../../redux/store";
 import UsersService from "../../services/UsersService";
 
 import Avatar from '@material-ui/core/Avatar';
@@ -15,8 +15,10 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { withStyles } from "@material-ui/core/styles";
+
+import Validators from "../../utils/Validators";
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -25,8 +27,75 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+  
+const fields = {
+  username: {
+    label: "Nombre de usuario",
+    fieldName: "username",
+    validators: [Validators.StringLength(3, 100)],
+  },
+  name: {
+    label: "Nombre profesional",
+    fieldName: "name",
+    validators: [Validators.StringLength(3, 100)],
+  },
+  description: {
+    label: "Descripción",
+    fieldName: "description",
+    validators: [Validators.StringLength(20, 100)],
+  },
+  phoneNumber: {
+    label: "Número de teléfono",
+    fieldName: "phoneNumber",
+    validators: [Validators.TestRegex(/^$|^[0-9]{9}$/)],
+  },
+  address: {
+    label: "Dirección postal",
+    fieldName: "address",
+    validators: [Validators.TestRegex(/[\s\S]*/)]
+  },
+  email: {
+    label: "Correo electrónico",
+    fieldName: "email",
+    validators: [Validators.NotEmptyString(), 
+                Validators.TestRegex(/^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/)],
+  },
+  instagramUrl: {
+    label: "Perfil de Instagram",
+    fieldName: "instagramUrl",
+    //eslint-disable-next-line
+    validators: [Validators.TestRegex(/^$|^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)],
+  },
+  facebookUrl: {
+    label: "Perfil de Facebook",
+    fieldName: "facebookUrl",
+    //eslint-disable-next-line
+    validators: [Validators.TestRegex(/^$|^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)],
+  },
+  twitterUrl: {
+    label: "Perfil de Twitter",
+    fieldName: "twitterUrl",
+    //eslint-disable-next-line
+    validators: [Validators.TestRegex(/^$|^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)],
+  },
+  picture: {
+    label: "Imagen",
+    fieldName: "picture",
+    validators: [Validators.TestRegex(/^$|[\S\s]$/)],
+  },
+  password: {
+    label: "Contraseña",
+    fieldName: "password",
+    validators: [Validators.StringLength(6, 100)],
+  },
+  password2: {
+    label: "Repita la contraseña",
+    fieldName: "password2",
+    validators: [Validators.StringLength(6, 100)],
+  }
+};
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     marginBottom: theme.spacing(6),
@@ -34,6 +103,26 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  paper2: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar2: {
+    margin: theme.spacing(1),
+    width: theme.spacing(8),
+    height: theme.spacing(8),
+  },
+  inputFile: {
+    width: "0.1px",
+    height: "0.1px",
+    opacity: 0,
+    overflow: "hidden",
+    position: "absolute",
+    zIndex: "-1",
+},
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
@@ -45,57 +134,100 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+  circularSpace: {
+    marginRight: theme.spacing(1)
+  }
+});
 
-const ToasterRegister = () => {
-  
-  const classes = useStyles();
+class ToasterRegister extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.getDefaultState(),
+      isSubmitting: false,
+    };
+  }
 
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    name: '',
-    description: '',
-    phoneNumber: '',
-    address: '',
-    instagramUrl: '',
-    facebookUrl: '',
-    twitterUrl: '',
-    pictureUrl: '',
-    password: '',
-    password2: ''
-  });
+  getDefaultState() {
+    let state = {
+      values: {},
+      errors: {},
+      formCorrect: false,
+    };
 
-  const dispatch = useDispatch();
+    Object.values(fields).forEach((field) => {
+      state.values[field.fieldName] = "";
+      state.errors[field.fieldName] = "";
+    });
 
-  const accountLogin = useSelector(state => state.AuthReducer);
+    return state;
+  }
 
-  const { loading, error, account } = accountLogin;
+  handleImageChange = (event) => {
+    const image = event.target.files[0];
 
-  const {username, email, name, description, phoneNumber, address,
-     instagramUrl, facebookUrl, twitterUrl, pictureUrl, password, password2} = formData;
+    // eslint-disable-next-line
+    this.state.values["picture"] = image;
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-
-    if(password !== password2) {
-      dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
-
-     } else {
-      const body = JSON.stringify({ username, email, name, description, phoneNumber, address, instagramUrl, facebookUrl, twitterUrl, pictureUrl, password});
-      UsersService.registerToaster(body);
-    }
+    let reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = function() {
+        let preview = document.getElementById('preview'),
+          image = document.createElement('img');
+          image.className = 'MuiAvatar-img';
+          image.src = reader.result;
+          preview.innerHTML = '';
+          preview.append(image);
+    };
+    
   };
+
+  submitDone() {
+    this.setState({ isSubmitting: false });
+
+    this.props.history.push("/toaster-register");
+}
+
+submitForm = (e) => {
+  e.preventDefault();
+
+  if(this.state.values["password"] !== this.state.values["password2"]) {
+    store.dispatch(startSnackBar("error", "Las contraseñas no coinciden"));
+  } else {
+    this.setState({ isSubmitting: true });
+    const action = UsersService.registerToaster;
+
+    action(this.state.values)
+      .then(() => this.submitDone())
+      .catch(() => this.submitDone());
+  }
+
+}
+
+setField(field, e) {
+  this.setState(prevState => {
+      let newState = prevState;
+      newState.values[field.fieldName] = e.target.value;
+      newState.errors[field.fieldName] = Validators.validate(field.validators, e.target.value);
+      newState.formCorrect = Object.values(fields).reduce(
+                                                      (ac, v) => (newState.errors[v.fieldName] !== "" 
+                                                      || newState.values["username"] === ""
+                                                      || newState.values["email"] === ""
+                                                      || newState.values["name"] === ""
+                                                      || newState.values["description"] === ""
+                                                      || newState.values["password"] === ""
+                                                      || newState.values["password2"] === ""
+                                                      ) ? false : ac, true);
+      return newState;
+  });
+}
+
+render() {
+
+  const { classes, account } = this.props;
 
   if(account) {
     return <Redirect to="/"/>
-  }
-
-  if(error) {
-    dispatch(startSnackBar("error", error));
   }
 
   return (
@@ -106,89 +238,111 @@ const ToasterRegister = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Registrarse como toaster
+          Registrarse como tostador
         </Typography>
 
-        <form className={classes.form} onSubmit={onSubmit} noValidate>
-        {loading && <CircularProgress /> }
+        <form className={classes.form} onSubmit={this.submitForm} encType="multipart/form-data">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                autoComplete="username"
-                name="username"
                 variant="outlined"
+                margin="normal"
                 required
                 fullWidth
-                value={username}
-                onChange={onChange}
-                id="username"
-                label="Nombre de usuario"
+                id={fields.username.fieldName}
+                label={fields.username.label}
+                name={fields.username.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.username.fieldName] !== ""}
+                helperText={this.state.errors[fields.username.fieldName]}
+                onChange={this.setField.bind(this, fields.username)}
                 autoFocus
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="name"
-                name="name"
                 variant="outlined"
                 required
                 fullWidth
-                value={name}
-                onChange={onChange}
-                id="name"
-                label="Nombre profesional"
+                id={fields.name.fieldName}
+                label={fields.name.label}
+                name={fields.name.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.name.fieldName] !== ""}
+                helperText={this.state.errors[fields.name.fieldName]}
+                onChange={this.setField.bind(this, fields.name)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="description"
-                name="description"
                 variant="outlined"
+                margin="normal"
                 required
+                fullWidth
                 multiline
                 rows={5}
+                id={fields.description.fieldName}
+                label={fields.description.label}
+                name={fields.description.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.description.fieldName] !== ""}
+                helperText={this.state.errors[fields.description.fieldName] ? this.state.errors[fields.description.fieldName] : "20 caracteres como mínimo"}
+                onChange={this.setField.bind(this, fields.description)}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.paper2}>
+              <Avatar alt="avatar" src="" id="preview" className={classes.avatar2}/> 
+              <input
+                className={classes.inputFile}
+                accept="image/*"
+                id="picture"
+                name="picture"
+                type="file"
+                onChange={ this.handleImageChange }
+              />
+              <label htmlFor="picture">
+                <Button variant="contained" color="primary" component="span">
+                  Elegir imagen
+                </Button>
+              </label>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
                 fullWidth
-                value={description}
-                onChange={onChange}
-                id="description"
-                label="Descripción"
-                helperText="20 palabras como mínimo"
+                id={fields.phoneNumber.fieldName}
+                label={fields.phoneNumber.label}
+                name={fields.phoneNumber.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.phoneNumber.fieldName] !== ""}
+                helperText={this.state.errors[fields.phoneNumber.fieldName] ? this.state.errors[fields.phoneNumber.fieldName] : "Formato: XXXXXXXXX"}
+                onChange={this.setField.bind(this, fields.phoneNumber)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="phoneNumber"
-                name="phoneNumber"
                 variant="outlined"
                 fullWidth
-                value={phoneNumber}
-                onChange={onChange}
-                id="phoneNumber"
-                label="Número de teléfono"
-                helperText="Formato: XXXXXXXXX"
+                id={fields.address.fieldName}
+                label={fields.address.label}
+                name={fields.address.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.address.fieldName] !== ""}
+                helperText={this.state.errors[fields.address.fieldName]}
+                onChange={this.setField.bind(this, fields.address)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="address"
-                name="address"
                 variant="outlined"
                 fullWidth
-                value={address}
-                onChange={onChange}
-                id="address"
-                label="Dirección postal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name="facebookUrl"
-                variant="outlined"
-                fullWidth
-                value={facebookUrl}
-                onChange={onChange}
-                id="facebookUrl"
-                label="Perfil de Facebook"
+                id={fields.facebookUrl.fieldName}
+                label={fields.facebookUrl.label}
+                name={fields.facebookUrl.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.facebookUrl.fieldName] !== ""}
+                helperText={this.state.errors[fields.facebookUrl.fieldName]}
+                onChange={this.setField.bind(this, fields.facebookUrl)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -199,14 +353,16 @@ const ToasterRegister = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                name="instagramUrl"
+            <TextField
                 variant="outlined"
                 fullWidth
-                value={instagramUrl}
-                onChange={onChange}
-                id="instagramUrl"
-                label="Perfil de Instagram"
+                id={fields.instagramUrl.fieldName}
+                label={fields.instagramUrl.label}
+                name={fields.instagramUrl.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.instagramUrl.fieldName] !== ""}
+                helperText={this.state.errors[fields.instagramUrl.fieldName]}
+                onChange={this.setField.bind(this, fields.instagramUrl)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -218,13 +374,15 @@ const ToasterRegister = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="twitterUrl"
                 variant="outlined"
                 fullWidth
-                value={twitterUrl}
-                onChange={onChange}
-                id="twitterUrl"
-                label="Perfil de Twitter"
+                id={fields.twitterUrl.fieldName}
+                label={fields.twitterUrl.label}
+                name={fields.twitterUrl.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.twitterUrl.fieldName] !== ""}
+                helperText={this.state.errors[fields.twitterUrl.fieldName]}
+                onChange={this.setField.bind(this, fields.twitterUrl)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -236,14 +394,17 @@ const ToasterRegister = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                autoComplete="fname"
-                name="pictureUrl"
                 variant="outlined"
+                required
                 fullWidth
-                value={pictureUrl}
-                onChange={onChange}
-                id="pictureUrl"
-                label="URL de una imagen"
+                id={fields.email.fieldName}
+                label={fields.email.label}
+                name={fields.email.label}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.email.fieldName] !== ""}
+                helperText={this.state.errors[fields.email.fieldName]}
+                onChange={this.setField.bind(this, fields.email)}
+                autoComplete={fields.email.fieldName}
               />
             </Grid>
             <Grid item xs={12}>
@@ -251,52 +412,59 @@ const ToasterRegister = () => {
                 variant="outlined"
                 required
                 fullWidth
-                value={email}
-                onChange={onChange}
-                id="email"
-                label="Correo electrónico"
-                name="email"
-                autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Contraseña"
+                name={fields.password.label}
+                label={fields.password.label}
                 type="password"
-                value={password}
-                onChange={onChange}
-                id="password"
+                id={fields.password.fieldName}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.password.fieldName] !== ""}
+                helperText={this.state.errors[fields.password.fieldName] ? this.state.errors[fields.password.fieldName] : "6 caracteres como mínimo"}
+                onChange={this.setField.bind(this, fields.password)}
                 autoComplete="current-password"
-                helperText="6 caracteres como mínimo"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <TextField
                 variant="outlined"
                 required
                 fullWidth
-                name="password2"
-                label="Repita la contraseña"
+                name={fields.password2.label}
+                label={fields.password2.label}
                 type="password"
-                id="password2"
-                value={password2}
-                onChange={onChange}
+                id={fields.password2.fieldName}
+                value={this.state.values.fieldName}
+                error={this.state.errors[fields.password2.fieldName] !== ""}
+                onChange={this.setField.bind(this, fields.password2)}
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Registrarme
-          </Button>
+          {this.props.loading ? 
+              <div>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled
+                >
+                 <CircularProgress size="1.5rem" className={classes.circularSpace} />  Registrarme
+                </Button>
+            </div>
+            :
+            <div>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                disabled={!this.state.formCorrect}
+              >
+                Registrarme
+              </Button> 
+            </div>
+          }
           <Grid container justify="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/login" variant="body2">
@@ -310,4 +478,15 @@ const ToasterRegister = () => {
   );
 }
 
-export default ToasterRegister;
+}
+
+const mapStateToProps = state => {
+  return {
+  account: state.AuthReducer.account,
+  loading: state.AuthReducer.loading,
+  accError: state.AuthReducer.error
+  }
+};
+
+
+export default withRouter(connect(mapStateToProps)(withStyles(styles, { withTheme: true })(ToasterRegister)));

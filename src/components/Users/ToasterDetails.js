@@ -1,18 +1,21 @@
+import React, { Component } from 'react';
+
 import { Card, Grid } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
+
+import { withStyles } from "@material-ui/core/styles";
 
 import { Link } from 'react-router-dom';
 
 import { Divider } from '@material-ui/core';
 import PhoneIcon from '@material-ui/icons/Phone';
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -40,54 +43,58 @@ const useStyles = makeStyles((theme) => ({
   CardActions: {
     margin: "auto",
   },
-}));
+});
 
-function ToasterDetails(props){
-  const classes = useStyles();
-  return (
-      <Grid item key={props.toaster._id} xs={12} sm={6} md={4}>
-        <Card className={classes.card}>
+class ToasterDetails extends Component {
 
-          <CardMedia
-            component="div"
-            className={classes.cardMedia}
-            
-            image={props.toaster.pictureUrl}
-            title={props.toaster.name}
-          />
+  render() {
+    const { classes, toaster } = this.props;
 
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              {props.toaster.name}
-            </Typography>
-            <Typography>
-              {props.toaster.description}
-            </Typography>
-          </CardContent>
+    return (
+        <Grid item key={toaster._id} xs={12} sm={6} md={4}>
+          <Card className={classes.card}>
 
-          <Divider variant="middle" />
+            <CardMedia
+              component="div"
+              className={classes.cardMedia}
+              
+              image={toaster.pictureUrl}
+              title={toaster.name}
+            />
 
-          <CardContent className={classes.cardContent}>
-            {props.toaster.phoneNumber &&
-                <Chip className={classes.chip} icon={<PhoneIcon />} label={props.toaster.phoneNumber} />
-            }
+            <CardContent className={classes.cardContent}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {toaster.name}
+              </Typography>
+              <Typography>
+                {toaster.description}
+              </Typography>
+            </CardContent>
 
-            {props.toaster.phoneNumber &&
-              <div>
-                Dirección: {props.toaster.address}
-              </div>
-            }
-          </CardContent>
+            <Divider variant="middle" />
 
-          <CardActions className={classes.CardActions}>
-            <Button size="large" color="primary" variant="contained" component={Link} 
-            to={`/toasters/${props.toaster.account._id}`}>
-              Ver
-            </Button>
-          </CardActions>
-      </Card>
-    </Grid>
-  );
+            <CardContent className={classes.cardContent}>
+              {toaster.phoneNumber &&
+                  <Chip className={classes.chip} icon={<PhoneIcon />} label={toaster.phoneNumber} />
+              }
+
+              {toaster.phoneNumber &&
+                <div>
+                  Dirección: {toaster.address}
+                </div>
+              }
+            </CardContent>
+
+            <CardActions className={classes.CardActions}>
+              <Button size="large" color="primary" variant="contained" component={Link} 
+              to={`/toasters/${toaster.account._id}`}>
+                Ver
+              </Button>
+            </CardActions>
+        </Card>
+      </Grid>
+    );
+}
 }
 
-export default ToasterDetails
+export default withStyles(styles, { withTheme: true })(ToasterDetails);
