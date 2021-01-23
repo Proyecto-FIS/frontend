@@ -35,9 +35,6 @@ class ProductListItem extends Component {
             </ListItem>
         );
     }
-
 }
 
-
-export default (withStyles(styles,{ withTheme: true })(ProductListItem));
-
+export default (withStyles(styles, { withTheme: true })(ProductListItem));
