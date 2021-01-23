@@ -192,6 +192,26 @@ class Toaster extends Component {
     })
 
   }
+  componentDidUpdate() {
+    if(this.state.user) {
+      if(this.state.user.account._id !== this.props.match.params.accountId) {
+        this.setState({user:null, toasterProducts:null})
+        UsersService.getToasterProfile(this.props.match.params.accountId).then((response) => {
+          this.setState({
+          ...this.getDefaultState(response.data),
+          user: response.data,
+        })
+        })
+    
+        UsersService.getToasterProducts(this.props.match.params.accountId).then((response) => {
+          this.setState({
+          toasterProducts: response.data,
+        })
+        })
+      }
+    }
+  }
+
   getDefaultState(user) {
     let state = {
         values: {},
@@ -223,7 +243,17 @@ class Toaster extends Component {
 }
 
 submitDone() {
-    this.setState({ isSubmitting: false });
+    this.setState({ isSubmitting: false});
+    this.setState(prevState => {
+      let newState = prevState;
+
+      newState.values.password = "";
+      newState.values.password2 = "";
+
+      return newState;
+
+    });
+
     this.props.history.push(`/toasters/${this.state.accountId}`);
 }
 
@@ -280,6 +310,16 @@ setField(field, e) {
         let newState = prevState;
         newState.values[field.fieldName] = e.target.value;
         newState.errors[field.fieldName] = Validators.validate(field.validators, e.target.value);
+
+        if(newState.values["password"] === "") {
+          newState.errors["password"] = "";
+        }
+        if(newState.errors["password"] === "" && newState.values["password2"] === "") {
+          newState.errors["password2"] = "";
+        }
+        if(newState.errors["password"] === "" && newState.errors["password"] === "" && (newState.values["password"] !== newState.values["password2"])) {
+          newState.errors["password2"] = "Las contraseñas no coinciden";
+        }
 
         newState.formCorrect = this.checkFormCorrect(newState);
         return newState;

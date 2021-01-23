@@ -147,6 +147,22 @@ class Customer extends Component {
 
   }
 
+  componentDidUpdate() {
+    if(this.state.user) {
+      if(this.state.user.account._id !== this.props.match.params.accountId) {
+        this.setState({ user:null, accountId:null })
+        UsersService.getCustomerProfile(this.props.match.params.accountId).then((response) => {
+          
+          this.setState({
+          ...this.getDefaultState(response.data),
+          user: response.data,
+          accountId: response.data.account._id
+      })
+      })
+    }
+  }
+  }
+
   getDefaultState(user) {
     let state = {
         values: {},
@@ -179,6 +195,17 @@ class Customer extends Component {
 
 submitDone() {
     this.setState({ isSubmitting: false });
+    
+    this.setState(prevState => {
+      let newState = prevState;
+
+      newState.values.password = "";
+      newState.values.password2 = "";
+
+      return newState;
+
+    });
+
     this.props.history.push(`/customers/${this.state.accountId}`);
 }
 deleteDone() {
@@ -244,6 +271,16 @@ setField(field, e) {
         let newState = prevState;
         newState.values[field.name] = e.target.value;
         newState.errors[field.name] = Validators.validate(field.validators, e.target.value);
+
+        if(newState.values["password"] === "") {
+          newState.errors["password"] = "";
+        }
+        if(newState.errors["password"] === "" && newState.values["password2"] === "") {
+          newState.errors["password2"] = "";
+        }
+        if(newState.errors["password"] === "" && newState.errors["password"] === "" && (newState.values["password"] !== newState.values["password2"])) {
+          newState.errors["password2"] = "Las contraseñas no coinciden";
+        }
 
         newState.formCorrect = this.checkFormCorrect(newState);
         return newState;
