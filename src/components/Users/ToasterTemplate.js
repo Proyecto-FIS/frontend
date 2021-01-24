@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import React, { Fragment, Component } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 
 import ProductSkeleton from "../Products/ProductSkeleton";
 import Product from "../Products/Product";
@@ -15,7 +14,9 @@ import PhoneIcon from "@material-ui/icons/Phone";
 
 import { Divider } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+import { Divider } from "@material-ui/core";
+
+const styles = (theme) => ({
   paper: {
     display: "flex",
     flexDirection: "column",
@@ -48,124 +49,141 @@ const useStyles = makeStyles((theme) => ({
   centerColumn: {
     marginTop: theme.spacing(0),
   },
-}));
+});
 
-const ToasterTemplate = (props) => {
-  const classes = useStyles();
-  let products = null;
-  var empty = null;
-
-  if (!props.toasterProducts) {
-    products = <div></div>;
-  } else {
-    if (props.toasterProducts.length === 0 && props.loading) {
-      products = <ProductSkeleton />;
-    } else if (props.toasterProducts.length === 0 && !props.loading) {
-      empty = <div>Actualmente no tenemos ningún producto disponible :(</div>;
-    } else {
-      products = props.toasterProducts.map((product) => (
-        <Product key={product._id} product={product} />
-      ));
-    }
+class ToasterTemplate extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      products: null,
+      empty: null,
+    };
   }
 
-  return (
-    <Fragment>
-      <div className={classes.paper}>
-        {/* TOASTER INFO */}
+  render() {
+    const { classes, user } = this.props;
 
-        <Typography component="h1" variant="h5" style={{ textAlign: "center" }}>
-          {props.user.name}
-        </Typography>
+    if (!this.props.toasterProducts) {
+      this.products = <div></div>;
+    } else {
+      if (this.props.toasterProducts.length === 0 && this.props.loading) {
+        this.products = <ProductSkeleton />;
+      } else if (
+        this.props.toasterProducts.length === 0 &&
+        !this.props.loading
+      ) {
+        this.empty = (
+          <div>Actualmente no tenemos ningún producto disponible :(</div>
+        );
+      } else {
+        this.products = this.props.toasterProducts.map((product) => (
+          <Product key={product._id} product={product} />
+        ));
+      }
+    }
 
-        {props.user.pictureUrl ? (
-          <Avatar
-            className={classes.avatar2}
-            alt={props.user.account.username}
-            src={props.user.pictureUrl}
-          />
-        ) : (
-          <Avatar className={classes.avatar} />
-        )}
-      </div>
-      <Divider variant="middle" />
-      <br />
-      {props.user.phoneNumber && (
-        <Chip
-          className={classes.chip}
-          icon={<PhoneIcon />}
-          label={props.user.phoneNumber}
-        />
-      )}
-      {props.user.instagramUrl && (
-        <a href={props.user.instagramUrl} style={{ textDecoration: "none" }}>
-          <Chip
-            className={classes.chip}
-            icon={<InstagramIcon />}
-            label="Instagram"
-            clickable
-          />
-        </a>
-      )}
-      {props.user.facebookUrl && (
-        <a href={props.user.facebookUrl} style={{ textDecoration: "none" }}>
-          <Chip
-            className={classes.chip}
-            icon={<FacebookIcon />}
-            label="Facebook"
-            clickable
-          />
-        </a>
-      )}
-      {props.user.twitterUrl && (
-        <a href={props.user.twitterUrl} style={{ textDecoration: "none" }}>
-          <Chip
-            className={classes.chip}
-            icon={<TwitterIcon />}
-            label="Twitter"
-            clickable
-          />
-        </a>
-      )}
-      <br /> <br />
-      <Typography component="h1" variant="h6">
-        Sobre nosotros
-      </Typography>
-      {props.user.description}
-      {props.user.address && (
-        <div>
-          <br />
-          <Typography component="h1" variant="h6">
-            Estamos en...
+    return (
+      <Fragment>
+        <div className={classes.paper}>
+          {/* TOASTER INFO */}
+
+          <Typography
+            component="h1"
+            variant="h5"
+            style={{ textAlign: "center" }}
+          >
+            {user.name}
           </Typography>
 
-          {props.user.address}
+          {user.pictureUrl ? (
+            <Avatar
+              className={classes.avatar2}
+              alt={user.account.username}
+              src={user.pictureUrl}
+            />
+          ) : (
+            <Avatar className={classes.avatar} />
+          )}
         </div>
-      )}
-      <br />
-      <Typography component="h1" variant="h6">
-        Nuestros productos
-      </Typography>
-      {empty}
-      {/* Catálogo de productos */}
-      <Grid container>
-        <Grid container item sm={2} xs={1}></Grid>
-        <Grid
-          container
-          item
-          sm={8}
-          xs={10}
-          spacing={2}
-          alignItems="stretch"
-          direction="row"
-          className={classes.centerColumn}
-        >
-          {products}
-        </Grid>
-        <Grid container item sm={2} xs={1}></Grid>
-      </Grid>
-    </Fragment>
-  );
-};
+        <Divider variant="middle" />
+        <br />
+        {user.phoneNumber && (
+          <Chip
+            className={classes.chip}
+            icon={<PhoneIcon />}
+            label={user.phoneNumber}
+          />
+        )}
+        {user.instagramUrl && (
+          <a href={user.instagramUrl} style={{ textDecoration: "none" }}>
+            <Chip
+              className={classes.chip}
+              icon={<InstagramIcon />}
+              label="Instagram"
+              clickable
+            />
+          </a>
+        )}
+        {user.facebookUrl && (
+          <a href={user.facebookUrl} style={{ textDecoration: "none" }}>
+            <Chip
+              className={classes.chip}
+              icon={<FacebookIcon />}
+              label="Facebook"
+              clickable
+            />
+          </a>
+        )}
+        {user.twitterUrl && (
+          <a href={user.twitterUrl} style={{ textDecoration: "none" }}>
+            <Chip
+              className={classes.chip}
+              icon={<TwitterIcon />}
+              label="Twitter"
+              clickable
+            />
+          </a>
+        )}
+        <br /> <br />
+        <Typography component="h1" variant="h6">
+          Sobre nosotros
+        </Typography>
+        {user.description}
+        {user.address && (
+          <div>
+            <br />
+            <Typography component="h1" variant="h6">
+              Estamos en...
+            </Typography>
 
-export default ToasterTemplate;
+            {user.address}
+          </div>
+        )}
+        <br /> <br />
+        <Typography component="h1" variant="h6">
+          Estamos en...
+        </Typography>
+        {this.empty}
+        {/* Catálogo de productos */}
+        <Grid container>
+          <Grid container item sm={2} xs={1}></Grid>
+          <Grid
+            container
+            item
+            sm={8}
+            xs={10}
+            spacing={2}
+            alignItems="stretch"
+            direction="row"
+            className={classes.centerColumn}
+          >
+            {this.products}
+          </Grid>
+          <Grid container item sm={2} xs={1}></Grid>
+        </Grid>
+      </Fragment>
+    );
+  }
+}
+
+export default withStyles(styles, { withTheme: true })(ToasterTemplate);
