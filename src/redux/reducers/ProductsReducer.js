@@ -99,8 +99,12 @@ const reducer = (state = defaultState, { type, payload }) => {
         },
       };
     case DELETED_PRODUCT:
+      let list = state.productList.filter((x) => {
+        return x._id !== payload;
+      });
       return {
         ...state,
+        productList: list,
         productDetails: {
           ...state.productDetails,
           loading: false,

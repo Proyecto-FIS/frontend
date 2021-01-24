@@ -147,7 +147,7 @@ export class ProductsService {
           params: { productId: productId },
         })
         .then(() => {
-          store.dispatch(deletedProduct());
+          store.dispatch(deletedProduct(productId));
           store.dispatch(
             startSnackBar("success", "Producto borrado con éxito")
           );

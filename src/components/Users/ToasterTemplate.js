@@ -5,14 +5,14 @@ import Typography from "@material-ui/core/Typography";
 import ProductSkeleton from "../Products/ProductSkeleton";
 import Product from "../Products/Product";
 
+import { withStyles } from "@material-ui/core/styles";
+
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import PhoneIcon from "@material-ui/icons/Phone";
-
-import { Divider } from "@material-ui/core";
 
 import { Divider } from "@material-ui/core";
 

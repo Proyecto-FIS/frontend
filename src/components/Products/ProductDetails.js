@@ -16,6 +16,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { connect } from "react-redux";
 import CartService from "../../services/CartService";
 import ProductsService from "../../services/ProductsService";
+import { Redirect } from "react-router-dom";
 import getProduct from "../../redux/actions/Products/getProduct";
 import { withRouter } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";

@@ -1,9 +1,9 @@
 export const type = "DELETED_PRODUCT";
 
-const action = (products) => {
+const action = (productId) => {
   return {
     type,
-    payload: products,
+    payload: productId,
   };
 };
 
