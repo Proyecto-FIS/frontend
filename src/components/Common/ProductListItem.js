@@ -18,11 +18,11 @@ class ProductListItem extends Component {
     render() {
         const { classes, product, handleDeleteItem } = this.props;
         return (
-            <ListItem button key={`item-${product._id}`}>
+            <ListItem button key={`item-${product._id}-${product.format}`}>
                 <ListItemAvatar>
                     <Avatar alt={product.name} src={product.imageUrl} />
                 </ListItemAvatar>
-                <ListItemText className={classes.listItem} primary={product.name} secondary={`${product.quantity} uds.`} />
+                <ListItemText className={classes.listItem} primary={product.name} secondary={`${product.quantity} uds x ${product.format}`} />
                 <ListItemText className={classes.listItem} primary={`${product.unitPriceEuros} €`} />
                 {handleDeleteItem ?
                     <ListItemSecondaryAction>
@@ -35,9 +35,6 @@ class ProductListItem extends Component {
             </ListItem>
         );
     }
-
 }
 
-
-export default (withStyles(styles,{ withTheme: true })(ProductListItem));
-
+export default (withStyles(styles, { withTheme: true })(ProductListItem));

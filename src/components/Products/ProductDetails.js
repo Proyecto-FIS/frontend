@@ -18,6 +18,9 @@ import CartService from "../../services/CartService";
 import ProductsService from "../../services/ProductsService";
 import getProduct from "../../redux/actions/Products/getProduct";
 import { withRouter } from "react-router-dom";
+import Avatar from '@material-ui/core/Avatar';
+import axios from 'axios';
+import { Link } from "react-router-dom";
 
 const styles = (theme) => ({
   div: {
@@ -34,29 +37,72 @@ const styles = (theme) => ({
     [theme.breakpoints.down("xs")]: {
       minWidth: 150,
     },
-  },
-  content: {
-    padding: 25,
-    width: "100%",
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 200,
-    maxWidth: 450,
-  },
-  button: {
-    float: "right",
-    margin: "0px 20px 0px 0px",
-  },
-  toasterButtons: {
-    margin: "50px 0px 0px 0px",
-    display: "flex",
-    float: "right",
-  },
+    card: {
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+    },
+    image:{
+        minWidth: 200,
+        [theme.breakpoints.down("xs")]: {
+            minWidth: 150,
+        },
+    },
+    content: {
+        padding: 25,
+        width: '100%'
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 200,
+        maxWidth: 450,
+    },
+    button: {
+        float: 'right',
+        margin: '0px 20px 0px 0px'
+    },
+    toasterButtons: {
+        margin: '50px 0px 0px 0px',
+        display: 'flex',
+        float: 'right'
+    },
+    toasterName: {
+        margin: '10px 0px 0px 15px',
+    }
 });
 
 class ProductDetails extends Component {
-  cartService = new CartService();
+    cartService = new CartService();
+
+    state = {
+        productList: [],
+        grindType: "",
+        formatType: {},
+        productPrice: 0.0,
+        toasterData: {},
+        redirect: null,
+    };
+    componentDidMount(){
+        const productList = this.props.productList
+        axios.get(`/api/toasters/${this.props.product.providerId}`)
+        .then((res)=>{
+            this.setState({
+                productList: productList,
+                toasterData: {
+                    name: res.data.name,
+                    pictureUrl: res.data.pictureUrl
+                }
+            })
+        })
+
+    }
+    componentDidUpdate(){
+        if(this.props.productDetails.deleted){
+            this.setState({
+                redirect: "/"
+            })
+        }
+    }
 
   state = {
     productList: [],
@@ -89,27 +135,26 @@ class ProductDetails extends Component {
       this.setState({
         [name]: event.target.value,
       });
+      
+    handleAddCart = (id) =>{
+        let product = {
+            _id: id,
+            quantity: 1,
+            format: this.state.formatType.name,
+            unitPriceEuros: this.state.productPrice,
+            name: this.props.product.name,
+            imageUrl: this.props.product.imageUrl
+        }
+        let productList = this.props.productList
+        let found = productList.find(p => p._id === product._id && p.format === product.format)
+        if(found){
+            found.quantity = found.quantity + 1   
+        }else{
+            productList.push(product)
+        }
+        this.cartService.updateCart(productList)
     }
   }
-
-  handleAddCart = (id) => {
-    let product = {
-      _id: id,
-      quantity: 1,
-      format: this.state.formatType.name,
-      unitPriceEuros: this.state.productPrice,
-      name: this.props.product.name,
-      imageUrl: this.props.product.imageUrl,
-    };
-    let productList = this.props.productList;
-    let found = productList.find((p) => p._id === product._id);
-    if (found) {
-      found.quantity = found.quantity + 1;
-    } else {
-      productList.push(product);
-    }
-    this.cartService.updateCart(productList);
-  };
 
   handleDeleteProduct = (id) => {
     ProductsService.deleteProduct(id);
@@ -120,75 +165,67 @@ class ProductDetails extends Component {
     this.props.getProduct(this.props.product);
     this.props.history.push("/products/new");
   }
-
-  render() {
-    const {
-      classes,
-      product: { _id, name, description, format, grind, imageUrl, providerId },
-      account,
-    } = this.props;
-    return (
-      <Card className={classes.card}>
-        <div className={classes.div}>
-          <CardMedia
-            component="img"
-            image={imageUrl}
-            title={name}
-            className={classes.image}
-          />
-          <CardContent className={classes.content}>
-            <Typography variant="h2" color="primary">
-              {name}
-            </Typography>
-            <Typography variant="h5" color="textSecondary">
-              {description}
-            </Typography>
-            <br />
-            <br />
-            <FormControl className={classes.formControl}>
-              <InputLabel>Tipo de molido</InputLabel>
-              <Select
-                native
-                value={this.state.grindType}
-                onChange={(e) => this.handleChange(e)}
-                inputProps={{
-                  name: "grindType",
-                  id: "grindType",
-                }}
-              >
-                <option aria-label="None" value="" />
-                {grind.map((grindType, index) => (
-                  <option key={index} value={grindType}>
-                    {grindType}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-            <br />
-            <FormControl className={classes.formControl}>
-              <InputLabel>Formato</InputLabel>
-              <Select
-                native
-                value={this.state.formatType._id}
-                onChange={(e) => this.handleChange(e)}
-                inputProps={{
-                  name: "formatType",
-                  id: "formatType",
-                }}
-              >
-                <option aria-label="None" value="" />
-                {format.map((formatType, index) => (
-                  <option key={index} value={formatType._id}>
-                    {formatType.name}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-            <br />
-            <br />
-            <Typography variant="h5" color="primary">
-              {this.state.productPrice} €
-            </Typography>
+    render() {
+        const {classes, product:{ _id, name, description, format, grind, imageUrl, providerId }, account} = this.props; 
+        if(this.state.redirect){
+            return <Redirect to={this.state.redirect} />
+        }
+        return (
+            <Card className={classes.card}>
+                <div className={classes.div}>
+                    <CardMedia component="img" image={imageUrl} title={name}className={classes.image}/>
+                    <CardContent className={classes.content}>
+                        <Typography variant="h2" color="primary">{name}</Typography>
+                        <Typography variant="h5" color="textSecondary">{description}</Typography>
+                        <br />
+                        { this.state.toasterData.name ? 
+                            <div className={classes.div}>
+                                <Avatar alt={this.state.toasterData.name} src={this.state.toasterData.pictureUrl} /><Typography className={classes.toasterName} variant="body1" color="primary" component={Link} to={`/toasters/${providerId}`}>{this.state.toasterData.name}</Typography>
+                            </div>
+                        : null}
+                        <br />
+                        <FormControl className={classes.formControl}>
+                            <InputLabel>Tipo de molido</InputLabel>
+                            <Select
+                                native
+                                value={this.state.grindType}
+                                onChange={e => this.handleChange(e)}
+                                inputProps={{
+                                    name: "grindType",
+                                    id: "grindType",
+                                }}
+                            >
+                                <option aria-label="None" value="" />
+                                {grind.map((grindType,index) => (
+                                <option key={index} value={grindType}>
+                                    {grindType}
+                                </option>
+                                ))}  
+                            </Select>
+                        </FormControl>
+                        <br />
+                        <FormControl className={classes.formControl}>
+                            <InputLabel>Formato</InputLabel>
+                            <Select
+                                native
+                                value={this.state.formatType._id}
+                                onChange={e => this.handleChange(e)}
+                                inputProps={{
+                                    name: "formatType",
+                                    id: "formatType",
+                                }}
+                            >
+                                <option aria-label="None" value="" />
+                                {format.map((formatType,index) => (
+                                <option key={index} value={formatType._id}>
+                                    {formatType.name}
+                                </option>
+                                ))}  
+                            </Select>
+                        </FormControl>
+                        <br />
+                        <br />
+                        <Typography variant="h5" color="primary">{this.state.productPrice} €</Typography>
 
             {account && account.isCustomer ? (
               <Button

@@ -123,7 +123,7 @@ class NavBar extends Component {
                     <DialogTitle id="simple-dialog-title">Carro de la compra</DialogTitle>
                     <List>
                         {this.props.quantity > 0 ? this.props.productList.map((product) => (
-                            <ProductListItem key={`product-${product._id}`} product={product} handleDeleteItem={handleDeleteItem}/>
+                            <ProductListItem key={`product-${product._id}-${product.format}`} product={product} handleDeleteItem={handleDeleteItem}/>
                         )) : <Typography variant="h5" color="textSecondary" className={classes.dialogText}>El carro está vacío</Typography>}
                         {this.props.quantity > 0 ? (
                         <Fragment>
@@ -144,7 +144,7 @@ class NavBar extends Component {
                     <Typography variant="h6" className={classes.auth}>
                         <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
                     </Typography>
-                    <Button style={{marginRight: '15px'}} variant="contained" color="primary" startIcon={<StorefrontIcon />} component={ Link } to="/toasters">Toasters</Button>
+                    <Button style={{marginRight: '15px'}} variant="contained" color="primary" startIcon={<StorefrontIcon />} component={ Link } to="/toasters">Tostadores</Button>
                     { account && account.isCustomer ? cart : null }
                     { account ? authLinks : guestLinks }
 

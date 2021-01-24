@@ -33,7 +33,7 @@ it("should render", () => {
     expect(res).not.toBeNull();
 });
 
-it("renders expected text", () => {
+it("renders complete payment", () => {
     renderComponent(sampleData);
 
     expect(screen.queryByText("Tipo de operación: Pago")).not.toBeNull();
@@ -48,6 +48,8 @@ it("renders expected text", () => {
     expect(screen.queryByText("Lista de productos (2)")).not.toBeNull();
     expect(screen.queryByAltText("product1")).not.toBeNull();
     expect(screen.queryByAltText("product2")).not.toBeNull();
+
+    expect(screen.queryByLabelText("Borrar")).toBeNull();
 });
 
 it("renders subscriptions", () => {
@@ -56,4 +58,6 @@ it("renders subscriptions", () => {
     renderComponent(subscriptionData);
 
     expect(screen.queryByText("Tipo de operación: Suscripción")).not.toBeNull();
+
+    expect(screen.queryByLabelText("Borrar")).not.toBeNull();
 });

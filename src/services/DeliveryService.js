@@ -36,6 +36,7 @@ export class DeliveriesService {
     }
 
     static newDelivery(delivery) {
+
         return new Promise((resolve, reject) => {
 
             const userToken = UsersService.getUserToken();
@@ -58,6 +59,7 @@ export class DeliveriesService {
     }
 
     static editDelivery(delivery) {
+
         return new Promise((resolve, reject) => {
 
             const userToken = UsersService.getUserToken();
@@ -74,6 +76,29 @@ export class DeliveriesService {
                 })
                 .catch(err => {
                     store.dispatch(startSnackBar("error", "No ha sido posible actualizar la entrega"));
+                    reject();
+                });
+        });
+    }
+
+
+    static deleteDelivery(delivery) {
+
+        return new Promise((resolve, reject) => {
+
+            const userToken = UsersService.getUserToken();
+            if (!userToken) {
+                reject();
+                return;
+            }
+
+            axios.delete("/api/deliveries", { params: { userToken, deliveryId: delivery._id } })
+                .then(response => {
+                    store.dispatch(startSnackBar("success", "Entrega eliminada correctamente"));
+                    resolve();
+                })
+                .catch(err => {
+                    store.dispatch(startSnackBar("error", "No ha sido posible eliminar la entrega"));
                     reject();
                 });
         });
