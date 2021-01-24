@@ -4,7 +4,7 @@ import { Grid } from "@material-ui/core";
 import ProductsService from "../services/ProductsService";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import ProductDetailSkeleton from "../components/Products/ProductDetailSkeleton";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 const styles = (theme) => ({
   card: {
@@ -13,7 +13,7 @@ const styles = (theme) => ({
     height: "70vh",
   },
   cardMedia: {
-    paddingTop: "100%", // Image aspect ratio
+    paddingTop: "100%", //Image aspect ratio
   },
   cardContent: {
     flexDirection: "column",
@@ -34,7 +34,7 @@ class Product extends Component {
         <Grid container item sm={2} xs={1}></Grid>
         <Grid item sm={8} xs={10}>
           {loading === undefined || loading === true ? (
-            <ProductDetailSkeleton />
+            <Skeleton aria-label="skeleton" variant="rect" height={"70vh"} />
           ) : (
             <ProductDetails product={product} />
           )}

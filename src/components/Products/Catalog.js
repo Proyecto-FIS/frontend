@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import ProductsService from "../../services/ProductsService";
-import { connect } from "react-redux";
-import ProductSkeleton from "./ProductSkeleton";
 import Product from "./Product";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import AddProduct from "./AddProduct";
+import { connect } from "react-redux";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 const styles = (theme) => ({
   centerColumn: {
@@ -22,7 +22,7 @@ export class Catalog extends Component {
     const { classes, products, loading, account } = this.props;
 
     let productsList = loading ? (
-      <ProductSkeleton />
+      <Skeleton aria-label="skeleton" variant="rect" height={"70vh"} />
     ) : (
       products.map((product) => <Product key={product._id} product={product} />)
     );

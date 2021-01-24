@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect';
+import "@testing-library/jest-dom/extend-expect";
 import { cleanup, screen } from "@testing-library/react";
 import { createReduxStore, renderRedux } from "../../setupTests";
 import PurchaseHistoryReducer from "../../redux/reducers/PurchaseHistoryReducer";
@@ -8,66 +8,71 @@ import PurchaseHistory from "../PurchaseHistory";
 import { MemoryRouter } from "react-router-dom";
 
 let store = null;
-const renderComponent = () => renderRedux(<MemoryRouter><PurchaseHistory /></MemoryRouter>, store);
+const renderComponent = () =>
+  renderRedux(
+    <MemoryRouter>
+      <PurchaseHistory />
+    </MemoryRouter>,
+    store
+  );
 
 beforeEach(() => {
-    store = createReduxStore({ PurchaseHistoryReducer });
+  store = createReduxStore({ PurchaseHistoryReducer });
 });
 
 afterEach(cleanup);
 
 it("should render", () => {
-    const res = renderComponent();
-    expect(res).not.toBeNull();
+  const res = renderComponent();
+  expect(res).not.toBeNull();
 });
 
 it("shows skeleton", () => {
-    renderComponent();
+  renderComponent();
 
-    store.dispatch(startLoader());
+  store.dispatch(startLoader());
 
-    const skeleton = screen.queryAllByLabelText("skeleton");
-    expect(skeleton).not.toBeNull();
-    expect(skeleton.length).toBe(4);
+  const skeleton = screen.queryAllByLabelText("skeleton");
+  expect(skeleton).not.toBeNull();
+  expect(skeleton.length).toBe(4);
 });
 
 it("renders with no purchases", () => {
-    renderComponent();
+  renderComponent();
 
-    store.dispatch(startLoader());
-    store.dispatch(finishLoader());
+  store.dispatch(startLoader());
+  store.dispatch(finishLoader());
 
-    expect(screen.queryAllByLabelText("skeleton").length).toBe(0);
-    expect(screen.queryAllByLabelText("purchase").length).toBe(0);
+  expect(screen.queryAllByLabelText("skeleton").length).toBe(0);
+  expect(screen.queryAllByLabelText("purchase").length).toBe(0);
 });
 
 it("shows purchases", () => {
-
-    const sampleData = [
+  const sampleData = [
+    {
+      userID: "userID",
+      operationType: "payment",
+      products: [
         {
-            userID: "userID",
-            operationType: "payment",
-            products: [
-                {
-                    _id: "1",
-                    quantity: "20",
-                    unitPriceEuros: "30",
-                },
-                {
-                    _id: "2",
-                    quantity: "20",
-                    unitPriceEuros: "30",
-                }
-            ]
-        }
-    ];
+          _id: "1",
+          quantity: "20",
+          unitPriceEuros: "30",
+        },
+        {
+          _id: "2",
+          quantity: "20",
+          unitPriceEuros: "30",
+        },
+      ],
+    },
+  ];
 
-    renderComponent();
+  renderComponent();
 
-    store.dispatch(startLoader());
-    store.dispatch(finishLoader(sampleData));
+  store.dispatch(startLoader());
+  store.dispatch(finishLoader(sampleData));
 
-    expect(screen.queryAllByLabelText("skeleton").length).toBe(0);
-    expect(screen.queryAllByLabelText("purchase").length).toBe(1);
-    expect(screen.queryAllByLabelText("purchaseProduct").length).toBe(2);
+  expect(screen.queryAllByLabelText("skeleton").length).toBe(0);
+  expect(screen.queryAllByLabelText("purchase").length).toBe(1);
+  expect(screen.queryAllByLabelText("purchaseProduct").length).toBe(2);
 });

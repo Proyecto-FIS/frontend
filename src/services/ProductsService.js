@@ -50,7 +50,6 @@ export class ProductsService {
       });
   }
 
-  //TODO: requestProductByToasterId
   static uploadImage(formData) {
     return new Promise((resolve, reject) => {
       const userToken = UsersService.getUserToken();
@@ -148,7 +147,7 @@ export class ProductsService {
           params: { productId: productId },
         })
         .then(() => {
-          store.dispatch(deletedProduct());
+          store.dispatch(deletedProduct(productId));
           store.dispatch(
             startSnackBar("success", "Producto borrado con éxito")
           );
