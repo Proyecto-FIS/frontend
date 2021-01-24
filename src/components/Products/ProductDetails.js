@@ -19,6 +19,9 @@ import ProductsService from "../../services/ProductsService"
 import { Redirect } from "react-router-dom";
 import getProduct from "../../redux/actions/Products/getProduct";
 import { withRouter } from "react-router-dom";
+import Avatar from '@material-ui/core/Avatar';
+import axios from 'axios';
+import { Link } from "react-router-dom";
 
 const styles = (theme) => ({
     div: {
@@ -53,6 +56,9 @@ const styles = (theme) => ({
         margin: '50px 0px 0px 0px',
         display: 'flex',
         float: 'right'
+    },
+    toasterName: {
+        margin: '10px 0px 0px 15px',
     }
 });
 
@@ -64,13 +70,22 @@ class ProductDetails extends Component {
         grindType: "",
         formatType: {},
         productPrice: 0.0,
+        toasterData: {},
         redirect: null,
     };
     componentDidMount(){
         const productList = this.props.productList
-        this.setState({
-            productList: productList
+        axios.get(`/api/toasters/${this.props.product.providerId}`)
+        .then((res)=>{
+            this.setState({
+                productList: productList,
+                toasterData: {
+                    name: res.data.name,
+                    pictureUrl: res.data.pictureUrl
+                }
+            })
         })
+
     }
     componentDidUpdate(){
         if(this.props.productDetails.deleted){
@@ -140,6 +155,11 @@ class ProductDetails extends Component {
                         <Typography variant="h2" color="primary">{name}</Typography>
                         <Typography variant="h5" color="textSecondary">{description}</Typography>
                         <br />
+                        { this.state.toasterData.name ? 
+                            <div className={classes.div}>
+                                <Avatar alt={this.state.toasterData.name} src={this.state.toasterData.pictureUrl} /><Typography className={classes.toasterName} variant="body1" color="primary" component={Link} to={`/toasters/${providerId}`}>{this.state.toasterData.name}</Typography>
+                            </div>
+                        : null}
                         <br />
                         <FormControl className={classes.formControl}>
                             <InputLabel>Tipo de molido</InputLabel>
