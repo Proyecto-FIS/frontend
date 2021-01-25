@@ -1,6 +1,5 @@
 import {AppBar, Toolbar, Typography, Button} from "@material-ui/core";
 
-import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 
@@ -24,6 +23,9 @@ import Divider from '@material-ui/core/Divider';
 import PaymentIcon from '@material-ui/icons/Payment';
 import CartService from "../services/CartService";
 import ProductListItem from "./Common/ProductListItem";
+import Icon from '@material-ui/core/Icon';
+import Logo from '../utils/coffaineLogo.svg'
+import Name from '../utils/coffaineName.png'
 
 const styles = (theme) => ({
     root: {
@@ -47,6 +49,16 @@ const styles = (theme) => ({
     },
     listItem: {
         width: "50%"
+    },
+    imageIcon: {
+        height: '100%'
+      },
+    iconRoot: {
+       textAlign: 'center'
+    },
+    coffaineName: {
+        margin: "5px 0px 0px 0px",
+        width: '90px'
     }
 });
 
@@ -139,10 +151,13 @@ class NavBar extends Component {
         return (
             <AppBar position="static" className={classes.root}>
                 <Toolbar>
-                    <LocalCafeIcon color="inherit" className={classes.navButton}/>
-                    
+                    <Icon component={Link} to={'/'} classes={{root: classes.iconRoot}}>
+                        <img alt="Coffaine" className={classes.imageIcon} src={Logo}/>
+                    </Icon>
+                    <Link to="/">
+                        <img alt="Coffaine" className={classes.coffaineName} src={Name}/>
+                    </Link>
                     <Typography variant="h6" className={classes.auth}>
-                        <Link to="/" style={{ textDecoration: 'none' }}> Coffaine </Link>
                     </Typography>
                     <Button style={{marginRight: '15px'}} variant="contained" color="primary" startIcon={<StorefrontIcon />} component={ Link } to="/toasters">Tostadores</Button>
                     { account && account.isCustomer ? cart : null }
