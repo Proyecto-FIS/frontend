@@ -68,7 +68,7 @@ class Delivery extends Component {
 
     render() {
 
-        const { classes, delivery: { paymentId, name, surname, address, city, comments, statusType, deliveryDate, zipCode, country, phoneNumber, products } } = this.props;
+        const { classes, delivery: { name, surname, address, city, statusType, deliveryDate, zipCode, country, phoneNumber, products } } = this.props;
 
         return (
             <Card className={classes.card}>
@@ -95,7 +95,7 @@ class Delivery extends Component {
                 <CardContent className={classes.cardContent}>
                 
                     <Typography variant="h6">RESUMEN DEL PEDIDO</Typography>
-                    <Typography variant="body1" component={Link} to={`/purchase-history/${paymentId}`}>[ historial de compra ]</Typography>
+                    <Typography variant="body1" component={Link} to={`/purchase-history`}>[ historial de compra ]</Typography>
                     <hr />
                     
                     {products.map((product) => (
@@ -112,7 +112,6 @@ class Delivery extends Component {
                             </List>
                         </div>
                     ))}
-                    <Typography variant="body1">{comments}</Typography>
                     <br />
                     <Typography variant="h6" >DIRECCIÓN DE ENTREGA</Typography>
                     <hr />
