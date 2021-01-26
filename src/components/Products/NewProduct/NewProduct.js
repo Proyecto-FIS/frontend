@@ -180,6 +180,7 @@ class NewProduct extends Component {
     }));
   }
   removeClick(i) {
+    /*
     let lastValues = this.state.values.format;
     lastValues.splice(i, 1);
     this.setState((prevState) => ({
@@ -188,6 +189,19 @@ class NewProduct extends Component {
         format: lastValues,
       },
     }));
+    */
+    this.setState((prevState) => {
+      let lastValues = prevState.values.format;
+      lastValues.splice(i, 1);
+      let newState = prevState;
+      newState.values = {
+        ...prevState.values,
+        format: lastValues,
+      };
+
+      newState.formCorrect = this.checkFormCorrect(newState);
+      return newState;
+    });
   }
   handleChange = (field, e) => {
     this.setState((prevState) => {
