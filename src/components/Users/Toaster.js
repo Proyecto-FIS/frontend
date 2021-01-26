@@ -563,7 +563,7 @@ render() {
         
               : 
               
-              <Container component="main" maxWidth="md">
+              <Container>
                 <ToasterTemplate loading={loading} user={this.state.user} toasterProducts={this.state.toasterProducts}/>
               </Container>
               }

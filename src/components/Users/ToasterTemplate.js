@@ -29,8 +29,8 @@ const styles = (theme) => ({
   avatar2: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
-    width: theme.spacing(9),
-    height: theme.spacing(9),
+    width: theme.spacing(11),
+    height: theme.spacing(11),
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -48,6 +48,8 @@ const styles = (theme) => ({
   },
   centerColumn: {
     marginTop: theme.spacing(0),
+    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(0)
   },
 });
 
@@ -87,14 +89,6 @@ class ToasterTemplate extends Component {
         <div className={classes.paper}>
           {/* TOASTER INFO */}
 
-          <Typography
-            component="h1"
-            variant="h5"
-            style={{ textAlign: "center" }}
-          >
-            {user.name}
-          </Typography>
-
           {user.pictureUrl ? (
             <Avatar
               className={classes.avatar2}
@@ -104,6 +98,15 @@ class ToasterTemplate extends Component {
           ) : (
             <Avatar className={classes.avatar} />
           )}
+
+          <Typography
+            component="h1"
+            variant="h5"
+            style={{ textAlign: "center", marginTop:"7px", marginBottom:"7px"}}
+          >
+            {user.name}
+          </Typography>
+          
         </div>
         <Divider variant="middle" />
         <br />
@@ -144,7 +147,7 @@ class ToasterTemplate extends Component {
             />
           </a>
         )}
-        <br /> <br />
+        <br /> <br /> 
         <Typography component="h1" variant="h6">
           Sobre nosotros
         </Typography>
@@ -159,27 +162,14 @@ class ToasterTemplate extends Component {
             {user.address}
           </div>
         )}
-        <br /> <br />
+        <br /> 
         <Typography component="h1" variant="h6">
-          Estamos en...
+          Nuestros productos
         </Typography>
         {this.empty}
         {/* Catálogo de productos */}
-        <Grid container>
-          <Grid container item sm={2} xs={1}></Grid>
-          <Grid
-            container
-            item
-            sm={8}
-            xs={10}
-            spacing={2}
-            alignItems="stretch"
-            direction="row"
-            className={classes.centerColumn}
-          >
+        <Grid container spacing={3} className={classes.centerColumn}>
             {this.products}
-          </Grid>
-          <Grid container item sm={2} xs={1}></Grid>
         </Grid>
       </Fragment>
     );
