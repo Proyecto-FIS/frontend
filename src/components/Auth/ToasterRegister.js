@@ -42,7 +42,7 @@ const fields = {
   description: {
     label: "Descripción",
     fieldName: "description",
-    validators: [Validators.StringLength(20, 100)],
+    validators: [Validators.StringLength(20, 300)],
   },
   phoneNumber: {
     label: "Número de teléfono",
