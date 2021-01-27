@@ -97,7 +97,8 @@ export class UsersService {
 
                 })
                 .catch(err => { 
-                    store.dispatch(startSnackBar("error", err.message))
+                    console.log(err.message);
+                    store.dispatch(startSnackBar("error", "Error al obtener usuario"))
                     store.dispatch({type: PROFILE_ERROR})
 
                     reject()
@@ -206,9 +207,6 @@ export class UsersService {
                 .catch(err => { 
                     store.dispatch(startSnackBar("error", "Error al registrar un tostador. Puede que el nick, nombre o email ya estén en uso."))
                     console.log(err)
-                    console.log(err.response)
-                    console.log(err.response.data)
-                    console.log(err.response.data.message)
                     store.dispatch({type: REGISTER_ERROR})
                     reject()
                 })
@@ -222,15 +220,16 @@ export class UsersService {
             return axios.get(`/api/toasters/${accountId}`, config)
                 .then(response => {
                     store.dispatch({type: PROFILE_SUCCESS, payload: response.data})
-                    store.dispatch({type: TOASTER_PRODUCTS_REQUEST});
 
                     resolve(response)
                 })
 
                 .catch(err => { 
-                    store.dispatch(startSnackBar("error", err))
-                
+                    console.log(err);
+
+                    store.dispatch(startSnackBar("error", "Error al obtener usuario"))
                     store.dispatch({type: PROFILE_ERROR})
+
                     reject()
                 })
         })
@@ -238,6 +237,8 @@ export class UsersService {
 
     static getToasterProducts = (accountId) => {
         return new Promise((resolve, reject) => {
+            
+        store.dispatch({type: TOASTER_PRODUCTS_REQUEST});
         axios.get(`/api/products?providerId=${accountId}`, config)
             .then(response => {
                 store.dispatch({type: TOASTER_PRODUCTS_SUCCESS, payload: response.data})
