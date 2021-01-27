@@ -15,7 +15,8 @@ const reducer = (state = defaultState, { type, payload }) => {
         case LOGIN_SUCCESS:
             return {
                 loading: false,
-                account: payload
+                account: payload,
+                error: null
             };
         case REGISTER_ERROR:
         case LOGIN_ERROR:
